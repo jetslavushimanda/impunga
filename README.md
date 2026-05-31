@@ -1,16 +1,302 @@
-# React + Vite
+# IMPUNGA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Plant Your Idea. Grow Your Business. Feed Zambia.**
 
-Currently, two official plugins are available:
+IMPUNGA is Zambia's first AI-powered entrepreneurship platform built for the JETS National Innovation Challenge 2026. It gives every Zambian with a business idea access to professional tools, AI mentorship, funding information, and step-by-step business guidance — completely free.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The name IMPUNGA comes from the Bemba word meaning **the seed that grows**.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Live Demo
 
-## Expanding the ESLint configuration
+[impunga.vercel.app](https://impunga.vercel.app)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## JETS Competition Details
+
+| Field | Details |
+|-------|---------|
+| Competition | JETS National Innovation Challenge 2026 |
+| Category | Computer Science and Software Development |
+| Level | Senior Secondary (Grades 10–12) |
+| Sub-Theme | Innovative Solutions for Digital Transformation |
+| Country | Republic of Zambia |
+
+---
+
+## The Problem IMPUNGA Solves
+
+Millions of Zambians have business ideas every day. Most never start because of five walls:
+
+1. They do not know if their idea is viable
+2. They do not know how to register with PACRA
+3. They do not know how to write a business plan
+4. They price their products wrong and make no profit
+5. They do not know where to find funding
+
+IMPUNGA breaks all five walls down — permanently, and for free.
+
+---
+
+## Modules
+
+IMPUNGA has 14 fully functional modules:
+
+### Get Started
+| Module | Description |
+|--------|-------------|
+| Idea Validator | AI analyses your business idea for the Zambian market and gives a viability score out of 10 |
+| Registration Guide | Step-by-step PACRA, ZRA and bank account registration with official links and progress tracking |
+
+### Build Your Business
+| Module | Description |
+|--------|-------------|
+| Business Plan Builder | 8-section guided business plan builder with professional PDF download |
+| SWOT Analysis | AI generates a full Strengths, Weaknesses, Opportunities and Threats analysis |
+| Business Name Generator | AI generates 8 unique Zambian business names with meanings and reasoning |
+
+### Money and Finance
+| Module | Description |
+|--------|-------------|
+| Pricing Calculator | True cost calculator with profit margins, break-even analysis and monthly projections |
+| Invoice Generator | Create professional Kwacha invoices and download as PDF |
+| Market Prices | Current typical market prices for common goods across Zambian provinces |
+
+### Grow and Market
+| Module | Description |
+|--------|-------------|
+| Funding Finder | 25+ real Zambian funding sources including CEEC, Tony Elumelu Foundation and more |
+| Social Media Generator | AI writes ready-to-post Facebook and WhatsApp marketing content |
+| WhatsApp Templates | Professional business message templates for quotes, follow-ups and payments |
+
+### AI Powered
+| Module | Description |
+|--------|-------------|
+| AI Business Advisor | Full conversational AI mentor available 24 hours with Zambia-specific advice |
+
+### Knowledge
+| Module | Description |
+|--------|-------------|
+| Business Quiz | 20 questions across 6 categories testing Zambian entrepreneurship knowledge |
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| Frontend | React 18 + Vite 8 | Fast component-based UI |
+| Styling | Tailwind CSS v4 | Responsive professional design |
+| Icons | Lucide React | Clean SVG icons throughout |
+| Routing | React Router v6 | Navigation between all pages |
+| Database | Firebase Firestore | Real-time cloud data storage |
+| Authentication | Firebase Auth | Email and Google Sign In |
+| AI | Groq API (Llama 3.3 70B) | Business advice and content generation |
+| PDF Generation | jsPDF + AutoTable | Business plans and invoice downloads |
+| Charts | Recharts | Pricing projections and data visualisation |
+| State Management | Zustand | Clean application state |
+| Form Handling | React Hook Form + Zod | Multi-step form validation |
+| PWA | Vite PWA Plugin | Offline capability and app install |
+| Deployment | Vercel | Free global hosting with CI/CD |
+
+**Total development cost: Zero Zambian Kwacha.**
+
+---
+
+## Features
+
+- **AI-powered** — Real AI responses specific to the Zambian market. References PACRA, ZRA, CEEC and all 10 provinces
+- **PDF downloads** — Business plan, invoice and registration checklist all download as professional PDFs
+- **25+ funding sources** — Government, NGO, international and competition funding with eligibility filtering
+- **Response caching** — AI responses are cached for 24 hours to reduce API calls during demonstrations
+- **Progressive Web App** — Installs on any phone or computer like a native app
+- **Mobile first** — Bottom navigation bar, scrollable sidebar, responsive at all screen sizes
+- **Rate limit protection** — Countdown timer shows users how long to wait when AI limit is reached
+- **Offline capable** — Registration Guide and Pricing Calculator work without internet during load shedding
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18 or higher
+- npm 9 or higher
+- Firebase project (free tier)
+- Groq API key (free tier — 14,400 requests per day)
+
+### Installation
+
+```bash
+git clone https://github.com/jetslavushimanda/impunga.git
+cd impunga
+npm install
+```
+
+### Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+VITE_GEMINI_API_KEY=your_groq_api_key_here
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+**Getting a Groq API key:**
+1. Go to [console.groq.com](https://console.groq.com)
+2. Sign up for a free account
+3. Click API Keys → Create API Key
+4. Copy the key starting with `gsk_`
+
+**Getting Firebase credentials:**
+1. Go to [console.firebase.google.com](https://console.firebase.google.com)
+2. Create a new project
+3. Enable Authentication (Email/Password and Google)
+4. Enable Firestore Database (start in test mode)
+5. Go to Project Settings → Web App → copy the config values
+
+### Running Locally
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173)
+
+### Building for Production
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── layout/
+│   │   ├── Header.jsx          # Top navigation bar
+│   │   ├── Sidebar.jsx         # Side navigation with all modules
+│   │   └── Layout.jsx          # Main layout with bottom nav bar
+│   └── shared/
+│       ├── LoadingSpinner.jsx   # Loading states
+│       ├── ErrorMessage.jsx     # Error display
+│       ├── SuccessToast.jsx     # Toast notifications
+│       ├── EmptyState.jsx       # Empty data states
+│       └── OfflineBanner.jsx    # Offline status banner
+├── pages/
+│   ├── Landing.jsx             # Minimal landing page
+│   ├── Login.jsx               # Email and Google sign in
+│   ├── Register.jsx            # 3-step registration
+│   ├── Dashboard.jsx           # Main hub with categorised modules
+│   ├── IdeaValidator.jsx       # AI business idea analysis
+│   ├── RegistrationGuide.jsx   # PACRA/ZRA step-by-step guide
+│   ├── BusinessPlanBuilder.jsx # 8-section plan with PDF export
+│   ├── PricingCalculator.jsx   # Cost and profit calculator
+│   ├── FundingFinder.jsx       # 25+ Zambian funding sources
+│   ├── AIAdvisor.jsx           # Conversational AI chat
+│   ├── BusinessNameGenerator.jsx # AI name suggestions
+│   ├── InvoiceGenerator.jsx    # PDF invoice creator
+│   ├── MarketPrices.jsx        # Zambian market price data
+│   ├── SWOTAnalysis.jsx        # AI SWOT generator
+│   ├── SocialMediaGenerator.jsx # AI marketing content
+│   ├── WhatsAppTemplates.jsx   # Business message templates
+│   ├── BusinessQuiz.jsx        # 20-question knowledge test
+│   └── Profile.jsx             # User account management
+├── hooks/
+│   ├── useAuth.js              # Firebase authentication hook
+│   ├── useFirestore.js         # Firestore CRUD operations
+│   ├── useGemini.js            # AI API hook with caching
+│   └── useAI.js               # AI hook alias
+├── lib/
+│   ├── firebase.js             # Firebase initialisation
+│   ├── gemini.js               # Groq API client with caching
+│   └── utils.js                # Shared utility functions
+├── store/
+│   ├── authStore.js            # Zustand auth state
+│   └── businessStore.js        # Zustand business data state
+├── data/
+│   ├── provinces.js            # All 10 provinces and 116 districts
+│   ├── fundingSources.js       # 25+ Zambian funding sources
+│   ├── businessTypes.js        # PACRA business structure data
+│   ├── pacraSteps.js           # PACRA and ZRA registration steps
+│   ├── dailyTips.js            # 100 Zambian business tips
+│   ├── businessSectors.js      # 20 Zambian business sectors
+│   ├── quizQuestions.js        # 20 quiz questions and answers
+│   └── marketPrices.js         # Zambian market price data
+└── styles/
+    └── index.css               # Tailwind v4 global styles and components
+```
+
+---
+
+## Firebase Security Rules
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /{collection}/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null;
+    }
+  }
+}
+```
+
+---
+
+## Deployment
+
+The app is deployed on Vercel with automatic deployments on every push to the `main` branch.
+
+To deploy your own instance:
+
+1. Push the repository to GitHub
+2. Connect the repository to [vercel.com](https://vercel.com)
+3. Add all environment variables in Vercel project settings
+4. Vercel automatically builds and deploys on every commit
+
+---
+
+## Why IMPUNGA Wins at JETS
+
+| Judging Criterion | How IMPUNGA Scores |
+|------------------|--------------------|
+| Novelty | First AI entrepreneurship platform built specifically for Zambia |
+| Relevance | Entrepreneurship is literally in the JETS 2024–2026 theme title |
+| Workability | Fully functional live demo at impunga.vercel.app |
+| Sustainability | Firebase scales to any number of users at no cost |
+| Economic Value | Directly addresses youth unemployment through entrepreneurship |
+| Innovation | Real AI integration giving genuine Zambia-specific mentorship |
+| Theme Interpretation | Perfect alignment with JETS digital transformation theme |
+| Scientific Concepts | Algorithm design, AI APIs, PWA service workers, cloud databases |
+
+---
+
+## The One-Sentence Pitch
+
+**IMPUNGA — meaning the seed that grows in Bemba — is Zambia's first AI-powered entrepreneurship platform that guides every Zambian from raw business idea to registered, planned, correctly priced and funded business, regardless of their age, education or background.**
+
+---
+
+## License
+
+Built for the JETS National Innovation Challenge 2026 — Republic of Zambia.
+
+---
+
+*IMPUNGA · Plant Your Idea. Grow Your Business. Feed Zambia.*
