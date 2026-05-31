@@ -1,63 +1,57 @@
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+import { GoogleGenAI } from '@google/genai';
 
-export async function callGemini(prompt, systemInstruction) {
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
+function getClient() {
   if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
     throw new Error('GEMINI_API_KEY_MISSING');
   }
+  return new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+}
 
-  const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      system_instruction: {
-        parts: [{ text: systemInstruction }],
-      },
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
+export async function callGemini(prompt, systemInstruction) {
+  const ai = getClient();
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: prompt,
+      config: {
+        systemInstruction,
         temperature: 0.7,
         maxOutputTokens: 1500,
       },
-    }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (response.status === 429) throw new Error('RATE_LIMIT');
-    if (response.status === 400) throw new Error('BAD_REQUEST');
-    throw new Error(errorData.error?.message || 'API_ERROR');
+    });
+    return response.text;
+  } catch (err) {
+    if (err.status === 429 || err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('RESOURCE_EXHAUSTED')) {
+      throw new Error('RATE_LIMIT');
+    }
+    throw err;
   }
-
-  const data = await response.json();
-  return data.candidates[0].content.parts[0].text;
 }
 
 export async function callGeminiWithHistory(messages, systemInstruction) {
-  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
-    throw new Error('GEMINI_API_KEY_MISSING');
-  }
-
-  const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      system_instruction: {
-        parts: [{ text: systemInstruction }],
-      },
-      contents: messages,
-      generationConfig: {
+  const ai = getClient();
+  try {
+    const chat = ai.chats.create({
+      model: 'gemini-2.0-flash',
+      config: {
+        systemInstruction,
         temperature: 0.7,
         maxOutputTokens: 1500,
       },
-    }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (response.status === 429) throw new Error('RATE_LIMIT');
-    throw new Error(errorData.error?.message || 'API_ERROR');
+      history: messages.slice(0, -1).map(m => ({
+        role: m.role,
+        parts: m.parts,
+      })),
+    });
+    const lastMessage = messages[messages.length - 1];
+    const response = await chat.sendMessage({ message: lastMessage.parts[0].text });
+    return response.text;
+  } catch (err) {
+    if (err.status === 429 || err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('RESOURCE_EXHAUSTED')) {
+      throw new Error('RATE_LIMIT');
+    }
+    throw err;
   }
-
-  const data = await response.json();
-  return data.candidates[0].content.parts[0].text;
 }
