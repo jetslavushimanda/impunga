@@ -83,7 +83,7 @@ export default function Landing() {
       <section className="py-14 px-4 bg-surface-light">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-2">
-            Everything you need to build your business in Zambia
+            What's inside IMPUNGA
           </h2>
           <p className="text-gray-500 text-center mb-10 text-sm md:text-base">All tools are free. No experience required.</p>
 
