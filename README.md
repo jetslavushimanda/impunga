@@ -14,18 +14,6 @@ The name IMPUNGA comes from the Bemba word meaning **the seed that grows**.
 
 ---
 
-## JETS Competition Details
-
-| Field | Details |
-|-------|---------|
-| Competition | JETS National Innovation Challenge 2026 |
-| Category | Computer Science and Software Development |
-| Level | Senior Secondary (Grades 10–12) |
-| Sub-Theme | Innovative Solutions for Digital Transformation |
-| Country | Republic of Zambia |
-
----
-
 ## The Problem IMPUNGA Solves
 
 Millions of Zambians have business ideas every day. Most never start because of five walls:
