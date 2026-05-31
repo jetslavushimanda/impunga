@@ -21,6 +21,10 @@ import GrowthTracker from './pages/GrowthTracker';
 import Profile from './pages/Profile';
 import BusinessNameGenerator from './pages/BusinessNameGenerator';
 import InvoiceGenerator from './pages/InvoiceGenerator';
+import MarketPrices from './pages/MarketPrices';
+import WhatsAppTemplates from './pages/WhatsAppTemplates';
+import SWOTAnalysis from './pages/SWOTAnalysis';
+import SocialMediaGenerator from './pages/SocialMediaGenerator';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser } = useAuthStore();
@@ -59,6 +63,10 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/name-generator" element={<BusinessNameGenerator />} />
           <Route path="/invoice-generator" element={<InvoiceGenerator />} />
+          <Route path="/market-prices" element={<MarketPrices />} />
+          <Route path="/whatsapp-templates" element={<WhatsAppTemplates />} />
+          <Route path="/swot-analysis" element={<SWOTAnalysis />} />
+          <Route path="/social-media" element={<SocialMediaGenerator />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
