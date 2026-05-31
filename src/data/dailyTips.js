@@ -102,7 +102,7 @@ export const DAILY_TIPS = [
   { category: 'Growth', title: 'The First 1000 Days are the Most Critical', tip: 'Most businesses that fail do so in the first 3 years. Focus your first 1000 days on building a loyal customer base, establishing good financial habits and fine-tuning your offering based on customer feedback.', action: 'What specific action are you taking this week to build customer loyalty?' },
 ];
 
-export function getDailyTip() {
+export function getDailyTip(offset = 0) {
   const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
-  return DAILY_TIPS[dayOfYear % DAILY_TIPS.length];
+  return DAILY_TIPS[(dayOfYear + offset) % DAILY_TIPS.length];
 }

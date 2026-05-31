@@ -1,56 +1,130 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Lightbulb, Building2, FileText, Calculator,
-  DollarSign, Bot, TrendingUp, ArrowRight, Sprout
+  Lightbulb, Building2, FileText, Target, Sparkles,
+  Calculator, Receipt, ShoppingCart,
+  DollarSign, Share2, MessageCircle,
+  Bot, GraduationCap, TrendingUp,
+  ArrowRight, Sprout, ChevronRight
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import { useFirestore } from '../hooks/useFirestore';
-import { getGreeting, getFirstName, getDaysSince, formatDate } from '../lib/utils';
+import { getGreeting, getFirstName, getDaysSince } from '../lib/utils';
 import { getDailyTip } from '../data/dailyTips';
 import { PageLoader } from '../components/shared/LoadingSpinner';
 
-const MODULES = [
-  { path: '/idea-validator', icon: Lightbulb, name: 'Idea Validator', desc: 'Test if your business idea works in Zambia', color: 'text-yellow-500', bg: 'bg-yellow-50' },
-  { path: '/registration-guide', icon: Building2, name: 'Registration Guide', desc: 'Step-by-step PACRA and ZRA registration', color: 'text-blue-500', bg: 'bg-blue-50' },
-  { path: '/business-plan', icon: FileText, name: 'Business Plan Builder', desc: 'Build and download your business plan PDF', color: 'text-green-500', bg: 'bg-green-50' },
-  { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Price correctly and actually make profit', color: 'text-purple-500', bg: 'bg-purple-50' },
-  { path: '/funding-finder', icon: DollarSign, name: 'Funding Finder', desc: '25+ real Zambian funding sources', color: 'text-accent-gold', bg: 'bg-yellow-50' },
-  { path: '/ai-advisor', icon: Bot, name: 'AI Business Advisor', desc: 'Chat with your AI business mentor', color: 'text-primary', bg: 'bg-blue-50' },
-  { path: '/growth-tracker', icon: TrendingUp, name: 'Growth Tracker', desc: 'Track revenue, profit and milestones', color: 'text-accent-green', bg: 'bg-green-50' },
+const CATEGORIES = [
+  {
+    label: 'Get Started',
+    color: '#F39C12',
+    bg: 'bg-yellow-50',
+    text: 'text-yellow-600',
+    border: 'border-l-yellow-400',
+    modules: [
+      { path: '/idea-validator', icon: Lightbulb, name: 'Idea Validator', desc: 'Test if your idea works in Zambia' },
+      { path: '/registration-guide', icon: Building2, name: 'Registration Guide', desc: 'Step-by-step PACRA and ZRA guide' },
+    ],
+  },
+  {
+    label: 'Build Your Business',
+    color: '#1B4F72',
+    bg: 'bg-blue-50',
+    text: 'text-blue-600',
+    border: 'border-l-blue-400',
+    modules: [
+      { path: '/business-plan', icon: FileText, name: 'Business Plan Builder', desc: 'Build and download your plan as PDF' },
+      { path: '/swot-analysis', icon: Target, name: 'SWOT Analysis', desc: 'Analyse strengths and opportunities' },
+      { path: '/name-generator', icon: Sparkles, name: 'Name Generator', desc: 'AI generates Zambian business names' },
+    ],
+  },
+  {
+    label: 'Money and Finance',
+    color: '#1E8449',
+    bg: 'bg-green-50',
+    text: 'text-green-600',
+    border: 'border-l-green-400',
+    modules: [
+      { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Calculate true costs and profit margins' },
+      { path: '/invoice-generator', icon: Receipt, name: 'Invoice Generator', desc: 'Create professional Kwacha invoices' },
+      { path: '/market-prices', icon: ShoppingCart, name: 'Market Prices', desc: 'Current prices across Zambian markets' },
+    ],
+  },
+  {
+    label: 'Grow and Market',
+    color: '#7D3C98',
+    bg: 'bg-purple-50',
+    text: 'text-purple-600',
+    border: 'border-l-purple-400',
+    modules: [
+      { path: '/funding-finder', icon: DollarSign, name: 'Funding Finder', desc: '25+ real Zambian funding sources' },
+      { path: '/social-media', icon: Share2, name: 'Social Media Generator', desc: 'AI writes your marketing posts' },
+      { path: '/whatsapp-templates', icon: MessageCircle, name: 'WhatsApp Templates', desc: 'Professional business messages' },
+    ],
+  },
 ];
+
+function ModuleCard({ path, icon: Icon, name, desc, bg, text, border }) {
+  return (
+    <Link
+      to={path}
+      className={`group flex flex-col gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 ${border} hover:shadow-md hover:-translate-y-0.5 transition-all duration-200`}
+    >
+      <div className="flex items-start justify-between">
+        <div className={`w-9 h-9 ${bg} rounded-xl flex items-center justify-center shrink-0`}>
+          <Icon className={`w-4 h-4 ${text}`} />
+        </div>
+        <ArrowRight className="w-4 h-4 text-gray-200 group-hover:text-gray-400 transition-colors shrink-0" />
+      </div>
+      <div>
+        <p className="font-bold text-gray-800 text-sm leading-tight">{name}</p>
+        <p className="text-gray-400 text-xs mt-0.5 leading-snug">{desc}</p>
+      </div>
+    </Link>
+  );
+}
+
+function FullWidthCard({ path, icon: Icon, name, desc, bg, text, badge }) {
+  return (
+    <Link
+      to={path}
+      className="group flex items-center justify-between bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 col-span-2"
+    >
+      <div className="flex items-center gap-4">
+        <div className={`w-12 h-12 ${bg} rounded-2xl flex items-center justify-center shrink-0`}>
+          <Icon className={`w-6 h-6 ${text}`} />
+        </div>
+        <div>
+          <div className="flex items-center gap-2 mb-0.5">
+            <p className="font-bold text-gray-800">{name}</p>
+            {badge && <span className="text-xs bg-orange-100 text-orange-700 font-semibold px-2 py-0.5 rounded-full">{badge}</span>}
+          </div>
+          <p className="text-gray-400 text-sm">{desc}</p>
+        </div>
+      </div>
+      <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-gray-500 transition-colors shrink-0" />
+    </Link>
+  );
+}
 
 export default function Dashboard() {
   const { user, userProfile, loading } = useAuthStore();
   const { getUserDocumentCount } = useFirestore();
-  const [counts, setCounts] = useState({ ideas: 0, plans: 0, calcs: 0 });
-  const [recentActivity, setRecentActivity] = useState([]);
-  const { getUserDocuments } = useFirestore();
-  const tip = getDailyTip();
+  const [counts, setCounts] = useState({ ideas: 0, plans: 0, calcs: 0, funding: 0 });
+  const [tipIndex, setTipIndex] = useState(0);
+  const tip = getDailyTip(tipIndex);
 
   useEffect(() => {
     if (!user) return;
     async function loadCounts() {
-      const [ideas, plans, calcs] = await Promise.all([
+      const [ideas, plans, calcs, funding] = await Promise.all([
         getUserDocumentCount('businessIdeas'),
         getUserDocumentCount('businessPlans'),
         getUserDocumentCount('pricingCalculations'),
+        getUserDocumentCount('bookmarkedFunding'),
       ]);
-      setCounts({ ideas, plans, calcs });
-    }
-    async function loadActivity() {
-      const [ideas, plans] = await Promise.all([
-        getUserDocuments('businessIdeas', 'createdAt', 3),
-        getUserDocuments('businessPlans', 'createdAt', 2),
-      ]);
-      const merged = [
-        ...ideas.map(i => ({ type: 'idea', text: `Validated: "${i.ideaText?.substring(0, 40)}..."`, date: i.createdAt })),
-        ...plans.map(p => ({ type: 'plan', text: `Business plan: ${p.businessName}`, date: p.createdAt })),
-      ].sort((a, b) => (b.date?.seconds || 0) - (a.date?.seconds || 0)).slice(0, 5);
-      setRecentActivity(merged);
+      setCounts({ ideas, plans, calcs, funding });
     }
     loadCounts();
-    loadActivity();
   }, [user]);
 
   if (loading) return <PageLoader />;
@@ -59,85 +133,111 @@ export default function Dashboard() {
   const daysSince = getDaysSince(userProfile?.createdAt);
 
   return (
-    <div className="max-w-5xl mx-auto animate-fade-in">
-      {/* Welcome card */}
-      <div className="card bg-gradient-to-r from-primary to-primary-light text-white mb-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-blue-200 text-sm mb-1">{getGreeting()}</p>
-            <h1 className="text-2xl font-bold mb-2">{userProfile?.fullName || 'Entrepreneur'}</h1>
-            <div className="flex flex-wrap gap-2 text-sm">
-              {userProfile?.province && (
-                <span className="bg-white/20 px-2 py-0.5 rounded-full">{userProfile.province}, {userProfile.district}</span>
-              )}
-              {userProfile?.occupation && (
-                <span className="bg-white/20 px-2 py-0.5 rounded-full capitalize">{userProfile.occupation}</span>
-              )}
-              <span className="bg-white/20 px-2 py-0.5 rounded-full">Day {daysSince + 1} on IMPUNGA</span>
-            </div>
+    <div className="max-w-2xl mx-auto pb-24 animate-fade-in">
+
+      {/* Welcome Banner */}
+      <div className="rounded-2xl p-5 mb-5 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1B4F72 0%, #1E8449 100%)' }}>
+        <div className="relative z-10">
+          <p className="text-blue-200 text-sm font-medium">{getGreeting()}</p>
+          <h1 className="text-2xl font-bold text-white mt-0.5">{userProfile?.fullName || 'Entrepreneur'}</h1>
+          <p className="text-blue-200 text-sm mt-1">Plant Your Idea. Grow Your Business.</p>
+          <div className="flex items-center gap-2 mt-3">
+            <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full font-medium">Day {daysSince + 1} on IMPUNGA</span>
+            {userProfile?.province && <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full">{userProfile.province}</span>}
           </div>
-          <Sprout className="w-10 h-10 text-accent-gold opacity-80 hidden sm:block" />
         </div>
+        <Sprout className="absolute right-4 top-4 w-16 h-16 text-white/10" />
       </div>
 
-      {/* Quick stats */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      {/* Quick Stats 2x2 */}
+      <div className="grid grid-cols-2 gap-3 mb-5">
         {[
-          { label: 'Ideas Validated', value: counts.ideas },
-          { label: 'Business Plans', value: counts.plans },
-          { label: 'Pricing Done', value: counts.calcs },
-        ].map(({ label, value }) => (
-          <div key={label} className="stat-card">
-            <p className="text-2xl font-bold text-primary">{value}</p>
-            <p className="text-xs text-gray-500 mt-1">{label}</p>
+          { label: 'Ideas Validated', value: counts.ideas, color: 'text-yellow-600', border: 'border-l-yellow-400' },
+          { label: 'Business Plans', value: counts.plans, color: 'text-blue-600', border: 'border-l-blue-400' },
+          { label: 'Pricing Done', value: counts.calcs, color: 'text-green-600', border: 'border-l-green-400' },
+          { label: 'Funding Saved', value: counts.funding, color: 'text-purple-600', border: 'border-l-purple-400' },
+        ].map(({ label, value, color, border }) => (
+          <div key={label} className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 ${border}`}>
+            <p className={`text-3xl font-bold ${color}`}>{value}</p>
+            <p className="text-gray-400 text-xs mt-1">{label}</p>
           </div>
         ))}
       </div>
 
-      {/* Module cards */}
-      <h2 className="text-lg font-bold text-gray-800 mb-3">Your Tools</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
-        {MODULES.map(({ path, icon: Icon, name, desc, color, bg }) => (
-          <Link key={path} to={path} className="module-card group">
-            <div className={`w-10 h-10 ${bg} rounded-lg flex items-center justify-center`}>
-              <Icon className={`w-5 h-5 ${color}`} />
+      {/* Daily Tip Card */}
+      <div className="rounded-2xl p-4 mb-6 border border-yellow-200" style={{ background: '#FFFBEB' }}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-yellow-100 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+              <Lightbulb className="w-4 h-4 text-yellow-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800 text-sm">{name}</h3>
-              <p className="text-gray-500 text-xs mt-0.5">{desc}</p>
+              <p className="text-xs font-bold text-yellow-700 uppercase tracking-wide mb-1">Tip of the Day — {tip.category}</p>
+              <p className="font-semibold text-gray-800 text-sm">{tip.title}</p>
+              <p className="text-gray-600 text-xs mt-1 leading-relaxed">{tip.tip}</p>
             </div>
-            <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-primary transition-colors mt-auto self-end" />
-          </Link>
-        ))}
+          </div>
+          <button onClick={() => setTipIndex(i => i + 1)} className="shrink-0 text-xs font-bold text-yellow-600 hover:text-yellow-800 flex items-center gap-1 mt-1 whitespace-nowrap">
+            Next <ChevronRight className="w-3 h-3" />
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Recent activity */}
-        <div className="card">
-          <h3 className="font-bold text-gray-800 mb-3">Recent Activity</h3>
-          {recentActivity.length === 0 ? (
-            <p className="text-gray-400 text-sm">No activity yet. Start with the Idea Validator!</p>
-          ) : (
-            <ul className="space-y-2">
-              {recentActivity.map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm">
-                  <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                  <span className="text-gray-700 flex-1">{item.text}</span>
-                  <span className="text-gray-400 text-xs whitespace-nowrap">{formatDate(item.date)}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        {/* Daily tip */}
-        <div className="card border-l-4 border-accent-gold">
-          <div className="flex items-start gap-2 mb-2">
-            <span className="badge bg-yellow-100 text-yellow-800">{tip.category}</span>
+      {/* Categorised Module Grid */}
+      {CATEGORIES.map(({ label, bg, text, border, modules }) => (
+        <div key={label} className="mb-6">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">{label}</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {modules.map(mod => (
+              <ModuleCard key={mod.path} {...mod} bg={bg} text={text} border={border} />
+            ))}
           </div>
-          <h3 className="font-bold text-gray-800 mb-1">{tip.title}</h3>
-          <p className="text-gray-600 text-sm mb-3">{tip.tip}</p>
-          <p className="text-primary text-xs font-semibold">→ {tip.action}</p>
+        </div>
+      ))}
+
+      {/* AI Powered — Full Width */}
+      <div className="mb-4">
+        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">AI Powered</h2>
+        <div className="grid grid-cols-2 gap-3">
+          <FullWidthCard
+            path="/ai-advisor"
+            icon={Bot}
+            name="AI Business Advisor"
+            desc="Your personal AI mentor available 24 hours a day"
+            bg="bg-orange-50"
+            text="text-orange-600"
+            badge="Premium"
+          />
+        </div>
+      </div>
+
+      {/* Growth Tracker — Full Width */}
+      <div className="mb-4">
+        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Track Your Growth</h2>
+        <div className="grid grid-cols-2 gap-3">
+          <FullWidthCard
+            path="/growth-tracker"
+            icon={TrendingUp}
+            name="Growth Tracker"
+            desc="Track monthly revenue, profit, goals and milestones"
+            bg="bg-teal-50"
+            text="text-teal-600"
+          />
+        </div>
+      </div>
+
+      {/* Business Quiz — Full Width */}
+      <div className="mb-6">
+        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Test Your Knowledge</h2>
+        <div className="grid grid-cols-2 gap-3">
+          <FullWidthCard
+            path="/business-quiz"
+            icon={GraduationCap}
+            name="Business Quiz"
+            desc="20 questions on Zambian entrepreneurship knowledge"
+            bg="bg-indigo-50"
+            text="text-indigo-600"
+          />
         </div>
       </div>
     </div>
