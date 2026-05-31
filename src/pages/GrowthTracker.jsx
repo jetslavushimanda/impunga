@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp, Plus, Trophy, Target, FileDown } from 'lucide-react';
+import { TrendingUp, Plus, Trophy, Target, FileDown, ShoppingBag, DollarSign, Users, ClipboardList, Landmark, MapPin, Rocket, Star } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
@@ -8,14 +8,14 @@ import { Toast, useToast } from '../components/shared/SuccessToast';
 import jsPDF from 'jspdf';
 
 const MILESTONES = [
-  { id: 'first_sale', label: 'First Sale Ever', icon: '🎯' },
-  { id: 'first_1000', label: 'First K1,000 Month', icon: '💰' },
-  { id: 'first_employee', label: 'First Employee Hired', icon: '👥' },
-  { id: 'registered', label: 'Business Registered', icon: '📋' },
-  { id: 'first_funding', label: 'First Funding Secured', icon: '🏦' },
-  { id: 'new_location', label: 'New Location Opened', icon: '📍' },
-  { id: 'first_10k', label: 'First K10,000 Month', icon: '🚀' },
-  { id: 'first_50k', label: 'First K50,000 Month', icon: '⭐' },
+  { id: 'first_sale', label: 'First Sale Ever', Icon: ShoppingBag },
+  { id: 'first_1000', label: 'First K1,000 Month', Icon: DollarSign },
+  { id: 'first_employee', label: 'First Employee Hired', Icon: Users },
+  { id: 'registered', label: 'Business Registered', Icon: ClipboardList },
+  { id: 'first_funding', label: 'First Funding Secured', Icon: Landmark },
+  { id: 'new_location', label: 'New Location Opened', Icon: MapPin },
+  { id: 'first_10k', label: 'First K10,000 Month', Icon: Rocket },
+  { id: 'first_50k', label: 'First K50,000 Month', Icon: Star },
 ];
 
 export default function GrowthTracker() {
@@ -68,7 +68,7 @@ export default function GrowthTracker() {
     if (achievements.find(a => a.milestoneId === milestone.id)) return;
     await addDocument('milestones', { milestoneId: milestone.id, label: milestone.label });
     loadData();
-    show(`🎉 Congratulations! ${milestone.label}`);
+    show(`Congratulations! ${milestone.label} achieved!`);
   }
 
   async function saveGoal() {
@@ -180,7 +180,7 @@ export default function GrowthTracker() {
 
       {/* Milestones */}
       <div className="card mb-4">
-        <h3 className="font-bold text-gray-800 mb-3">🏆 Business Milestones</h3>
+        <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2"><Trophy className="w-5 h-5 text-accent-gold" /> Business Milestones</h3>
         <div className="grid grid-cols-2 gap-2">
           {MILESTONES.map(m => {
             const achieved = achievements.find(a => a.milestoneId === m.id);
@@ -190,9 +190,11 @@ export default function GrowthTracker() {
                 onClick={() => !achieved && addAchievement(m)}
                 className={`p-3 rounded-xl border text-left transition-all ${achieved ? 'border-accent-gold bg-yellow-50' : 'border-gray-200 hover:border-accent-gold hover:bg-yellow-50'}`}
               >
-                <span className="text-lg">{m.icon}</span>
-                <p className="text-xs font-medium text-gray-700 mt-1">{m.label}</p>
-                {achieved && <p className="text-xs text-accent-gold font-bold">✓ Achieved!</p>}
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-1 ${achieved ? 'bg-accent-gold' : 'bg-gray-100'}`}>
+                  <m.Icon className={`w-4 h-4 ${achieved ? 'text-white' : 'text-gray-500'}`} />
+                </div>
+                <p className="text-xs font-medium text-gray-700">{m.label}</p>
+                {achieved && <p className="text-xs text-accent-gold font-bold mt-0.5">Achieved</p>}
               </button>
             );
           })}
