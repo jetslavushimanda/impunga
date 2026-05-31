@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Lightbulb, Building2, FileText,
-  Calculator, DollarSign, Bot, TrendingUp, User, X,
-  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2, GraduationCap, TrendingUp
+  Calculator, DollarSign, Bot, User, X,
+  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2, GraduationCap
 } from 'lucide-react';
 
 const NAV_ITEMS = [
