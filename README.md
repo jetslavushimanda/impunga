@@ -272,27 +272,6 @@ To deploy your own instance:
 
 ---
 
-## Why IMPUNGA Wins at JETS
-
-| Judging Criterion | How IMPUNGA Scores |
-|------------------|--------------------|
-| Novelty | First AI entrepreneurship platform built specifically for Zambia |
-| Relevance | Entrepreneurship is literally in the JETS 2024–2026 theme title |
-| Workability | Fully functional live demo at impunga.vercel.app |
-| Sustainability | Firebase scales to any number of users at no cost |
-| Economic Value | Directly addresses youth unemployment through entrepreneurship |
-| Innovation | Real AI integration giving genuine Zambia-specific mentorship |
-| Theme Interpretation | Perfect alignment with JETS digital transformation theme |
-| Scientific Concepts | Algorithm design, AI APIs, PWA service workers, cloud databases |
-
----
-
-## The One-Sentence Pitch
-
-**IMPUNGA — meaning the seed that grows in Bemba — is Zambia's first AI-powered entrepreneurship platform that guides every Zambian from raw business idea to registered, planned, correctly priced and funded business, regardless of their age, education or background.**
-
----
-
 ## License
 
 Built for the JETS National Innovation Challenge 2026 — Republic of Zambia.
