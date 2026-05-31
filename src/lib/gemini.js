@@ -43,6 +43,8 @@ async function groqRequest(messages) {
   return data.choices[0].message.content;
 }
 
+export const callAI = (...args) => callGemini(...args);
+
 export async function callGemini(prompt, systemInstruction) {
   const cacheKey = getCacheKey(prompt + systemInstruction.substring(0, 30));
   const cached = readCache(cacheKey);

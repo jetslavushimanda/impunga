@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp } from 'lucide-react';
-import { useGemini } from '../hooks/useGemini';
+import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 import { extractViabilityScore, getScoreColor, getScoreLabel, truncateText } from '../lib/utils';
@@ -19,7 +19,7 @@ export default function IdeaValidator() {
   const [score, setScore] = useState(null);
   const [savedIdeas, setSavedIdeas] = useState([]);
   const [expandedIdea, setExpandedIdea] = useState(null);
-  const { validateBusinessIdea, loading, error } = useGemini();
+  const { validateBusinessIdea, loading, error } = useAI();
   const { addDocument, getUserDocuments } = useFirestore();
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();

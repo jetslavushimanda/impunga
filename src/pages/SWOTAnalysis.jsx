@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import { BUSINESS_SECTORS } from '../data/businessSectors';
-import { callGemini } from '../lib/gemini';
+import { callAI } from '../lib/gemini';
 import jsPDF from 'jspdf';
 
 const QUADRANTS = [
@@ -52,7 +52,7 @@ Provide a SWOT analysis specific to the Zambian market. Return ONLY valid JSON:
 
 Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobile money, local competition etc.`;
 
-      const response = await callGemini(prompt, 'You are a Zambian business strategy expert. Generate SWOT analyses specific to the Zambian market. Return ONLY valid JSON, no other text.');
+      const response = await callAI(prompt, 'You are a Zambian business strategy expert. Generate SWOT analyses specific to the Zambian market. Return ONLY valid JSON, no other text.');
       const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       setSwot(JSON.parse(cleaned));
     } catch (err) {

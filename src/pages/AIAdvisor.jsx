@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bot, Send, RotateCcw, Copy, Check } from 'lucide-react';
-import { useGemini } from '../hooks/useGemini';
+import { useAI } from '../hooks/useAI';
 import useAuthStore from '../store/authStore';
 import ErrorMessage from '../components/shared/ErrorMessage';
 
@@ -31,7 +31,7 @@ export default function AIAdvisor() {
   const [copiedId, setCopiedId] = useState(null);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
-  const { getBusinessAdvice, loading, error, retrySeconds } = useGemini();
+  const { getBusinessAdvice, loading, error, retrySeconds } = useAI();
   const { userProfile } = useAuthStore();
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export default function AIAdvisor() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-800">AI Business Advisor</h1>
-            <p className="text-gray-500 text-xs">Powered by Google Gemini · Zambia-specific advice</p>
+            <p className="text-gray-500 text-xs">AI Powered · Zambia-specific advice</p>
           </div>
         </div>
         {messages.length > 0 && (

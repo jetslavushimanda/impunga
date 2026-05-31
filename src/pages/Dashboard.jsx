@@ -16,7 +16,7 @@ const MODULES = [
   { path: '/business-plan', icon: FileText, name: 'Business Plan Builder', desc: 'Build and download your business plan PDF', color: 'text-green-500', bg: 'bg-green-50' },
   { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Price correctly and actually make profit', color: 'text-purple-500', bg: 'bg-purple-50' },
   { path: '/funding-finder', icon: DollarSign, name: 'Funding Finder', desc: '25+ real Zambian funding sources', color: 'text-accent-gold', bg: 'bg-yellow-50' },
-  { path: '/ai-advisor', icon: Bot, name: 'AI Business Advisor', desc: 'Chat with your Gemini AI business mentor', color: 'text-primary', bg: 'bg-blue-50' },
+  { path: '/ai-advisor', icon: Bot, name: 'AI Business Advisor', desc: 'Chat with your AI business mentor', color: 'text-primary', bg: 'bg-blue-50' },
   { path: '/growth-tracker', icon: TrendingUp, name: 'Growth Tracker', desc: 'Track revenue, profit and milestones', color: 'text-accent-green', bg: 'bg-green-50' },
 ];
 

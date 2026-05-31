@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Sparkles, Save, RefreshCw, Copy, Check } from 'lucide-react';
-import { useGemini } from '../hooks/useGemini';
+import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
@@ -14,7 +14,7 @@ export default function BusinessNameGenerator() {
   const [style, setStyle] = useState('professional');
   const [names, setNames] = useState([]);
   const [copied, setCopied] = useState('');
-  const { generateBusinessNames, loading, error } = useGemini();
+  const { generateBusinessNames, loading, error } = useAI();
   const { addDocument } = useFirestore();
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Share2, Copy, Check, RefreshCw } from 'lucide-react';
-import { callGemini } from '../lib/gemini';
+import { callAI } from '../lib/gemini';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { Toast, useToast } from '../components/shared/SuccessToast';
@@ -71,7 +71,7 @@ Return ONLY valid JSON:
 }`;
 
       const system = 'You are a social media marketing expert for Zambian small businesses. Write engaging captions in simple English that Zambian audiences connect with. Use relevant Zambian hashtags. Return ONLY valid JSON.';
-      const response = await callGemini(prompt, system);
+      const response = await callAI(prompt, system);
       const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       const parsed = JSON.parse(cleaned);
       setCaptions(parsed);
