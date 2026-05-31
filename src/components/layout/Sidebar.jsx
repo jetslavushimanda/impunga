@@ -1,22 +1,26 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Lightbulb, Building2, FileText,
-  Calculator, DollarSign, Bot, TrendingUp, User, X
+  Calculator, DollarSign, Bot, TrendingUp, User, X, Sparkles, Receipt
 } from 'lucide-react';
+import { useLang } from '../../contexts/LanguageContext';
 
 const NAV_ITEMS = [
-  { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { path: '/idea-validator', icon: Lightbulb, label: 'Idea Validator' },
-  { path: '/registration-guide', icon: Building2, label: 'Registration Guide' },
-  { path: '/business-plan', icon: FileText, label: 'Business Plan Builder' },
-  { path: '/pricing-calculator', icon: Calculator, label: 'Pricing Calculator' },
-  { path: '/funding-finder', icon: DollarSign, label: 'Funding Finder' },
-  { path: '/ai-advisor', icon: Bot, label: 'AI Business Advisor' },
-  { path: '/growth-tracker', icon: TrendingUp, label: 'Growth Tracker' },
-  { path: '/profile', icon: User, label: 'My Profile' },
+  { path: '/dashboard', icon: LayoutDashboard, key: 'dashboard' },
+  { path: '/idea-validator', icon: Lightbulb, key: 'ideaValidator' },
+  { path: '/registration-guide', icon: Building2, key: 'registrationGuide' },
+  { path: '/business-plan', icon: FileText, key: 'businessPlan' },
+  { path: '/pricing-calculator', icon: Calculator, key: 'pricingCalculator' },
+  { path: '/funding-finder', icon: DollarSign, key: 'fundingFinder' },
+  { path: '/ai-advisor', icon: Bot, key: 'aiAdvisor' },
+  { path: '/growth-tracker', icon: TrendingUp, key: 'growthTracker' },
+  { path: '/name-generator', icon: Sparkles, key: 'nameGenerator' },
+  { path: '/invoice-generator', icon: Receipt, key: 'invoiceGenerator' },
+  { path: '/profile', icon: User, key: 'myProfile' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
+  const { t } = useLang();
   return (
     <>
       {/* Overlay for mobile */}
@@ -38,15 +42,15 @@ export default function Sidebar({ isOpen, onClose }) {
         </div>
 
         <nav className="p-3 space-y-1 overflow-y-auto h-full pb-20">
-          {NAV_ITEMS.map(({ path, icon: Icon, label }) => (
+          {NAV_ITEMS.map(({ path, icon: Icon, key }) => (
             <NavLink
               key={path}
               to={path}
               onClick={onClose}
               className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
-              <span className="truncate">{label}</span>
+              <Icon className="w-5 h-5 shrink-0" />
+              <span className="truncate">{t(key)}</span>
             </NavLink>
           ))}
         </nav>

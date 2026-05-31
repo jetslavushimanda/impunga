@@ -99,6 +99,49 @@ Current user context: ${userContext || 'General Zambian entrepreneur'}`;
     }
   }
 
+  async function generateBusinessNames(description, sector, style, province) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `Generate 8 unique business name suggestions for this Zambian business:
+
+Description: ${description}
+Sector: ${sector || 'General'}
+Style preference: ${style}
+Location: ${province || 'Zambia'}
+
+For each name provide:
+1. The business name
+2. Meaning (if it uses a local language word)
+3. Why it works for this business in Zambia
+
+Format your response as JSON array like this:
+[
+  {"name": "BusinessName", "meaning": "what it means (or empty string)", "reason": "why it works"},
+  ...
+]
+
+Rules:
+- Mix English and local Zambian language names (Bemba, Nyanja, Tonga)
+- Make names memorable and easy to say
+- Avoid copying existing famous brands
+- Keep names short (1-3 words max)
+- Make them relevant to the Zambian market
+- Return ONLY the JSON array, no other text`;
+
+      const response = await callGemini(prompt, 'You are a creative Zambian business naming expert. You know Bemba, Nyanja, Tonga and English. You create memorable, meaningful business names for the Zambian market. Always respond with valid JSON only.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const parsed = JSON.parse(cleaned);
+      return parsed;
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function getFriendlyError(err) {
     if (err.message === 'GEMINI_API_KEY_MISSING') {
       return 'AI features need a Gemini API key. Add your key to the .env file.';
@@ -113,5 +156,5 @@ Current user context: ${userContext || 'General Zambian entrepreneur'}`;
     return `Error: ${err.message}. Check internet and try again.`;
   }
 
-  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice };
+  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generateBusinessNames };
 }

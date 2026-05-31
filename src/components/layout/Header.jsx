@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, LogOut, User, ChevronDown, Menu } from 'lucide-react';
+import { Bell, LogOut, User, ChevronDown, Menu, Globe } from 'lucide-react';
+import { useLang } from '../../contexts/LanguageContext';
 import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
 import { getGreeting, getFirstName, getInitials } from '../../lib/utils';
@@ -16,6 +17,7 @@ export default function Header({ onMenuToggle }) {
     navigate('/');
   }
 
+  const { lang, switchLang } = useLang();
   const firstName = getFirstName(userProfile?.fullName || '');
   const initials = getInitials(userProfile?.fullName || '?');
 
@@ -35,6 +37,20 @@ export default function Header({ onMenuToggle }) {
         <span className="hidden md:block text-sm text-gray-600">
           {getGreeting()}{firstName ? `, ${firstName}` : ''}
         </span>
+
+        {/* Language toggle */}
+        <div className="flex items-center gap-1 bg-surface-light rounded-lg p-1">
+          <Globe className="w-4 h-4 text-gray-400 ml-1" />
+          {[{ code: 'en', label: 'EN' }, { code: 'bem', label: 'BEM' }, { code: 'nya', label: 'NYA' }].map(({ code, label }) => (
+            <button
+              key={code}
+              onClick={() => switchLang(code)}
+              className={`text-xs font-bold px-2 py-1 rounded-md transition-colors ${lang === code ? 'bg-primary text-white' : 'text-gray-500 hover:text-primary'}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
         <button className="p-2 rounded-lg hover:bg-surface-light relative" aria-label="Notifications">
           <Bell className="w-5 h-5 text-gray-600" />

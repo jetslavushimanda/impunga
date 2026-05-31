@@ -5,6 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './lib/firebase';
 import useAuthStore from './store/authStore';
 
+import { LanguageProvider } from './contexts/LanguageContext';
 import Layout from './components/layout/Layout';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -18,6 +19,8 @@ import FundingFinder from './pages/FundingFinder';
 import AIAdvisor from './pages/AIAdvisor';
 import GrowthTracker from './pages/GrowthTracker';
 import Profile from './pages/Profile';
+import BusinessNameGenerator from './pages/BusinessNameGenerator';
+import InvoiceGenerator from './pages/InvoiceGenerator';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser } = useAuthStore();
@@ -38,6 +41,7 @@ export default function App() {
   }, []);
 
   return (
+    <LanguageProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
@@ -53,9 +57,12 @@ export default function App() {
           <Route path="/ai-advisor" element={<AIAdvisor />} />
           <Route path="/growth-tracker" element={<GrowthTracker />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/name-generator" element={<BusinessNameGenerator />} />
+          <Route path="/invoice-generator" element={<InvoiceGenerator />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
+    </LanguageProvider>
   );
 }
