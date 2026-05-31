@@ -110,7 +110,7 @@ Current user context: ${userContext || 'General Zambian entrepreneur'}`;
     if (!navigator.onLine) {
       return 'You are offline. AI features need internet connection.';
     }
-    return 'Something went wrong. Please check your internet and try again.';
+    return `Error: ${err.message}. Check internet and try again.`;
   }
 
   return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice };
