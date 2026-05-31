@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Lightbulb, Building2, FileText,
   Calculator, DollarSign, Bot, TrendingUp, User, X,
-  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2
+  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2, GraduationCap
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -20,6 +20,7 @@ const NAV_ITEMS = [
   { path: '/whatsapp-templates', icon: MessageCircle, label: 'WhatsApp Templates' },
   { path: '/swot-analysis', icon: Target, label: 'SWOT Analysis' },
   { path: '/social-media', icon: Share2, label: 'Social Media' },
+  { path: '/business-quiz', icon: GraduationCap, label: 'Business Quiz' },
   { path: '/profile', icon: User, label: 'My Profile' },
 ];
 

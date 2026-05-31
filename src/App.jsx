@@ -25,6 +25,7 @@ import MarketPrices from './pages/MarketPrices';
 import WhatsAppTemplates from './pages/WhatsAppTemplates';
 import SWOTAnalysis from './pages/SWOTAnalysis';
 import SocialMediaGenerator from './pages/SocialMediaGenerator';
+import BusinessQuiz from './pages/BusinessQuiz';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser } = useAuthStore();
@@ -67,6 +68,7 @@ export default function App() {
           <Route path="/whatsapp-templates" element={<WhatsAppTemplates />} />
           <Route path="/swot-analysis" element={<SWOTAnalysis />} />
           <Route path="/social-media" element={<SocialMediaGenerator />} />
+          <Route path="/business-quiz" element={<BusinessQuiz />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
