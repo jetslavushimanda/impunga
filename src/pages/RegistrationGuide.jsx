@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { Building2, CheckSquare, Square, Download, ChevronDown, ChevronUp } from 'lucide-react';
+import { Building2, CheckSquare, Square, Download, ChevronDown, ChevronUp, ExternalLink, Globe } from 'lucide-react';
+
+const QUICK_LINKS = [
+  { name: 'PACRA Online Registration', url: 'https://www.pacra.org.zm', desc: 'Register your business online' },
+  { name: 'ZRA Taxpayer Portal', url: 'https://www.zra.org.zm', desc: 'Get your TPIN and file taxes' },
+  { name: 'CEEC Loans & Grants', url: 'https://www.ceec.org.zm', desc: 'Apply for government funding' },
+  { name: 'DBZ Business Loans', url: 'https://www.dbz.co.zm', desc: 'Development Bank of Zambia' },
+  { name: 'TEVETA Training Grants', url: 'https://www.teveta.org.zm', desc: 'Skills and business training' },
+];
 import { BUSINESS_TYPES } from '../data/businessTypes';
 import { PACRA_STEPS, ZRA_STEPS, BANK_ACCOUNT_STEPS } from '../data/pacraSteps';
 
@@ -53,6 +61,25 @@ export default function RegistrationGuide() {
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Registration Guide</h1>
           <p className="text-gray-500 text-sm">Step-by-step PACRA and ZRA registration for Zambian entrepreneurs</p>
+        </div>
+      </div>
+
+      {/* Quick links */}
+      <div className="card mb-6">
+        <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+          <Globe className="w-5 h-5 text-primary" /> Official Zambian Government Links
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {QUICK_LINKS.map(({ name, url, desc }) => (
+            <a key={name} href={url} target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-between p-3 bg-surface-light rounded-xl hover:bg-surface-blue transition-colors group border border-transparent hover:border-primary">
+              <div>
+                <p className="font-semibold text-gray-800 text-sm group-hover:text-primary">{name}</p>
+                <p className="text-xs text-gray-400">{desc}</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-gray-300 group-hover:text-primary shrink-0" />
+            </a>
+          ))}
         </div>
       </div>
 

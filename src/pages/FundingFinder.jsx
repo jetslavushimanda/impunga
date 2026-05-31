@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DollarSign, X, Bookmark, BookmarkCheck, ExternalLink, Filter } from 'lucide-react';
+import { DollarSign, X, Bookmark, BookmarkCheck, ExternalLink, Filter, Globe, Phone, Mail, Clock, CheckCircle, XCircle, FileText, ChevronRight } from 'lucide-react';
 import { FUNDING_SOURCES, filterFundingSources } from '../data/fundingSources';
 import useAuthStore from '../store/authStore';
 import { useFirestore } from '../hooks/useFirestore';
@@ -222,17 +222,42 @@ export default function FundingFinder() {
                 <ul className="space-y-1">{selected.tips.map(t => <li key={t} className="text-sm text-primary flex gap-2"><span>→</span>{t}</li>)}</ul>
               </div>
 
-              <div className="bg-surface-light rounded-xl p-3 text-sm space-y-1">
-                <p className="font-semibold text-gray-700">Contact</p>
-                {selected.contactInfo.website && <p className="text-gray-600">🌐 {selected.contactInfo.website}</p>}
-                {selected.contactInfo.phone && <p className="text-gray-600">📞 {selected.contactInfo.phone}</p>}
-                {selected.contactInfo.email && <p className="text-gray-600">✉️ {selected.contactInfo.email}</p>}
-                <p className="text-gray-500 text-xs">Deadline: {selected.deadline}</p>
+              <div className="bg-surface-light rounded-xl p-3 text-sm space-y-2">
+                <p className="font-semibold text-gray-700 flex items-center gap-1"><FileText className="w-4 h-4" /> Contact & Links</p>
+                {selected.contactInfo.website && (
+                  <a href={`https://${selected.contactInfo.website.replace(/^https?:\/\//, '')}`} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-primary hover:underline font-medium">
+                    <Globe className="w-4 h-4 shrink-0" /> {selected.contactInfo.website}
+                    <ExternalLink className="w-3 h-3 opacity-60" />
+                  </a>
+                )}
+                {selected.contactInfo.phone && (
+                  <a href={`tel:${selected.contactInfo.phone}`} className="flex items-center gap-2 text-gray-600 hover:text-primary">
+                    <Phone className="w-4 h-4 shrink-0" /> {selected.contactInfo.phone}
+                  </a>
+                )}
+                {selected.contactInfo.email && (
+                  <a href={`mailto:${selected.contactInfo.email}`} className="flex items-center gap-2 text-gray-600 hover:text-primary">
+                    <Mail className="w-4 h-4 shrink-0" /> {selected.contactInfo.email}
+                  </a>
+                )}
+                {selected.contactInfo.address && (
+                  <p className="text-gray-500 text-xs">{selected.contactInfo.address}</p>
+                )}
+                <div className="flex items-center gap-1 text-gray-500 text-xs pt-1">
+                  <Clock className="w-3 h-3" /> Deadline: <span className="font-medium">{selected.deadline}</span>
+                </div>
               </div>
 
-              <div className="flex gap-3">
-                <button onClick={() => toggleBookmark(selected)} className={`btn-secondary flex-1 gap-2 ${bookmarkIds.has(selected.id) ? 'text-accent-gold border-accent-gold' : ''}`}>
-                  {bookmarkIds.has(selected.id) ? <><BookmarkCheck className="w-4 h-4" /> Bookmarked</> : <><Bookmark className="w-4 h-4" /> Bookmark</>}
+              <div className="flex gap-3 flex-wrap">
+                {selected.contactInfo.website && (
+                  <a href={`https://${selected.contactInfo.website.replace(/^https?:\/\//, '')}`} target="_blank" rel="noopener noreferrer"
+                    className="btn-primary flex-1 gap-2">
+                    <ExternalLink className="w-4 h-4" /> Visit Website
+                  </a>
+                )}
+                <button onClick={() => toggleBookmark(selected)} className={`btn-secondary gap-2 ${bookmarkIds.has(selected.id) ? 'text-accent-gold border-accent-gold' : ''}`}>
+                  {bookmarkIds.has(selected.id) ? <><BookmarkCheck className="w-4 h-4" /> Saved</> : <><Bookmark className="w-4 h-4" /> Save</>}
                 </button>
               </div>
             </div>

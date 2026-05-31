@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Target, Download, Save, RefreshCw } from 'lucide-react';
-import { useGemini } from '../hooks/useGemini';
+import { Target, Download, Save, RefreshCw, Zap, AlertTriangle, TrendingUp, Shield } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
@@ -9,6 +8,13 @@ import { Toast, useToast } from '../components/shared/SuccessToast';
 import { BUSINESS_SECTORS } from '../data/businessSectors';
 import { callGemini } from '../lib/gemini';
 import jsPDF from 'jspdf';
+
+const QUADRANTS = [
+  { key: 'strengths', label: 'Strengths', icon: Zap, border: 'border-green-400', bg: 'bg-green-50', header: 'bg-green-500', text: 'text-green-800', iconColor: 'text-green-600' },
+  { key: 'weaknesses', label: 'Weaknesses', icon: AlertTriangle, border: 'border-red-400', bg: 'bg-red-50', header: 'bg-red-500', text: 'text-red-800', iconColor: 'text-red-600' },
+  { key: 'opportunities', label: 'Opportunities', icon: TrendingUp, border: 'border-blue-400', bg: 'bg-blue-50', header: 'bg-blue-500', text: 'text-blue-800', iconColor: 'text-blue-600' },
+  { key: 'threats', label: 'Threats', icon: Shield, border: 'border-yellow-400', bg: 'bg-yellow-50', header: 'bg-yellow-500', text: 'text-yellow-800', iconColor: 'text-yellow-600' },
+];
 
 export default function SWOTAnalysis() {
   const [businessName, setBusinessName] = useState('');
@@ -35,22 +41,20 @@ Sector: ${sector || 'General'}
 Stage: ${stage}
 Location: ${userProfile?.province || 'Zambia'}
 
-Provide a SWOT analysis specific to the Zambian market. Return ONLY valid JSON in this exact format:
+Provide a SWOT analysis specific to the Zambian market. Return ONLY valid JSON:
 {
   "strengths": ["point 1", "point 2", "point 3", "point 4"],
   "weaknesses": ["point 1", "point 2", "point 3", "point 4"],
   "opportunities": ["point 1", "point 2", "point 3", "point 4"],
   "threats": ["point 1", "point 2", "point 3", "point 4"],
-  "summary": "One paragraph summary of the overall business position and key recommendation"
+  "summary": "One paragraph summary and key recommendation"
 }
 
-Make each point specific to Zambia — reference real local factors like PACRA, ZRA, load shedding, mobile money, local competition etc.`;
+Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobile money, local competition etc.`;
 
-      const system = 'You are a Zambian business strategy expert. Generate SWOT analyses specific to the Zambian market. Return ONLY valid JSON, no other text.';
-      const response = await callGemini(prompt, system);
+      const response = await callGemini(prompt, 'You are a Zambian business strategy expert. Generate SWOT analyses specific to the Zambian market. Return ONLY valid JSON, no other text.');
       const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-      const parsed = JSON.parse(cleaned);
-      setSwot(parsed);
+      setSwot(JSON.parse(cleaned));
     } catch (err) {
       setError(err.message?.includes('RATE_LIMIT') ? 'Too many requests. Wait 60 seconds and try again.' : 'Failed to generate. Please try again.');
     } finally {
@@ -77,20 +81,14 @@ Make each point specific to Zambia — reference real local factors like PACRA, 
     doc.setFontSize(10); doc.setFont(undefined, 'normal');
     doc.text(businessName || 'Business SWOT Analysis', 105, 20, { align: 'center' });
 
-    const colors = {
-      strengths: [34, 139, 34],
-      weaknesses: [220, 53, 69],
-      opportunities: [23, 162, 184],
-      threats: [255, 165, 0],
-    };
+    const colors = { strengths: [34, 139, 34], weaknesses: [220, 53, 69], opportunities: [23, 162, 184], threats: [202, 138, 4] };
     const labels = { strengths: 'STRENGTHS', weaknesses: 'WEAKNESSES', opportunities: 'OPPORTUNITIES', threats: 'THREATS' };
     const positions = [{ x: 10, y: 32 }, { x: 108, y: 32 }, { x: 10, y: 120 }, { x: 108, y: 120 }];
     const keys = ['strengths', 'weaknesses', 'opportunities', 'threats'];
 
     keys.forEach((key, i) => {
       const { x, y } = positions[i];
-      const color = colors[key];
-      doc.setFillColor(...color);
+      doc.setFillColor(...colors[key]);
       doc.rect(x, y, 92, 8, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(11); doc.setFont(undefined, 'bold');
@@ -119,13 +117,6 @@ Make each point specific to Zambia — reference real local factors like PACRA, 
     show('PDF downloaded!');
   }
 
-  const quadrants = [
-    { key: 'strengths', label: 'Strengths', color: 'border-green-400 bg-green-50', headerColor: 'bg-green-500', icon: '💪' },
-    { key: 'weaknesses', label: 'Weaknesses', color: 'border-red-400 bg-red-50', headerColor: 'bg-red-500', icon: '⚠️' },
-    { key: 'opportunities', label: 'Opportunities', color: 'border-blue-400 bg-blue-50', headerColor: 'bg-blue-500', icon: '🚀' },
-    { key: 'threats', label: 'Threats', color: 'border-yellow-400 bg-yellow-50', headerColor: 'bg-yellow-500', icon: '🛡️' },
-  ];
-
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
@@ -142,20 +133,25 @@ Make each point specific to Zambia — reference real local factors like PACRA, 
 
       <div className="card mb-4">
         <div className="space-y-4">
-          <div><label className="label">Business Name (optional)</label>
-            <input value={businessName} onChange={e => setBusinessName(e.target.value)} className="input-field" placeholder="e.g. Mama's Kitchen" /></div>
-          <div><label className="label">Describe your business *</label>
+          <div>
+            <label className="label">Business Name (optional)</label>
+            <input value={businessName} onChange={e => setBusinessName(e.target.value)} className="input-field" placeholder="e.g. Mama's Kitchen" />
+          </div>
+          <div>
+            <label className="label">Describe your business *</label>
             <textarea value={description} onChange={e => setDescription(e.target.value)} className="textarea-field" rows={3} placeholder="What does your business do? Who are your customers? Where do you operate?" />
             <p className={`text-xs mt-1 ${description.length < 20 ? 'text-red-400' : 'text-gray-400'}`}>{description.length} chars {description.length < 20 ? '(min 20)' : '✓'}</p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div><label className="label">Sector</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="label">Sector</label>
               <select value={sector} onChange={e => setSector(e.target.value)} className="select-field">
                 <option value="">Select sector</option>
                 {BUSINESS_SECTORS.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
               </select>
             </div>
-            <div><label className="label">Business Stage</label>
+            <div>
+              <label className="label">Business Stage</label>
               <select value={stage} onChange={e => setStage(e.target.value)} className="select-field">
                 <option value="idea">Just an idea</option>
                 <option value="starting">Starting up</option>
@@ -174,15 +170,15 @@ Make each point specific to Zambia — reference real local factors like PACRA, 
       {swot && (
         <div className="animate-slide-up">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-            {quadrants.map(({ key, label, color, headerColor, icon }) => (
-              <div key={key} className={`rounded-xl border-2 overflow-hidden ${color}`}>
-                <div className={`${headerColor} text-white px-4 py-2 font-bold text-sm flex items-center gap-2`}>
-                  {icon} {label}
+            {QUADRANTS.map(({ key, label, icon: Icon, border, bg, header, iconColor }) => (
+              <div key={key} className={`rounded-xl border-2 overflow-hidden ${border} ${bg}`}>
+                <div className={`${header} text-white px-4 py-2.5 font-bold text-sm flex items-center gap-2`}>
+                  <Icon className="w-4 h-4" /> {label}
                 </div>
                 <ul className="p-4 space-y-2">
                   {swot[key]?.map((point, i) => (
-                    <li key={i} className="text-sm text-gray-700 flex gap-2">
-                      <span className="font-bold text-gray-400 shrink-0">{i + 1}.</span>
+                    <li key={i} className="text-sm text-gray-700 flex gap-2 leading-relaxed">
+                      <span className={`font-bold shrink-0 ${iconColor}`}>{i + 1}.</span>
                       <span>{point}</span>
                     </li>
                   ))}
@@ -193,21 +189,17 @@ Make each point specific to Zambia — reference real local factors like PACRA, 
 
           {swot.summary && (
             <div className="card border-l-4 border-primary mb-4">
-              <p className="font-bold text-gray-800 mb-1">Summary & Recommendation</p>
-              <p className="text-gray-600 text-sm">{swot.summary}</p>
+              <p className="font-bold text-gray-800 mb-1 flex items-center gap-2">
+                <Target className="w-4 h-4 text-primary" /> Summary & Recommendation
+              </p>
+              <p className="text-gray-600 text-sm leading-relaxed">{swot.summary}</p>
             </div>
           )}
 
-          <div className="flex gap-3">
-            <button onClick={handleGenerate} className="btn-secondary gap-2">
-              <RefreshCw className="w-4 h-4" /> Regenerate
-            </button>
-            <button onClick={handleSave} className="btn-primary gap-2">
-              <Save className="w-4 h-4" /> Save
-            </button>
-            <button onClick={downloadPDF} className="btn-green gap-2">
-              <Download className="w-4 h-4" /> Download PDF
-            </button>
+          <div className="flex flex-wrap gap-3">
+            <button onClick={handleGenerate} className="btn-secondary gap-2"><RefreshCw className="w-4 h-4" /> Regenerate</button>
+            <button onClick={handleSave} className="btn-primary gap-2"><Save className="w-4 h-4" /> Save</button>
+            <button onClick={downloadPDF} className="btn-green gap-2"><Download className="w-4 h-4" /> Download PDF</button>
           </div>
         </div>
       )}

@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { MessageCircle, Copy, Check, Search } from 'lucide-react';
+import { MessageCircle, Copy, Check, Search, DollarSign, Package, CreditCard, Star, Megaphone } from 'lucide-react';
+
+const CATEGORY_ICONS = {
+  'Quotations & Pricing': DollarSign,
+  'Orders & Delivery': Package,
+  'Payments & Invoices': CreditCard,
+  'Customer Service': Star,
+  'Marketing & Promotions': Megaphone,
+};
 
 const TEMPLATES = [
   {
     category: 'Quotations & Pricing',
-    icon: '💰',
+    icon: DollarSign,
     templates: [
       { title: 'Send a Price Quote', message: `Good day [Client Name],\n\nThank you for your enquiry. Please find our quotation below:\n\nService/Product: [Description]\nQuantity: [Qty]\nUnit Price: K[Amount]\nTotal: K[Total]\n\nThis quote is valid for 7 days.\n\nTo confirm your order, please reply to this message or call us.\n\nThank you for choosing [Your Business Name].\n\nRegards,\n[Your Name]\n[Phone Number]` },
       { title: 'Follow Up on Quote', message: `Hello [Client Name],\n\nI hope you are doing well. I am following up on the quotation I sent you on [Date] for [Service/Product].\n\nHave you had a chance to review it? I would be happy to answer any questions or adjust the quote to suit your budget.\n\nPlease feel free to contact me at any time.\n\nThank you,\n[Your Name] - [Business Name]\n[Phone Number]` },
@@ -13,7 +21,7 @@ const TEMPLATES = [
   },
   {
     category: 'Orders & Delivery',
-    icon: '📦',
+    icon: Package,
     templates: [
       { title: 'Order Confirmation', message: `Hello [Client Name],\n\nYour order has been confirmed. Here are the details:\n\nOrder: [Product/Service]\nQuantity: [Qty]\nAmount: K[Total]\nDelivery/Ready Date: [Date]\nDelivery Location: [Address or Collection Point]\n\nPayment: [Paid / Balance of K[Amount] due on delivery]\n\nWe will notify you when your order is ready. Thank you for your business!\n\n[Your Name] - [Business Name]` },
       { title: 'Order Ready for Collection', message: `Hello [Client Name],\n\nYour order is READY for collection! 🎉\n\nWhat to collect: [Product/Service]\nWhere: [Location]\nCollection time: [Time] today\n\nPlease bring: [Payment if balance due / Your order reference]\n\nIf you need delivery, please let us know. Delivery charge: K[Amount]\n\nSee you soon!\n\n[Your Name] - [Business Name]` },
@@ -22,7 +30,7 @@ const TEMPLATES = [
   },
   {
     category: 'Payments & Invoices',
-    icon: '💳',
+    icon: CreditCard,
     templates: [
       { title: 'Payment Reminder', message: `Hello [Client Name],\n\nI hope you are well. This is a friendly reminder that payment for [Service/Product] delivered on [Date] is still outstanding.\n\nAmount due: K[Amount]\nDue date: [Date]\n\nPayment options:\n📱 MTN Mobile Money: [Number]\n📱 Airtel Money: [Number]\n🏦 Bank: [Bank Name, Account Number]\n\nIf you have already made payment, please ignore this message and send proof of payment.\n\nThank you,\n[Your Name] - [Business Name]` },
       { title: 'Payment Received Thank You', message: `Hello [Client Name],\n\nPayment received! ✅ Thank you.\n\nAmount: K[Amount]\nDate received: [Date]\nFor: [Service/Product]\n\nYour balance is now: K[Balance] / FULLY PAID\n\nWe truly appreciate your business. Please do not hesitate to contact us for any future needs.\n\n[Your Name] - [Business Name]` },
@@ -31,7 +39,7 @@ const TEMPLATES = [
   },
   {
     category: 'Customer Service',
-    icon: '⭐',
+    icon: Star,
     templates: [
       { title: 'Thank You After Purchase', message: `Hello [Client Name],\n\nThank you so much for your purchase from [Business Name]! 🙏\n\nWe hope you are happy with [Product/Service]. Your satisfaction means everything to us.\n\nIf you have any questions or need support, please do not hesitate to message us.\n\nWe would love to see you again. Tell a friend about us! 😊\n\n[Your Name] - [Business Name]\n[Phone Number]` },
       { title: 'Request for Review/Referral', message: `Hello [Client Name],\n\nI hope you are enjoying your [Product/Service] from us!\n\nIf you are happy with our service, we would really appreciate it if you could:\n\n⭐ Recommend us to a friend or family member\n📸 Share a photo of our work on Facebook/WhatsApp\n\nEvery referral helps our small business grow. As a thank you, you will receive K[Discount] off your next order!\n\nThank you for your support 🙏\n\n[Your Name] - [Business Name]` },
@@ -40,7 +48,7 @@ const TEMPLATES = [
   },
   {
     category: 'Marketing & Promotions',
-    icon: '📣',
+    icon: Megaphone,
     templates: [
       { title: 'New Product Announcement', message: `🆕 NEW ARRIVAL at [Business Name]!\n\n[Product Name] is now available!\n\n✅ [Feature 1]\n✅ [Feature 2]\n✅ [Feature 3]\n\nPrice: K[Amount]\n\nLimited stock available. Order now before it sells out!\n\nCall/WhatsApp: [Phone Number]\nLocation: [Address]\n\n#Zambia #[City] #[BusinessName]` },
       { title: 'Special Offer / Sale', message: `🔥 SPECIAL OFFER from [Business Name]!\n\n[Product/Service] now at K[Sale Price] (was K[Original Price])\n\nThat's [X]% OFF! 🎉\n\nOffer valid: [Start Date] to [End Date] only\nWhile stocks last!\n\nTo order:\n📱 WhatsApp/Call: [Phone Number]\n📍 Visit us at: [Location]\n\nDon't miss out! Share with friends 👇` },
@@ -103,10 +111,12 @@ export default function WhatsAppTemplates() {
         Replace <b>[items in brackets]</b> with your own details before sending.
       </div>
 
-      {filtered.map(cat => (
+      {filtered.map(cat => {
+        const CatIcon = CATEGORY_ICONS[cat.category] || MessageCircle;
+        return (
         <div key={cat.category} className="mb-6">
           <h2 className="font-bold text-gray-700 mb-3 flex items-center gap-2">
-            <span>{cat.icon}</span> {cat.category}
+            <CatIcon className="w-5 h-5 text-primary" /> {cat.category}
           </h2>
           <div className="space-y-3">
             {cat.templates.map((tmpl, i) => {
@@ -132,7 +142,8 @@ export default function WhatsAppTemplates() {
             })}
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
