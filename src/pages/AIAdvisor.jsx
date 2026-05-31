@@ -31,7 +31,7 @@ export default function AIAdvisor() {
   const [copiedId, setCopiedId] = useState(null);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
-  const { getBusinessAdvice, loading, error } = useGemini();
+  const { getBusinessAdvice, loading, error, retrySeconds } = useGemini();
   const { userProfile } = useAuthStore();
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function AIAdvisor() {
   return (
     <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-130px)] animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 flex-shrink-0">
+      <div className="flex items-center justify-between mb-4 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
             <Bot className="w-5 h-5 text-primary" />
@@ -114,7 +114,7 @@ export default function AIAdvisor() {
         {messages.map(msg => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role !== 'user' && (
-              <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center mr-2 flex-shrink-0 mt-1">
+              <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center mr-2 shrink-0 mt-1">
                 <Bot className="w-4 h-4 text-white" />
               </div>
             )}
@@ -133,7 +133,7 @@ export default function AIAdvisor() {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center mr-2 flex-shrink-0 mt-1">
+            <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center mr-2 shrink-0 mt-1">
               <Bot className="w-4 h-4 text-white" />
             </div>
             <div className="chat-bubble-ai">
@@ -148,7 +148,7 @@ export default function AIAdvisor() {
 
       {/* Suggested questions */}
       {messages.length === 0 && (
-        <div className="flex flex-wrap gap-2 my-3 flex-shrink-0">
+        <div className="flex flex-wrap gap-2 my-3 shrink-0">
           {SUGGESTED_QUESTIONS.slice(0, 4).map(q => (
             <button key={q} onClick={() => sendMessage(q)} className="text-xs px-3 py-1.5 bg-surface-blue text-primary rounded-full hover:bg-primary hover:text-white transition-colors border border-primary/20">
               {q}
@@ -158,7 +158,7 @@ export default function AIAdvisor() {
       )}
 
       {/* Input */}
-      <div className="flex gap-2 flex-shrink-0 mt-2">
+      <div className="flex gap-2 shrink-0 mt-2">
         <textarea
           ref={inputRef}
           value={input}
@@ -169,8 +169,8 @@ export default function AIAdvisor() {
           rows={1}
           disabled={loading}
         />
-        <button onClick={() => sendMessage()} disabled={!input.trim() || loading} className="btn-primary px-4 flex-shrink-0">
-          <Send className="w-4 h-4" />
+        <button onClick={() => sendMessage()} disabled={!input.trim() || loading || retrySeconds > 0} className="btn-primary px-4 shrink-0">
+          {retrySeconds > 0 ? <span className="text-xs font-bold">{retrySeconds}s</span> : <Send className="w-4 h-4" />}
         </button>
       </div>
     </div>

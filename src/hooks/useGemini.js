@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { callGemini, callGeminiWithHistory } from '../lib/gemini';
 
 const IDEA_VALIDATOR_SYSTEM = `You are an experienced Zambian business mentor and market analyst. You have deep knowledge of the Zambian economy, consumer behavior, PACRA business registration, ZRA taxation, and market conditions in all 10 provinces. Always respond specifically to the Zambian context. Reference specific Zambian institutions, use Zambian Kwacha for all monetary references, and consider the specific challenges and opportunities of the Zambian market. Use simple plain English at a Grade 10 reading level. Be honest and constructive.`;
@@ -8,6 +8,18 @@ const BUSINESS_ADVISOR_SYSTEM = `You are IMPUNGA's AI Business Advisor — an ex
 export function useGemini() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [retrySeconds, setRetrySeconds] = useState(0);
+  const retryRef = useRef(null);
+
+  function startRetryCountdown(seconds = 60) {
+    setRetrySeconds(seconds);
+    retryRef.current = setInterval(() => {
+      setRetrySeconds(prev => {
+        if (prev <= 1) { clearInterval(retryRef.current); return 0; }
+        return prev - 1;
+      });
+    }, 1000);
+  }
 
   async function validateBusinessIdea(ideaText, userContext) {
     setLoading(true);
@@ -92,7 +104,8 @@ Current user context: ${userContext || 'General Zambian entrepreneur'}`;
       return 'AI features need a Gemini API key. Add your key to the .env file.';
     }
     if (err.message === 'RATE_LIMIT') {
-      return 'Too many requests. Please wait a minute and try again.';
+      startRetryCountdown(60);
+      return 'Too many AI requests. Free tier allows 15 per minute. Please wait 60 seconds then try again.';
     }
     if (!navigator.onLine) {
       return 'You are offline. AI features need internet connection.';
@@ -100,5 +113,5 @@ Current user context: ${userContext || 'General Zambian entrepreneur'}`;
     return 'Something went wrong. Please check your internet and try again.';
   }
 
-  return { loading, error, validateBusinessIdea, getBusinessAdvice };
+  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice };
 }
