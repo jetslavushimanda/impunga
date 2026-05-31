@@ -17,7 +17,6 @@ import BusinessPlanBuilder from './pages/BusinessPlanBuilder';
 import PricingCalculator from './pages/PricingCalculator';
 import FundingFinder from './pages/FundingFinder';
 import AIAdvisor from './pages/AIAdvisor';
-import GrowthTracker from './pages/GrowthTracker';
 import Profile from './pages/Profile';
 import BusinessNameGenerator from './pages/BusinessNameGenerator';
 import InvoiceGenerator from './pages/InvoiceGenerator';
@@ -60,7 +59,6 @@ export default function App() {
           <Route path="/pricing-calculator" element={<PricingCalculator />} />
           <Route path="/funding-finder" element={<FundingFinder />} />
           <Route path="/ai-advisor" element={<AIAdvisor />} />
-          <Route path="/growth-tracker" element={<GrowthTracker />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/name-generator" element={<BusinessNameGenerator />} />
           <Route path="/invoice-generator" element={<InvoiceGenerator />} />

@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Lightbulb, Building2, FileText,
   Calculator, DollarSign, Bot, TrendingUp, User, X,
-  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2, GraduationCap
+  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2, GraduationCap, TrendingUp
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -13,7 +13,6 @@ const NAV_ITEMS = [
   { path: '/pricing-calculator', icon: Calculator, label: 'Pricing Calculator' },
   { path: '/funding-finder', icon: DollarSign, label: 'Funding Finder' },
   { path: '/ai-advisor', icon: Bot, label: 'AI Business Advisor' },
-  { path: '/growth-tracker', icon: TrendingUp, label: 'Growth Tracker' },
   { path: '/name-generator', icon: Sparkles, label: 'Name Generator' },
   { path: '/invoice-generator', icon: Receipt, label: 'Invoice Generator' },
   { path: '/market-prices', icon: ShoppingCart, label: 'Market Prices' },

@@ -4,7 +4,7 @@ import {
   Lightbulb, Building2, FileText, Target, Sparkles,
   Calculator, Receipt, ShoppingCart,
   DollarSign, Share2, MessageCircle,
-  Bot, GraduationCap, TrendingUp,
+  Bot, GraduationCap,
   ArrowRight, Sprout, ChevronRight
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
@@ -207,21 +207,6 @@ export default function Dashboard() {
             bg="bg-orange-50"
             text="text-orange-600"
             badge="Premium"
-          />
-        </div>
-      </div>
-
-      {/* Growth Tracker — Full Width */}
-      <div className="mb-4">
-        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Track Your Growth</h2>
-        <div className="grid grid-cols-2 gap-3">
-          <FullWidthCard
-            path="/growth-tracker"
-            icon={TrendingUp}
-            name="Growth Tracker"
-            desc="Track monthly revenue, profit, goals and milestones"
-            bg="bg-teal-50"
-            text="text-teal-600"
           />
         </div>
       </div>
