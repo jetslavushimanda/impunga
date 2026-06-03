@@ -8,6 +8,7 @@ import { extractViabilityScore, getScoreColor, getScoreLabel, truncateText } fro
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import EmptyState from '../components/shared/EmptyState';
+import AIResponse from '../components/shared/AIResponse';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 
 export default function IdeaValidator() {
@@ -104,8 +105,8 @@ export default function IdeaValidator() {
                   {expandedIdea === idea.id ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
                 </button>
                 {expandedIdea === idea.id && (
-                  <div className="p-3 bg-surface-light border-t border-gray-100 text-sm text-gray-700 whitespace-pre-wrap">
-                    {idea.aiAnalysis}
+                  <div className="p-3 bg-surface-light border-t border-gray-100">
+                    <AIResponse content={idea.aiAnalysis} />
                   </div>
                 )}
               </div>
@@ -193,8 +194,8 @@ export default function IdeaValidator() {
             </div>
           </div>
 
-          <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap text-sm leading-relaxed mb-4">
-            {result}
+          <div className="mb-4">
+            <AIResponse content={result} />
           </div>
 
           <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100">

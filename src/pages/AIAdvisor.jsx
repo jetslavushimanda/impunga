@@ -3,6 +3,7 @@ import { Bot, Send, RotateCcw, Copy, Check } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import useAuthStore from '../store/authStore';
 import ErrorMessage from '../components/shared/ErrorMessage';
+import AIResponse from '../components/shared/AIResponse';
 
 const SUGGESTED_QUESTIONS = [
   'How do I register my business with PACRA?',
@@ -120,7 +121,10 @@ export default function AIAdvisor() {
             )}
             <div className="max-w-[80%]">
               <div className={msg.role === 'user' ? 'chat-bubble-user' : msg.role === 'error' ? 'bg-red-50 border border-red-200 rounded-2xl px-4 py-3 text-red-700 text-sm' : 'chat-bubble-ai'}>
-                <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                {msg.role === 'model'
+                  ? <AIResponse content={msg.content} />
+                  : <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                }
               </div>
               {msg.role === 'model' && (
                 <button onClick={() => copyMessage(msg.content, msg.id)} className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 mt-1 ml-2">

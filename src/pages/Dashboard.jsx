@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Lightbulb, Building2, FileText, Target, Sparkles,
-  Calculator, Receipt, ShoppingCart,
+  Calculator, Receipt, ShoppingCart, BookOpen,
   DollarSign, Share2, MessageCircle,
   Bot, GraduationCap,
   ArrowRight, Sprout, ChevronRight
@@ -45,6 +45,7 @@ const CATEGORIES = [
     border: 'border-l-green-400',
     modules: [
       { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Calculate true costs and profit margins' },
+      { path: '/business-ledger', icon: BookOpen, name: 'Business Ledger', desc: 'Track sales, expenses and debtors' },
       { path: '/invoice-generator', icon: Receipt, name: 'Invoice Generator', desc: 'Create professional Kwacha invoices' },
       { path: '/market-prices', icon: ShoppingCart, name: 'Market Prices', desc: 'Current prices across Zambian markets' },
     ],

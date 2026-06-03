@@ -2,7 +2,8 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Lightbulb, Building2, FileText,
   Calculator, DollarSign, Bot, User, X,
-  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2, GraduationCap
+  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2, GraduationCap,
+  BookOpen
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -11,6 +12,7 @@ const NAV_ITEMS = [
   { path: '/registration-guide', icon: Building2, label: 'Registration Guide' },
   { path: '/business-plan', icon: FileText, label: 'Business Plan Builder' },
   { path: '/pricing-calculator', icon: Calculator, label: 'Pricing Calculator' },
+  { path: '/business-ledger', icon: BookOpen, label: 'Business Ledger' },
   { path: '/funding-finder', icon: DollarSign, label: 'Funding Finder' },
   { path: '/ai-advisor', icon: Bot, label: 'AI Business Advisor' },
   { path: '/name-generator', icon: Sparkles, label: 'Name Generator' },

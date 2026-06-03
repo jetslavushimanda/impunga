@@ -3,6 +3,7 @@ import { Share2, Copy, Check, RefreshCw } from 'lucide-react';
 import { callAI } from '../lib/gemini';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
+import AIResponse from '../components/shared/AIResponse';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import useAuthStore from '../store/authStore';
 
@@ -176,8 +177,8 @@ Return ONLY valid JSON:
                     )}
                   </div>
                 </div>
-                <div className="bg-surface-light rounded-xl p-4 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
-                  {captions[id]}
+                <div className="bg-surface-light rounded-xl p-4">
+                  <AIResponse content={captions[id]} />
                 </div>
               </div>
             );

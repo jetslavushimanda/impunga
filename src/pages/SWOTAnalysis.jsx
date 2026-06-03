@@ -3,6 +3,7 @@ import { Target, Download, Save, RefreshCw, Zap, AlertTriangle, TrendingUp, Shie
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
+import AIResponse from '../components/shared/AIResponse';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import { BUSINESS_SECTORS } from '../data/businessSectors';
@@ -192,7 +193,7 @@ Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobi
               <p className="font-bold text-gray-800 mb-1 flex items-center gap-2">
                 <Target className="w-4 h-4 text-primary" /> Summary & Recommendation
               </p>
-              <p className="text-gray-600 text-sm leading-relaxed">{swot.summary}</p>
+              <AIResponse content={swot.summary} />
             </div>
           )}
 
