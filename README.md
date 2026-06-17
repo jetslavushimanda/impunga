@@ -15,33 +15,36 @@ IMPUNGA employs a "Hybrid Intelligence" architecture that optimizes for the Digi
 This engine manages the full business lifecycle, segmented by maturity level to reduce user cognitive load.
 | Journey | Modules | Purpose |
 |---------|---------|---------|
-| Launchpad | Idea Validator, Name Generator, Business Plan Builder | De-risking the "zero-to-one" startup phase. |
-| Growth Engine | Business Ledger, Invoice Generator, Pricing Calculator, SWOT Analysis, Marketing Tools, Market Prices | Scaling revenue and operations for established businesses. |
+| Launchpad | Idea Validator, Name Gen, Registration Guide, Plan Builder, Gateway Links | De-risking the "zero-to-one" startup phase. |
+| Growth Engine | Business Ledger, Invoice Generator, Pricing Calculator, SWOT Analysis, Marketing Tools | Scaling revenue and operations for established businesses. |
 
 ### Engine 2: IMPUNGA Skills (The Professional Journey)
 This engine professionalizes human capital and prepares it for the market.
 | Journey | Modules | Purpose |
 |---------|---------|---------|
-| Professionalization | Skill Profile Builder, Career Matches (Gap Analysis) | Defining the user's professional "Product". |
-| Market Access | Portfolio Showcase | Monetizing skills through verified P2P trade and mentorship. |
+| Professionalization | Skill Profile Builder, Gap Analysis Engine, Career Matches, Learning Insight Cards | Defining the user's professional "Product". |
+| Market Access | Verified Service Directory (Market), Portfolio Showcase, Mentorship Hub (Connect) | Monetizing skills through verified P2P trade and mentorship. |
 
 ### Engine 3: IMPUNGA Finance (Universal Utility)
-A cross-cutting engine providing financial empowerment to all users. The platform categorizes funding into three accessible pillars:
+A cross-cutting engine providing financial empowerment to all users. As detailed in "Screenshot_20260617-095143.png", the platform categorizes funding into three accessible pillars:
 - **Grants:** Specialized access to grant funding designed to help users get their projects off the ground.
 - **Investment:** Targeted pathways to secure investment for established businesses or cooperatives.
 - **Loans:** Access to reliable lenders to help users develop and scale their work.
 
-**Modules:**
-- **Funding Finder:** Institutional Gateway for Grants, Investment, and Loans.
+**Advanced Features:**
+- **Application Co-Pilot:** AI critic that reviews funding applications against official institutional criteria (e.g., CEEC guidelines).
+- **Funding Readiness Score:** Data-driven metric derived from Ledger performance or Skill Portfolio strength.
+- **Institutional Gateway:** Direct deep-links to official application portals for DBZ, Youth Fund, and others.
 
 ### Engine 4: IMPUNGA Market & Connect (Community Utility)
 A trust-based ecosystem for trade and human connection.
-- **AI Business Advisor (Mentorship Hub):** AI-driven matching algorithm and mentorship that pairs emerging entrepreneurs with sector-specific guidance.
+- **Verified Service Directory:** A marketplace exclusive to users verified through Engine 1 or Engine 2, ensuring professional trust.
+- **Mentorship Hub:** AI-driven matching algorithm that pairs emerging entrepreneurs with sector-specific mentors based on geographic proximity and expertise.
 
 ### Engine 5: IMPUNGA Learn & Gateway (Infrastructure Utility)
 The institutional backbone connecting users to the Zambian state.
-- **Registration Guide (Regulatory Gateway):** A deterministic interface for PACRA and ZRA portals, streamlining institutional compliance through a unified digital entry point.
-- **Compliance Tracker:** Automated regulatory health checks and deadline tracking.
+- **Learning Insight Cards:** Behavioral triggers that inject educational content at the exact moment a user performs a task (e.g., "After filing a tax return, here is why compliance matters").
+- **Regulatory Gateway:** A deterministic interface for PACRA and ZRA portals, streamlining institutional compliance through a unified digital entry point.
 
 ---
 

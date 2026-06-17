@@ -30,6 +30,7 @@ import CareerMatches from './pages/CareerMatches';
 import ChoosePath from './pages/ChoosePath';
 import DataPrivacy from './pages/DataPrivacy';
 import ComplianceTracker from './pages/ComplianceTracker';
+import PlaceholderPage from './pages/PlaceholderPage';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
@@ -84,6 +85,10 @@ export default function App() {
           <Route path="/career-matches" element={<CareerMatches />} />
           <Route path="/data-privacy" element={<DataPrivacy />} />
           <Route path="/compliance-tracker" element={<ComplianceTracker />} />
+          <Route path="/portfolio-showcase" element={<PlaceholderPage title="Portfolio Showcase" />} />
+          <Route path="/verified-directory" element={<PlaceholderPage title="Verified Service Directory" />} />
+          <Route path="/learning-insights" element={<PlaceholderPage title="Learning Insight Cards" />} />
+          <Route path="/regulatory-gateway" element={<RegistrationGuide />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

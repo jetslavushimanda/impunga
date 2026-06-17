@@ -10,20 +10,20 @@ import useAuthStore from '../../store/authStore';
 
 const ENGINE_1_ITEMS = [
   { path: '/idea-validator', icon: Lightbulb, label: 'Idea Validator' },
-  { path: '/name-generator', icon: Sparkles, label: 'Name Generator' },
-  { path: '/business-plan', icon: FileText, label: 'Business Plan Builder' },
+  { path: '/name-generator', icon: Sparkles, label: 'Name Gen' },
+  { path: '/registration-guide', icon: Building2, label: 'Registration Guide' },
+  { path: '/business-plan', icon: FileText, label: 'Plan Builder' },
   { path: '/business-ledger', icon: BookOpen, label: 'Business Ledger' },
   { path: '/invoice-generator', icon: Receipt, label: 'Invoice Generator' },
   { path: '/pricing-calculator', icon: Calculator, label: 'Pricing Calculator' },
   { path: '/swot-analysis', icon: Target, label: 'SWOT Analysis' },
-  { path: '/market-prices', icon: ShoppingCart, label: 'Market Prices' },
-  { path: '/whatsapp-templates', icon: MessageCircle, label: 'WhatsApp Templates' },
-  { path: '/social-media', icon: Share2, label: 'Social Media' },
+  { path: '/social-media', icon: Share2, label: 'Marketing Tools' },
 ];
 
 const ENGINE_2_ITEMS = [
   { path: '/skill-profile-builder', icon: User, label: 'Skill Profile Builder' },
   { path: '/career-matches', icon: Briefcase, label: 'Career Matches' },
+  { path: '/portfolio-showcase', icon: User, label: 'Portfolio Showcase' },
 ];
 
 const ENGINE_3_ITEMS = [
@@ -31,12 +31,13 @@ const ENGINE_3_ITEMS = [
 ];
 
 const ENGINE_4_ITEMS = [
-  { path: '/ai-advisor', icon: Bot, label: 'Mentorship Hub (AI)' },
+  { path: '/verified-directory', icon: ShieldCheck, label: 'Verified Service Directory' },
+  { path: '/ai-advisor', icon: Bot, label: 'Mentorship Hub' },
 ];
 
 const ENGINE_5_ITEMS = [
-  { path: '/registration-guide', icon: Building2, label: 'Regulatory Gateway' },
-  { path: '/compliance-tracker', icon: ShieldCheck, label: 'Compliance Tracker' },
+  { path: '/learning-insights', icon: Lightbulb, label: 'Learning Insight Cards' },
+  { path: '/regulatory-gateway', icon: Building2, label: 'Regulatory Gateway' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
