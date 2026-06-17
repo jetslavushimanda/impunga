@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Navigate, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Lightbulb, Bot, User } from 'lucide-react';
+import { LayoutDashboard, Handshake, Bot, User } from 'lucide-react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import OfflineBanner from '../shared/OfflineBanner';
@@ -9,8 +9,8 @@ import { PageLoader } from '../shared/LoadingSpinner';
 
 const BOTTOM_NAV = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Home' },
-  { path: '/idea-validator', icon: Lightbulb, label: 'Ideas' },
-  { path: '/ai-advisor', icon: Bot, label: 'AI Advisor' },
+  { path: '/engine/connect', icon: Handshake, label: 'Market' },
+  { path: '/ai-advisor', icon: Bot, label: 'AI' },
   { path: '/profile', icon: User, label: 'Profile' },
 ];
 

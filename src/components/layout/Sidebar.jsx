@@ -1,47 +1,14 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import {
-  LayoutDashboard, Lightbulb, Building2, FileText,
-  Calculator, DollarSign, Bot, User, X,
-  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2,
-  BookOpen, Briefcase, Shield, ShieldCheck
-} from 'lucide-react';
+import { LayoutDashboard, User, Shield, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
-
-const ENGINE_1_ITEMS = [
-  { path: '/idea-validator', icon: Lightbulb, label: 'Idea Validator' },
-  { path: '/name-generator', icon: Sparkles, label: 'Name Gen' },
-  { path: '/registration-guide', icon: Building2, label: 'Registration Guide' },
-  { path: '/business-plan', icon: FileText, label: 'Plan Builder' },
-  { path: '/business-ledger', icon: BookOpen, label: 'Business Ledger' },
-  { path: '/invoice-generator', icon: Receipt, label: 'Invoice Generator' },
-  { path: '/pricing-calculator', icon: Calculator, label: 'Pricing Calculator' },
-  { path: '/swot-analysis', icon: Target, label: 'SWOT Analysis' },
-  { path: '/social-media', icon: Share2, label: 'Marketing Tools' },
-];
-
-const ENGINE_2_ITEMS = [
-  { path: '/skill-profile-builder', icon: User, label: 'Skill Profile Builder' },
-  { path: '/career-matches', icon: Briefcase, label: 'Career Matches' },
-];
-
-const ENGINE_3_ITEMS = [
-  { path: '/funding-finder', icon: DollarSign, label: 'Funding Finder' },
-];
-
-const ENGINE_4_ITEMS = [
-  { path: '/verified-directory', icon: ShieldCheck, label: 'Verified Directory' },
-  { path: '/portfolio-showcase', icon: User, label: 'Portfolio Showcase' },
-];
-
-const ENGINE_5_ITEMS = [
-  { path: '/ai-advisor', icon: Bot, label: 'AI Chatbot' },
-];
+import { ENGINE_MODULES } from '../../data/engineModules';
 
 export default function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { user, updateProfile } = useAuth();
   const { selectedPath, setSelectedPath, userProfile } = useAuthStore();
+  const engines = Object.values(ENGINE_MODULES);
 
   return (
     <>
@@ -79,70 +46,24 @@ export default function Sidebar({ isOpen, onClose }) {
 
           <div className="mt-6">
             <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-              Business
+              Platform Engines
             </p>
             <div className="space-y-1">
-              {ENGINE_1_ITEMS.map(({ path, icon: Icon, label }) => (
-                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
-                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
+              {engines.map(({ id, title, icon: Icon }) => (
+                <NavLink 
+                  key={id} 
+                  to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`} 
+                  onClick={onClose} 
+                  className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
+                >
+                  <Icon className="w-5 h-5 shrink-0" /> 
+                  <span className="truncate">{title.split('—')[1] ? title.split('—')[1].trim() : title}</span>
                 </NavLink>
               ))}
             </div>
           </div>
 
-          <div className="mt-6">
-            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-              Skills
-            </p>
-            <div className="space-y-1">
-              {ENGINE_2_ITEMS.map(({ path, icon: Icon, label }) => (
-                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
-                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-              Finance
-            </p>
-            <div className="space-y-1">
-              {ENGINE_3_ITEMS.map(({ path, icon: Icon, label }) => (
-                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
-                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-              Market
-            </p>
-            <div className="space-y-1">
-              {ENGINE_4_ITEMS.map(({ path, icon: Icon, label }) => (
-                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
-                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-              AI Assistant
-            </p>
-            <div className="space-y-1">
-              {ENGINE_5_ITEMS.map(({ path, icon: Icon, label }) => (
-                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
-                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-1 pt-2 border-t border-gray-100">
+          <div className="space-y-1 pt-2 border-t border-gray-100 mt-6">
             <NavLink
               to="/profile"
               onClick={onClose}
