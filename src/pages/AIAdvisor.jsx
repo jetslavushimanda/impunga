@@ -34,6 +34,26 @@ export default function AIAdvisor() {
   const inputRef = useRef(null);
   const { getBusinessAdvice, loading, error, retrySeconds } = useAI();
   const { userProfile } = useAuthStore();
+  const [pipelineData, setPipelineData] = useState(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('impunga_idea_pipeline');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setPipelineData(parsed);
+      
+      // Auto-add greeting if blueprint exists and no messages
+      if (messages.length === 0) {
+        setMessages([
+          { 
+            role: 'model', 
+            content: "I see you have an active **Startup Blueprint**! I am your AI Co-Founder. Ask me anything about executing your plan, finding suppliers, or beating your competitors.", 
+            id: 'system-greeting' 
+          }
+        ]);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -52,9 +72,13 @@ export default function AIAdvisor() {
       parts: [{ text: m.content }],
     }));
 
-    const userContext = userProfile
+    let userContext = userProfile
       ? `Province: ${userProfile.province}, Occupation: ${userProfile.occupation}, Experience: ${userProfile.experience}`
       : '';
+
+    if (pipelineData) {
+      userContext += `\n\nACTIVE STARTUP BLUEPRINT:\nIdea Data: ${pipelineData.ideaText}\nAI Validation Data: ${pipelineData.aiAnalysis}\nBudget: ${pipelineData.budget}\nLocation: ${pipelineData.location}\nACT AS THE CO-FOUNDER TO HELP EXECUTE THIS SPECIFIC BLUEPRINT.`;
+    }
 
     try {
       const response = await getBusinessAdvice(msg, history, userContext);

@@ -26,6 +26,7 @@ import MarketPrices from './pages/MarketPrices';
 import WhatsAppTemplates from './pages/WhatsAppTemplates';
 import SWOTAnalysis from './pages/SWOTAnalysis';
 import SocialMediaGenerator from './pages/SocialMediaGenerator';
+import MarketDirectory from './pages/MarketDirectory';
 import BusinessLedger from './pages/BusinessLedger';
 import SkillProfileBuilder from './pages/SkillProfileBuilder';
 import CareerMatches from './pages/CareerMatches';
@@ -84,6 +85,7 @@ export default function App() {
           <Route path="/whatsapp-templates" element={<WhatsAppTemplates />} />
           <Route path="/swot-analysis" element={<SWOTAnalysis />} />
           <Route path="/social-media" element={<SocialMediaGenerator />} />
+          <Route path="/market-directory" element={<MarketDirectory />} />
           <Route path="/business-ledger" element={<BusinessLedger />} />
           <Route path="/skill-profile-builder" element={<SkillProfileBuilder />} />
           <Route path="/career-matches" element={<CareerMatches />} />

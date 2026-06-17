@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Volume2, Square, Briefcase, Users, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Volume2, Square, Briefcase, Users, TrendingUp, AlertTriangle, Share2, Bot } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
@@ -430,6 +430,21 @@ export default function IdeaValidator() {
               <RefreshCw className="w-4 h-4" /> New Idea
             </button>
           </div>
+
+          {/* AI Co-Founder Banner */}
+          <Link to="/ai-advisor" className="block bg-gradient-to-r from-indigo-600 to-violet-600 rounded-3xl p-6 sm:p-8 relative overflow-hidden group hover:shadow-lg hover:shadow-indigo-500/30 transition-all">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-10 -mt-20 group-hover:bg-white/20 transition-colors" />
+            <div className="flex items-center gap-6 relative z-10">
+              <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center shrink-0 border border-white/20 group-hover:scale-105 transition-transform">
+                <Bot className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">Chat with your AI Co-Founder</h3>
+                <p className="text-indigo-100 font-medium text-sm md:text-base">Your Co-Founder has analyzed this Blueprint and is ready to help you execute it.</p>
+              </div>
+              <ArrowRight className="w-6 h-6 text-white ml-auto group-hover:translate-x-2 transition-transform" />
+            </div>
+          </Link>
           
           {/* Next Steps Pipeline */}
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mt-8">
@@ -494,6 +509,14 @@ export default function IdeaValidator() {
                   <div><h4 className="font-bold text-gray-900 group-hover:text-teal-600 transition-colors">6. Funding Matches</h4><p className="text-xs text-gray-500">Grants & Loans</p></div>
                 </div>
                 <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-teal-600 transition-colors" />
+              </Link>
+              
+              <Link to="/social-media" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-pink-200 hover:shadow-md transition-all">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-pink-100 text-pink-600 rounded-xl flex items-center justify-center"><Share2 className="w-5 h-5" /></div>
+                  <div><h4 className="font-bold text-gray-900 group-hover:text-pink-600 transition-colors">7. Social Media</h4><p className="text-xs text-gray-500">Marketing Strategy</p></div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-pink-600 transition-colors" />
               </Link>
             </div>
           </div>
