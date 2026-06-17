@@ -1,27 +1,32 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Volume2, Square } from 'lucide-react';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Volume2, Square, Briefcase, Users, TrendingUp, AlertTriangle } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
-import { extractViabilityScore, getScoreColor, getScoreLabel, truncateText } from '../lib/utils';
+import { getScoreColor, getScoreLabel } from '../lib/utils';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import EmptyState from '../components/shared/EmptyState';
-import AIResponse from '../components/shared/AIResponse';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 
 export default function IdeaValidator() {
-  const [ideaText, setIdeaText] = useState('');
-  const [budget, setBudget] = useState('');
-  const [location, setLocation] = useState('');
-  const [experience, setExperience] = useState('');
-  const [result, setResult] = useState('');
-  const [score, setScore] = useState(null);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [wizardData, setWizardData] = useState({
+    problem: '',
+    solution: '',
+    targetMarket: '',
+    unfairAdvantage: '',
+    budget: '',
+    location: ''
+  });
+  
+  const [result, setResult] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [savedIdeas, setSavedIdeas] = useState([]);
   const [expandedIdea, setExpandedIdea] = useState(null);
+  
   const { validateBusinessIdea, loading, error } = useAI();
   const { addDocument, getUserDocuments } = useFirestore();
   const { userProfile } = useAuthStore();
@@ -32,7 +37,6 @@ export default function IdeaValidator() {
     loadSavedIdeas();
   }, []);
 
-  // Cleanup speech synthesis on unmount
   useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
@@ -44,37 +48,48 @@ export default function IdeaValidator() {
     setSavedIdeas(ideas);
   }
 
+  function handleNextStep() {
+    if (currentStep < 5) setCurrentStep(c => c + 1);
+  }
+
+  function handlePrevStep() {
+    if (currentStep > 1) setCurrentStep(c => c - 1);
+  }
+
   async function handleValidate() {
-    if (ideaText.length < 50) return;
-    const userContext = `Occupation: ${userProfile?.occupation || 'not specified'}, Province: ${userProfile?.province || 'not specified'}, Budget: ${budget}, Location type: ${location}, Experience: ${experience}`;
     try {
-      const response = await validateBusinessIdea(ideaText, userContext);
-      setResult(response);
-      const extracted = extractViabilityScore(response);
-      setScore(extracted);
+      const responseJson = await validateBusinessIdea(wizardData);
+      setResult(responseJson);
+      
+      const compiledIdeaText = `Problem: ${wizardData.problem}\nSolution: ${wizardData.solution}\nTarget Market: ${wizardData.targetMarket}\nUnfair Advantage: ${wizardData.unfairAdvantage}`;
       
       // Save pipeline data globally for other tools
       localStorage.setItem('impunga_idea_pipeline', JSON.stringify({
-        ideaText,
-        aiAnalysis: response,
-        viabilityScore: extracted,
-        location,
-        budget,
+        ideaText: compiledIdeaText,
+        aiAnalysis: JSON.stringify(responseJson, null, 2),
+        viabilityScore: responseJson.score,
+        location: wizardData.location,
+        budget: wizardData.budget,
         timestamp: Date.now(),
       }));
-    } catch {}
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async function handleSave() {
+    if (!result) return;
     try {
       await addDocument('businessIdeas', {
-        ideaText: ideaText.substring(0, 500),
-        aiAnalysis: result,
-        viabilityScore: score,
+        wizardData,
+        score: result.score,
+        verdict: result.verdict,
+        result: result,
+        timestamp: Date.now()
       });
-      show('Analysis saved successfully!');
+      show('Idea analysis saved to your profile!');
       loadSavedIdeas();
-    } catch {
+    } catch (err) {
       show('Failed to save. Please try again.', 'error');
     }
   }
@@ -82,12 +97,16 @@ export default function IdeaValidator() {
   function handleReset() {
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
-    setIdeaText('');
-    setBudget('');
-    setLocation('');
-    setExperience('');
-    setResult('');
-    setScore(null);
+    setWizardData({
+      problem: '',
+      solution: '',
+      targetMarket: '',
+      unfairAdvantage: '',
+      budget: '',
+      location: ''
+    });
+    setResult(null);
+    setCurrentStep(1);
   }
 
   function toggleSpeech() {
@@ -99,307 +118,385 @@ export default function IdeaValidator() {
 
     if (!result) return;
 
-    // Clean markdown before reading
-    const cleanText = result
-      .replace(/\\*\\*/g, '') // Remove bold
-      .replace(/\\*/g, '')    // Remove italics/bullets
-      .replace(/#/g, '')      // Remove headers
-      .replace(/\\[(.*?)\\]\\(.*?\\)/g, '$1'); // Clean links
+    const readText = `
+      Executive Summary: ${result.executiveSummary}. 
+      Viability Score: ${result.score} out of 10. Verdict: ${result.verdict}.
+      Unit Economics: ${result.unitEconomics}.
+      Competitor Intelligence: ${result.competitorIntel}.
+      Capital Allocation: ${result.capitalAllocation}.
+      Risk Assessment: ${result.riskAssessment}.
+      ${result.consultantPivot ? 'Consultant Strategy: ' + result.consultantPivot : ''}
+    `;
 
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'en-GB'; // British English sounds a bit better for local context usually
+    const utterance = new SpeechSynthesisUtterance(readText);
+    utterance.lang = 'en-GB'; 
     utterance.rate = 1.0;
-    
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
-    
     setIsSpeaking(true);
     window.speechSynthesis.speak(utterance);
   }
 
   function handleDownloadPDF() {
+    if (!result) return;
     const doc = new jsPDF();
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(20);
-    doc.text('Startup Idea Validation', 105, 20, { align: 'center' });
+    doc.text('Startup Blueprint & Analysis', 105, 20, { align: 'center' });
     
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.setTextColor(100);
-    doc.text('IMPUNGA Economic Intelligence Platform', 105, 28, { align: 'center' });
+    doc.text('Generated by IMPUNGA Startup Studio', 105, 28, { align: 'center' });
     
     doc.setDrawColor(200);
     doc.line(20, 35, 190, 35);
     
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(0);
-    doc.setFontSize(12);
-    doc.text('The Business Idea:', 20, 45);
-    
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    const ideaLines = doc.splitTextToSize(ideaText, 170);
-    doc.text(ideaLines, 20, 52);
-    
-    let yPos = 52 + (ideaLines.length * 5) + 10;
-    
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.text('AI Analysis & Feedback:', 20, yPos);
-    
-    yPos += 8;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    const resultLines = doc.splitTextToSize(result.replace(/\\*\\*/g, ''), 170);
-    
-    // Simple pagination logic
-    for (let i = 0; i < resultLines.length; i++) {
-      if (yPos > 280) {
-        doc.addPage();
-        yPos = 20;
-      }
-      doc.text(resultLines[i], 20, yPos);
-      yPos += 5;
+    let yPos = 45;
+    const addSection = (title, content) => {
+      if (!content) return;
+      if (yPos > 270) { doc.addPage(); yPos = 20; }
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(0);
+      doc.text(title, 20, yPos);
+      yPos += 7;
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(50);
+      const lines = doc.splitTextToSize(content, 170);
+      doc.text(lines, 20, yPos);
+      yPos += (lines.length * 5) + 10;
+    };
+
+    addSection('Executive Summary', result.executiveSummary);
+    addSection('Viability Score', \`\${result.score}/10 - \${result.verdict}\`);
+    addSection('Unit Economics', result.unitEconomics);
+    addSection('Competitor Intelligence', result.competitorIntel);
+    addSection('Capital Allocation', result.capitalAllocation);
+    addSection('Risk Assessment', result.riskAssessment);
+    if (result.consultantPivot) {
+      addSection('Consultant Strategy', result.consultantPivot);
     }
     
-    doc.setTextColor(150);
-    doc.setFontSize(8);
-    doc.text('Generated by IMPUNGA — Start. Match. Build Zambia.', 105, 290, { align: 'center' });
-    
-    doc.save('Idea_Validation_Analysis.pdf');
-    show('PDF downloaded successfully!');
+    doc.save('Startup_Blueprint.pdf');
+    show('Blueprint PDF downloaded successfully!');
   }
 
-  const scoreClass = score !== null ? getScoreColor(score) : '';
-  const verdict = score !== null ? getScoreLabel(score) : '';
+  const isStepValid = () => {
+    switch(currentStep) {
+      case 1: return wizardData.problem.length >= 10;
+      case 2: return wizardData.solution.length >= 20;
+      case 3: return wizardData.targetMarket.length >= 10;
+      case 4: return wizardData.unfairAdvantage.length >= 10;
+      case 5: return wizardData.budget.length >= 2 && wizardData.location.length >= 2;
+      default: return false;
+    }
+  };
+
+  const renderWizardStep = () => {
+    switch(currentStep) {
+      case 1:
+        return (
+          <div className="animate-fade-in">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">1. The Problem</h3>
+            <p className="text-sm text-gray-500 mb-4">What specific problem are you solving for Zambians?</p>
+            <textarea
+              value={wizardData.problem}
+              onChange={e => setWizardData({...wizardData, problem: e.target.value})}
+              placeholder="e.g., People in my area have to travel 10km to buy fresh vegetables..."
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-32 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+            />
+          </div>
+        );
+      case 2:
+        return (
+          <div className="animate-fade-in">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">2. The Solution</h3>
+            <p className="text-sm text-gray-500 mb-4">How does your business solve this problem? (The Idea)</p>
+            <textarea
+              value={wizardData.solution}
+              onChange={e => setWizardData({...wizardData, solution: e.target.value})}
+              placeholder="e.g., I will open a cold-storage farm stand in the neighbourhood center..."
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-32 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+            />
+          </div>
+        );
+      case 3:
+        return (
+          <div className="animate-fade-in">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">3. Target Market</h3>
+            <p className="text-sm text-gray-500 mb-4">Who exactly will pay for this? Be specific about demographics.</p>
+            <textarea
+              value={wizardData.targetMarket}
+              onChange={e => setWizardData({...wizardData, targetMarket: e.target.value})}
+              placeholder="e.g., Working mothers aged 25-45 who value convenience and health..."
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-32 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+            />
+          </div>
+        );
+      case 4:
+        return (
+          <div className="animate-fade-in">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">4. Your Unfair Advantage</h3>
+            <p className="text-sm text-gray-500 mb-4">What experience, network, or resources do you have that others don't?</p>
+            <textarea
+              value={wizardData.unfairAdvantage}
+              onChange={e => setWizardData({...wizardData, unfairAdvantage: e.target.value})}
+              placeholder="e.g., My uncle owns a farm so I can get stock at 30% discount..."
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-32 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+            />
+          </div>
+        );
+      case 5:
+        return (
+          <div className="animate-fade-in space-y-4">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">5. The Capital & Location</h3>
+            <p className="text-sm text-gray-500 mb-4">What resources are you starting with?</p>
+            
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Starting Budget (ZMW)</label>
+              <input
+                type="text"
+                value={wizardData.budget}
+                onChange={e => setWizardData({...wizardData, budget: e.target.value})}
+                placeholder="e.g., K10,000"
+                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Primary Location</label>
+              <input
+                type="text"
+                value={wizardData.location}
+                onChange={e => setWizardData({...wizardData, location: e.target.value})}
+                placeholder="e.g., Lusaka CBD / Online / Rural Ndola"
+                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              />
+            </div>
+          </div>
+        );
+      default: return null;
+    }
+  }
 
   return (
-    <div className="max-w-3xl mx-auto animate-fade-in">
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
+      {toast.isVisible && <Toast message={toast.message} type={toast.type} onClose={hide} />}
+
       <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
+        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
       </button>
-      
-      {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Idea Validator</h1>
-        <p className="text-gray-500 font-medium">Find out if your business idea can work in Zambia</p>
+        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2 flex items-center gap-3">
+          <Sparkles className="w-8 h-8 text-indigo-600" /> Startup Studio
+        </h1>
+        <p className="text-gray-500 font-medium text-lg">Validate your idea and generate a strategic blueprint.</p>
       </div>
 
-      {/* Previous ideas */}
-      {savedIdeas.length > 0 && (
-        <div className="bg-white/70 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-6 sm:p-8 mb-8">
-          <h2 className="text-xl font-bold text-gray-800 mb-4 tracking-tight">Your Previous Ideas ({savedIdeas.length})</h2>
-          <div className="space-y-3">
-            {savedIdeas.map((idea) => (
-              <div key={idea.id} className="bg-white/80 border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
-                <button
-                  className="w-full flex items-center justify-between p-4 hover:bg-gray-50/50 text-left transition-colors"
-                  onClick={() => setExpandedIdea(expandedIdea === idea.id ? null : idea.id)}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm ${getScoreColor(idea.viabilityScore)} shadow-sm`}>
-                      {idea.viabilityScore ?? '?'}
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 line-clamp-1">{truncateText(idea.ideaText, 80)}</span>
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center ml-2">
-                    {expandedIdea === idea.id ? <ChevronUp className="w-4 h-4 text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-500" />}
-                  </div>
-                </button>
-                {expandedIdea === idea.id && (
-                  <div className="p-5 bg-gray-50/50 border-t border-gray-100 text-gray-700 leading-relaxed text-sm">
-                    <AIResponse content={idea.aiAnalysis} />
-                  </div>
-                )}
+      {!result && (
+        <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">
+          <div className="flex items-center gap-2 mb-8">
+            {[1, 2, 3, 4, 5].map(step => (
+              <div key={step} className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+                <div className={\`h-full \${step <= currentStep ? 'bg-indigo-600' : 'bg-transparent'} transition-all duration-300\`} />
               </div>
             ))}
+          </div>
+
+          {error && <ErrorMessage message={error} />}
+
+          <div className="min-h-[250px]">
+            {renderWizardStep()}
+          </div>
+
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
+            <button
+              onClick={handlePrevStep}
+              disabled={currentStep === 1 || loading}
+              className="px-6 py-3 text-gray-500 font-semibold disabled:opacity-30 hover:text-gray-800 transition-colors"
+            >
+              Back
+            </button>
+            
+            {currentStep < 5 ? (
+              <button
+                onClick={handleNextStep}
+                disabled={!isStepValid()}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-8 py-3 rounded-xl transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+              >
+                Next <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <button
+                onClick={handleValidate}
+                disabled={!isStepValid() || loading}
+                className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold px-8 py-3 rounded-xl transition-all shadow-lg shadow-yellow-500/30 active:scale-95 disabled:opacity-50 flex items-center gap-2"
+              >
+                {loading ? <><LoadingSpinner size="sm" /> Analyzing...</> : <><Sparkles className="w-5 h-5" /> Generate Blueprint</>}
+              </button>
+            )}
           </div>
         </div>
       )}
 
-      {/* New idea form */}
-      {/* New idea form */}
-      <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">
-        <div className="absolute -right-16 -top-16 w-64 h-64 bg-yellow-200/20 rounded-full blur-3xl pointer-events-none" />
-        
-        <h2 className="text-xl font-bold text-gray-800 mb-6 tracking-tight relative z-10">Validate a New Idea</h2>
-
-        <div className="mb-6 relative z-10">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Describe your business idea *</label>
-          <textarea
-            value={ideaText}
-            onChange={e => setIdeaText(e.target.value)}
-            className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 focus:border-yellow-400 transition-all min-h-[160px] shadow-sm resize-none"
-            placeholder="Tell us what you want to sell or what service you want to offer. Where will you operate? Who are your customers? What problem does it solve?"
-          />
-          <p className={`text-xs mt-2 font-medium ${ideaText.length < 50 ? 'text-red-400' : 'text-green-500'}`}>
-            {ideaText.length} characters {ideaText.length < 50 ? '(minimum 50 required)' : '✓ Looks good!'}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 relative z-10">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Startup Budget</label>
-            <select value={budget} onChange={e => setBudget(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 focus:border-yellow-400 transition-all appearance-none shadow-sm cursor-pointer">
-              <option value="">Not sure yet</option>
-              <option value="Under K500">Under K500</option>
-              <option value="K500 - K2,000">K500 – K2,000</option>
-              <option value="K2,000 - K10,000">K2,000 – K10,000</option>
-              <option value="K10,000 - K50,000">K10,000 – K50,000</option>
-              <option value="Over K50,000">Over K50,000</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Where You'll Operate</label>
-            <select value={location} onChange={e => setLocation(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 focus:border-yellow-400 transition-all appearance-none shadow-sm cursor-pointer">
-              <option value="">Not decided</option>
-              <option value="Home based">Home based</option>
-              <option value="Market">Market</option>
-              <option value="Shop">Shop</option>
-              <option value="Online">Online</option>
-              <option value="Mobile">Mobile / Door to door</option>
-              <option value="Multiple">Multiple locations</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Your Experience</label>
-            <select value={experience} onChange={e => setExperience(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 focus:border-yellow-400 transition-all appearance-none shadow-sm cursor-pointer">
-              <option value="">None</option>
-              <option value="None">No experience</option>
-              <option value="Some knowledge">Some knowledge</option>
-              <option value="Have worked in it">Have worked in it</option>
-              <option value="Currently doing it informally">Doing it informally</option>
-            </select>
-          </div>
-        </div>
-
-        {error && <ErrorMessage message={error} />}
-
-        <button 
-          onClick={handleValidate} 
-          disabled={loading || ideaText.length < 50} 
-          className="relative z-10 w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-yellow-500/30 disabled:opacity-50 disabled:shadow-none active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
-        >
-          {loading ? <><LoadingSpinner size="sm" /> AI is analysing your idea...</> : <><Sparkles className="w-5 h-5" /> Validate My Idea</>}
-        </button>
-      </div>
-
-      {/* Results */}
+      {/* Blueprint Results Dashboard */}
       {result && (
-        <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 animate-slide-up relative overflow-hidden">
-          <div className="absolute -left-16 -top-16 w-64 h-64 bg-green-200/20 rounded-full blur-3xl pointer-events-none" />
-          
-          <div className="flex items-center gap-5 mb-6 pb-6 border-b border-gray-100 relative z-10">
-            {score !== null && (
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-extrabold shadow-sm ${scoreClass}`}>
-                {score}<span className="text-sm opacity-60">/10</span>
+        <div className="bg-transparent animate-slide-up space-y-6">
+          {/* Header Card */}
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden">
+            <div className={\`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 -mr-20 -mt-20 \${result.score >= 6 ? 'bg-green-400' : 'bg-yellow-400'}\`} />
+            
+            <div className="flex items-center justify-between mb-4 relative z-10">
+              <span className={\`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider \${
+                result.verdict === 'PROCEED' ? 'bg-green-100 text-green-800' :
+                result.verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-800' :
+                'bg-red-100 text-red-800'
+              }\`}>{result.verdict}</span>
+              
+              <div className="flex items-center gap-2">
+                <span className="text-4xl font-black text-gray-900">{result.score}</span>
+                <span className="text-xl text-gray-400 font-bold">/10</span>
               </div>
-            )}
-            <div>
-              <p className="text-gray-500 font-semibold mb-1">Viability Score</p>
-              {score !== null && (
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                  verdict === 'PROCEED' ? 'bg-green-100 text-green-800' :
-                  verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-red-100 text-red-800'
-                }`}>{verdict}</span>
-              )}
+            </div>
+            
+            <h2 className="text-2xl font-bold text-gray-900 mb-2 relative z-10">{result.executiveSummary}</h2>
+            <p className="text-gray-500 font-medium relative z-10">AI Viability Score based on unit economics and market demand.</p>
+          </div>
+
+          {/* Core Analysis Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><TrendingUp className="w-5 h-5" /></div>
+                <h3 className="font-bold text-gray-900 text-lg">Unit Economics</h3>
+              </div>
+              <p className="text-gray-600 leading-relaxed">{result.unitEconomics}</p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center"><Users className="w-5 h-5" /></div>
+                <h3 className="font-bold text-gray-900 text-lg">Competitor Intel</h3>
+              </div>
+              <p className="text-gray-600 leading-relaxed">{result.competitorIntel}</p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><Banknote className="w-5 h-5" /></div>
+                <h3 className="font-bold text-gray-900 text-lg">Capital Allocation</h3>
+              </div>
+              <p className="text-gray-600 leading-relaxed">{result.capitalAllocation}</p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><AlertTriangle className="w-5 h-5" /></div>
+                <h3 className="font-bold text-gray-900 text-lg">Risk Assessment</h3>
+              </div>
+              <p className="text-gray-600 leading-relaxed">{result.riskAssessment}</p>
             </div>
           </div>
 
-          <div className="mb-6 text-gray-700 leading-relaxed relative z-10">
-            <AIResponse content={result} />
-          </div>
+          {/* Consultant Pivot (Only if score <= 5) */}
+          {result.score <= 5 && result.consultantPivot && (
+            <div className="bg-orange-50 rounded-3xl p-8 border border-orange-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center"><Briefcase className="w-5 h-5" /></div>
+                <h3 className="font-bold text-orange-900 text-xl">Consultant's Pivot Strategy</h3>
+              </div>
+              <p className="text-orange-800 leading-relaxed text-lg">{result.consultantPivot}</p>
+            </div>
+          )}
 
-          <div className="flex flex-wrap gap-3 pt-6 border-t border-gray-100 relative z-10">
+          {/* Actions Bar */}
+          <div className="flex flex-wrap gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
             <button 
               onClick={toggleSpeech} 
-              className={`flex items-center gap-2 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95 ${
+              className={\`flex items-center gap-2 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95 \${
                 isSpeaking 
                   ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200' 
                   : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'
-              }`}
+              }\`}
             >
-              {isSpeaking ? <><Square className="w-4 h-4 fill-current" /> Stop Reading</> : <><Volume2 className="w-4 h-4" /> Read Aloud</>}
+              {isSpeaking ? <><Square className="w-4 h-4 fill-current" /> Stop</> : <><Volume2 className="w-4 h-4" /> Listen</>}
             </button>
             <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
-              <Save className="w-4 h-4" /> Save Analysis
+              <Save className="w-4 h-4" /> Save
             </button>
             <button onClick={handleDownloadPDF} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
-              <Download className="w-4 h-4" /> Download PDF
+              <Download className="w-4 h-4" /> PDF
             </button>
-            <button onClick={handleReset} className="flex items-center gap-2 border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
-              <RefreshCw className="w-4 h-4" /> Try Another Idea
+            <button onClick={handleReset} className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95 ml-auto">
+              <RefreshCw className="w-4 h-4" /> New Idea
             </button>
           </div>
           
-          {score !== null && (
-            <div className="mt-10 pt-8 border-t-2 border-dashed border-gray-200 relative z-10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${score >= 6 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}`}>
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    {score >= 6 ? 'Your Idea is Viable! Next Steps:' : 'Your Idea Needs Refinement. To proceed, explore these tools:'}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    {score >= 6 ? 'Follow this pipeline to launch your business properly.' : 'Use the feedback above to pivot, then build your roadmap here.'}
-                  </p>
-                </div>
+          {/* Next Steps Pipeline */}
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mt-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className={\`w-10 h-10 rounded-full flex items-center justify-center shrink-0 \${result.score >= 6 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}\`}>
+                <Sparkles className="w-5 h-5" />
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Link to="/name-generator" className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-blue-200 hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><Sparkles className="w-5 h-5" /></div>
-                    <div><h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">1. Name Generator</h4><p className="text-xs text-gray-500">Get a brand name</p></div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 transition-colors" />
-                </Link>
-                
-                <Link to="/swot-analysis" className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-cyan-200 hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-cyan-50 text-cyan-600 rounded-xl flex items-center justify-center"><Target className="w-5 h-5" /></div>
-                    <div><h4 className="font-bold text-gray-900 group-hover:text-cyan-600 transition-colors">2. SWOT Analysis</h4><p className="text-xs text-gray-500">Know your risks</p></div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-cyan-600 transition-colors" />
-                </Link>
-                
-                <Link to="/business-plan" className="w-full group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-indigo-200 hover:shadow-md transition-all text-left">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><FileText className="w-5 h-5" /></div>
-                    <div><h4 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">3. Business Plan</h4><p className="text-xs text-gray-500">Build the roadmap</p></div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 transition-colors" />
-                </Link>
-                
-                <Link to="/registration-guide" className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-emerald-200 hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><Building2 className="w-5 h-5" /></div>
-                    <div><h4 className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">4. Formalise Setup</h4><p className="text-xs text-gray-500">PACRA & ZRA Guide</p></div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 transition-colors" />
-                </Link>
-
-                <Link to="/pitch-deck" className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-fuchsia-200 hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-fuchsia-50 text-fuchsia-600 rounded-xl flex items-center justify-center"><Presentation className="w-5 h-5" /></div>
-                    <div><h4 className="font-bold text-gray-900 group-hover:text-fuchsia-600 transition-colors">5. Pitch Deck</h4><p className="text-xs text-gray-500">For investors</p></div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-fuchsia-600 transition-colors" />
-                </Link>
-                
-                <Link to="/funding-matchmaker" className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-teal-200 hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center"><Banknote className="w-5 h-5" /></div>
-                    <div><h4 className="font-bold text-gray-900 group-hover:text-teal-600 transition-colors">6. Funding Matches</h4><p className="text-xs text-gray-500">Grants & Loans</p></div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-teal-600 transition-colors" />
-                </Link>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  {result.score >= 6 ? 'Your Idea is Viable! Next Steps:' : 'Your Idea Needs Refinement. To proceed, explore these tools:'}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {result.score >= 6 ? 'Follow this pipeline to launch your business properly.' : 'Use the pivot strategy above, then build your roadmap here.'}
+                </p>
               </div>
             </div>
-          )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Link to="/name-generator" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-blue-200 hover:shadow-md transition-all">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center"><Sparkles className="w-5 h-5" /></div>
+                  <div><h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">1. Name Generator</h4><p className="text-xs text-gray-500">Get a brand name</p></div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 transition-colors" />
+              </Link>
+              
+              <Link to="/swot-analysis" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-cyan-200 hover:shadow-md transition-all">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-cyan-100 text-cyan-600 rounded-xl flex items-center justify-center"><Target className="w-5 h-5" /></div>
+                  <div><h4 className="font-bold text-gray-900 group-hover:text-cyan-600 transition-colors">2. SWOT Analysis</h4><p className="text-xs text-gray-500">Know your risks</p></div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-cyan-600 transition-colors" />
+              </Link>
+              
+              <Link to="/business-plan" className="w-full group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-indigo-200 hover:shadow-md transition-all text-left">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center"><FileText className="w-5 h-5" /></div>
+                  <div><h4 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">3. Business Plan</h4><p className="text-xs text-gray-500">Build the roadmap</p></div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 transition-colors" />
+              </Link>
+
+              <Link to="/registration-guide" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-emerald-200 hover:shadow-md transition-all">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center"><Building2 className="w-5 h-5" /></div>
+                  <div><h4 className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">4. Formalise Setup</h4><p className="text-xs text-gray-500">PACRA & ZRA Guide</p></div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 transition-colors" />
+              </Link>
+
+              <Link to="/pitch-deck" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-fuchsia-200 hover:shadow-md transition-all">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-fuchsia-100 text-fuchsia-600 rounded-xl flex items-center justify-center"><Presentation className="w-5 h-5" /></div>
+                  <div><h4 className="font-bold text-gray-900 group-hover:text-fuchsia-600 transition-colors">5. Pitch Deck</h4><p className="text-xs text-gray-500">For investors</p></div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-fuchsia-600 transition-colors" />
+              </Link>
+              
+              <Link to="/funding-matchmaker" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-teal-200 hover:shadow-md transition-all">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center"><Banknote className="w-5 h-5" /></div>
+                  <div><h4 className="font-bold text-gray-900 group-hover:text-teal-600 transition-colors">6. Funding Matches</h4><p className="text-xs text-gray-500">Grants & Loans</p></div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-teal-600 transition-colors" />
+              </Link>
+            </div>
+          </div>
         </div>
       )}
     </div>

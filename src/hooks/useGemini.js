@@ -33,62 +33,48 @@ export function useGemini() {
     }, 1000);
   }
 
-  async function validateBusinessIdea(ideaText, userContext) {
+  async function validateBusinessIdea(wizardData) {
     setLoading(true);
     setError(null);
     try {
-      const prompt = `Critically analyze this business idea for the Zambian market:
+      const prompt = `Critically analyze this startup idea for the Zambian market as an expert Business Consultant:
 
-${ideaText}
-
-User context: ${userContext}
+**The Problem:** ${wizardData.problem}
+**The Solution:** ${wizardData.solution}
+**Target Market:** ${wizardData.targetMarket}
+**Unfair Advantage:** ${wizardData.unfairAdvantage}
+**Capital/Budget:** ${wizardData.budget}
+**Location:** ${wizardData.location}
 
 CRITICAL INSTRUCTIONS:
-1. Be realistic but encouraging. Score 5-7 for average but viable ideas, 8-10 for excellent, high-margin ideas, and 1-4 for deeply flawed ideas. Do not be overly harsh, but do not default to 6/10.
-2. Analyze the CORE MECHANICS: Is this business BUYING, SELLING, PRODUCING, or SERVICING? Focus deeply on the unit economics of that specific angle.
-3. DO NOT give generic advice about PACRA or ZRA registration unless absolutely critical. Focus on market demand, supply chain, customer acquisition, and profit margins.
+1. Be realistic but encouraging. Score 5-7 for average but viable ideas, 8-10 for excellent, high-margin ideas, and 1-4 for deeply flawed ideas. Do not be overly harsh, but do not default to 6.
+2. Analyze the UNIT ECONOMICS closely (costs vs price) based on the location and budget.
+3. Provide actionable competitor intel specific to Zambia.
+4. Output your response STRICTLY as a valid JSON object. Do not include markdown formatting like \`\`\`json. 
 
-Provide a structured analysis with these exact sections:
+The JSON object MUST have exactly these keys:
+{
+  "score": <number 1-10>,
+  "verdict": "<PROCEED / REFINE / RECONSIDER>",
+  "executiveSummary": "<2-sentence elevator pitch of the business>",
+  "unitEconomics": "<Analysis of profit margins, costs, and revenue model (3-4 sentences)>",
+  "competitorIntel": "<Analysis of the local competition and how to beat them (3-4 sentences)>",
+  "capitalAllocation": "<Specific recommendation on how to spend their stated budget (e.g. 40% marketing, 60% stock) (3-4 sentences)>",
+  "riskAssessment": "<The biggest bottleneck or risk they face (2-3 sentences)>",
+  "consultantPivot": "<If score <= 5, provide a specific pivot strategy. If > 5, provide a scaling tip.>"
+}
 
-**VIABILITY SCORE: X/10**
-
-**VERDICT: [PROCEED / REFINE / RECONSIDER]**
-
-**1. MARKET ANALYSIS FOR ZAMBIA**
-[2-3 sentences about the real market opportunity in Zambia]
-
-**2. TARGET CUSTOMER PROFILE**
-[Who exactly will buy this - be specific about Zambian demographics]
-
-**3. LOCAL COMPETITION**
-[What competition exists in Zambia, name specific local competitors if relevant]
-
-**4. YOUR UNIQUE ADVANTAGE**
-[What makes this idea stand out in the Zambian market]
-
-**5. TOP 3 RISKS**
-- Risk 1
-- Risk 2
-- Risk 3
-
-**6. TOP 3 OPPORTUNITIES**
-- Opportunity 1
-- Opportunity 2
-- Opportunity 3
-
-**7. SIMILAR / PIVOT IDEAS**
-[2-3 brief alternative variations of this idea that might work better in Zambia or have higher margins]
-
-**8. RECOMMENDED NEXT STEPS**
-[3-5 specific, practical action steps (e.g., finding suppliers, testing demand). Do NOT mention business registration here; focus on business mechanics.]
-
-**9. CONSULTANT'S VERDICT & PIVOT STRATEGY**
-[If the score is 5 or below, provide a highly specific, step-by-step strategy on exactly how to pivot this idea into a profitable one. Act as their personal business consultant.]
-
-Be highly specific to Zambia. Use Kwacha for money references. Act as a supportive but realistic Zambian Business Consultant. Focus on giving the best advice to turn this into a profitable venture.`;
+Be highly specific to Zambia and use Kwacha. Return ONLY the JSON object.`;
 
       const response = await callGemini(prompt, IDEA_VALIDATOR_SYSTEM);
-      return response;
+      // Try to parse the JSON, handle markdown wrapper if it accidentally included it
+      let jsonStr = response;
+      if (jsonStr.startsWith('```json')) {
+        jsonStr = jsonStr.replace(/```json/, '').replace(/```/, '').trim();
+      } else if (jsonStr.startsWith('```')) {
+        jsonStr = jsonStr.replace(/```/, '').replace(/```/, '').trim();
+      }
+      return JSON.parse(jsonStr);
     } catch (err) {
       const msg = getFriendlyError(err);
       setError(msg);
