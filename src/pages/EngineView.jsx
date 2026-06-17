@@ -2,7 +2,9 @@ import { useParams, Navigate, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { ENGINE_MODULES } from '../data/engineModules';
 
-function ModuleCard({ path, icon: Icon, name, desc, bg, text, border }) {
+import BusinessHubView from './BusinessHubView';
+
+export function ModuleCard({ path, icon: Icon, name, desc, bg, text, border }) {
   return (
     <Link
       to={path}
@@ -28,6 +30,10 @@ export default function EngineView() {
 
   if (!engine) {
     return <Navigate to="/dashboard" replace />;
+  }
+
+  if (engineId === 'business') {
+    return <BusinessHubView />;
   }
 
   const { icon: EngineIcon, title, description, bg, modules } = engine;
