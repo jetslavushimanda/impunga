@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Briefcase, Users, TrendingUp, AlertTriangle, Share2, Bot } from 'lucide-react';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, ChevronLeft, ChevronRight, Download, Target, Presentation, Banknote, Briefcase, Users, TrendingUp, AlertTriangle, Share2, Bot } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
@@ -32,6 +32,7 @@ export default function IdeaValidator() {
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
   const navigate = useNavigate();
+  const resultContainerRef = useRef(null);
 
   useEffect(() => {
     loadSavedIdeas();
@@ -312,7 +313,7 @@ export default function IdeaValidator() {
       {result && (
         <div className="bg-transparent animate-slide-up space-y-6">
           {/* Header Card */}
-          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden">
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden overflow-x-auto" ref={resultContainerRef}>
             <div className={"absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 -mr-20 -mt-20 " + (result.score >= 6 ? 'bg-green-400' : 'bg-yellow-400')} />
             
             <div className="flex items-center justify-between mb-4 relative z-10">
@@ -320,7 +321,7 @@ export default function IdeaValidator() {
                 result.verdict === 'PROCEED' ? 'bg-green-100 text-green-800' :
                 result.verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-800' :
                 'bg-red-100 text-red-800'
-              }\`}>{result.verdict}</span>
+              }`}>{result.verdict}</span>
               
               <div className="flex items-center gap-2">
                 <span className="text-4xl font-black text-gray-900">{result.score}</span>
@@ -378,15 +379,31 @@ export default function IdeaValidator() {
             </div>
           )}
 
+          {/* Scroll Navigation Buttons */}
+          <div className="flex justify-between mb-4">
+            <button
+              onClick={() => resultContainerRef.current && resultContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' })}
+              className="flex items-center gap-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 px-4 py-2 rounded-xl transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" /> Prev
+            </button>
+            <button
+              onClick={() => resultContainerRef.current && resultContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' })}
+              className="flex items-center gap-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 px-4 py-2 rounded-xl transition-colors"
+            >
+              Next <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
           {/* Actions Bar */}
-          <div className="flex flex-wrap gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+          <div className="flex gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm whitespace-nowrap overflow-x-auto">
             <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
               <Save className="w-4 h-4" /> Save
             </button>
             <button onClick={handleDownloadPDF} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
               <Download className="w-4 h-4" /> PDF
             </button>
-            <button onClick={handleReset} className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95 ml-auto">
+            <button onClick={handleReset} className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
               <RefreshCw className="w-4 h-4" /> New Idea
             </button>
           </div>
@@ -409,7 +426,7 @@ export default function IdeaValidator() {
           {/* Next Steps Pipeline */}
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mt-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className={\`w-10 h-10 rounded-full flex items-center justify-center shrink-0 \${result.score >= 6 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}\`}>
+              <div className={"w-10 h-10 rounded-full flex items-center justify-center shrink-0 " + (result.score >= 6 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600')}>
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
@@ -422,8 +439,8 @@ export default function IdeaValidator() {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Link to="/name-generator" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-blue-200 hover:shadow-md transition-all">
+            <div className="flex gap-4 overflow-x-auto whitespace-nowrap py-2" style={{scrollbarWidth: 'thin'}}>
+              <Link to="/name-generator" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-blue-200 hover:shadow-md transition-all flex-shrink-0 w-64">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center"><Sparkles className="w-5 h-5" /></div>
                   <div><h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">1. Name Generator</h4><p className="text-xs text-gray-500">Get a brand name</p></div>
@@ -431,7 +448,7 @@ export default function IdeaValidator() {
                 <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 transition-colors" />
               </Link>
               
-              <Link to="/swot-analysis" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-cyan-200 hover:shadow-md transition-all">
+              <Link to="/swot-analysis" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-cyan-200 hover:shadow-md transition-all flex-shrink-0 w-64">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-cyan-100 text-cyan-600 rounded-xl flex items-center justify-center"><Target className="w-5 h-5" /></div>
                   <div><h4 className="font-bold text-gray-900 group-hover:text-cyan-600 transition-colors">2. SWOT Analysis</h4><p className="text-xs text-gray-500">Know your risks</p></div>
@@ -439,7 +456,7 @@ export default function IdeaValidator() {
                 <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-cyan-600 transition-colors" />
               </Link>
               
-              <Link to="/business-plan" className="w-full group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-indigo-200 hover:shadow-md transition-all text-left">
+              <Link to="/business-plan" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-indigo-200 hover:shadow-md transition-all text-left flex-shrink-0 w-64">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center"><FileText className="w-5 h-5" /></div>
                   <div><h4 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">3. Business Plan</h4><p className="text-xs text-gray-500">Build the roadmap</p></div>
@@ -447,7 +464,7 @@ export default function IdeaValidator() {
                 <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 transition-colors" />
               </Link>
 
-              <Link to="/registration-guide" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-emerald-200 hover:shadow-md transition-all">
+              <Link to="/registration-guide" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-emerald-200 hover:shadow-md transition-all flex-shrink-0 w-64">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center"><Building2 className="w-5 h-5" /></div>
                   <div><h4 className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">4. Formalise Setup</h4><p className="text-xs text-gray-500">PACRA & ZRA Guide</p></div>
@@ -455,7 +472,7 @@ export default function IdeaValidator() {
                 <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 transition-colors" />
               </Link>
 
-              <Link to="/pitch-deck" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-fuchsia-200 hover:shadow-md transition-all">
+              <Link to="/pitch-deck" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-fuchsia-200 hover:shadow-md transition-all flex-shrink-0 w-64">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-fuchsia-100 text-fuchsia-600 rounded-xl flex items-center justify-center"><Presentation className="w-5 h-5" /></div>
                   <div><h4 className="font-bold text-gray-900 group-hover:text-fuchsia-600 transition-colors">5. Pitch Deck</h4><p className="text-xs text-gray-500">For investors</p></div>
@@ -463,7 +480,7 @@ export default function IdeaValidator() {
                 <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-fuchsia-600 transition-colors" />
               </Link>
               
-              <Link to="/funding-matchmaker" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-teal-200 hover:shadow-md transition-all">
+              <Link to="/funding-matchmaker" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-teal-200 hover:shadow-md transition-all flex-shrink-0 w-64">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center"><Banknote className="w-5 h-5" /></div>
                   <div><h4 className="font-bold text-gray-900 group-hover:text-teal-600 transition-colors">6. Funding Matches</h4><p className="text-xs text-gray-500">Grants & Loans</p></div>
@@ -471,7 +488,7 @@ export default function IdeaValidator() {
                 <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-teal-600 transition-colors" />
               </Link>
               
-              <Link to="/social-media" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-pink-200 hover:shadow-md transition-all">
+              <Link to="/social-media" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-pink-200 hover:shadow-md transition-all flex-shrink-0 w-64">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-pink-100 text-pink-600 rounded-xl flex items-center justify-center"><Share2 className="w-5 h-5" /></div>
                   <div><h4 className="font-bold text-gray-900 group-hover:text-pink-600 transition-colors">7. Social Media</h4><p className="text-xs text-gray-500">Marketing Strategy</p></div>
