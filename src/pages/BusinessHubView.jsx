@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Lightbulb, Building2, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { ENGINE_MODULES } from '../data/engineModules';
 import useAuthStore from '../store/authStore';
 import { useAuth } from '../hooks/useAuth';
@@ -79,7 +79,7 @@ export default function BusinessHubView() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent pointer-events-none" />
               <div className="relative z-10 w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-[1.25rem] flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
-                <Lightbulb className="w-8 h-8 text-white" />
+                <Rocket className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-extrabold text-gray-900 mb-2 relative z-10">Start a Business</h2>
               <p className="text-gray-500 font-medium mb-8 relative z-10 flex-1">I have an idea or need guidance figuring out how to start a business in Zambia.</p>
@@ -102,7 +102,7 @@ export default function BusinessHubView() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent pointer-events-none" />
               <div className="relative z-10 w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.25rem] flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
-                <Building2 className="w-8 h-8 text-white" />
+                <Briefcase className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-extrabold text-gray-900 mb-2 relative z-10">Manage my Business</h2>
               <p className="text-gray-500 font-medium mb-8 relative z-10 flex-1">I already have a business (registered or unregistered) and need operational tools.</p>
@@ -141,7 +141,7 @@ export default function BusinessHubView() {
         <div className="max-w-xl mx-auto bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[2rem] p-8 sm:p-10 relative overflow-hidden animate-slide-up mt-8">
           <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-300/20 rounded-full blur-3xl pointer-events-none" />
           <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20 relative z-10">
-            <Building2 className="w-10 h-10 text-white" />
+            <Briefcase className="w-10 h-10 text-white" />
           </div>
           <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-3 relative z-10">Register your Workspace</h2>
           <p className="text-center text-gray-500 font-medium mb-10 relative z-10">

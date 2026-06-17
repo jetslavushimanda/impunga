@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
