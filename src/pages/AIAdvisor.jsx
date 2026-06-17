@@ -103,27 +103,50 @@ export default function AIAdvisor() {
       </div>
 
       {/* Chat window */}
-      <div className="flex-1 overflow-y-auto bg-surface-light rounded-xl border border-gray-200 p-4 space-y-4 min-h-0">
+      <div className="flex-1 overflow-y-auto space-y-6 pb-4">
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <Bot className="w-12 h-12 text-primary opacity-20 mb-3" />
-            <h3 className="font-semibold text-gray-600 mb-1">Your AI Business Mentor</h3>
-            <p className="text-gray-400 text-sm max-w-xs">Ask any business question. I give advice specific to Zambia — PACRA, ZRA, CEEC, Kwacha pricing and more.</p>
+          <div className="flex flex-col items-center justify-center h-full text-center px-4 animate-fade-in mt-10">
+            <div className="w-20 h-20 bg-gradient-to-br from-slate-800 to-slate-900 rounded-full flex items-center justify-center mb-6 shadow-xl border-4 border-white">
+              <Bot className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-3xl font-extrabold text-gray-800 mb-2">How can I help you today?</h2>
+            <p className="text-gray-500 text-base max-w-md mx-auto mb-10">
+              I am your intelligent platform guide. Ask me anything about IMPUNGA modules, Zambia business registration, or funding.
+            </p>
+            
+            {/* Beautiful Suggested Questions Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl mx-auto">
+              {SUGGESTED_QUESTIONS.slice(0, 4).map(q => (
+                <button 
+                  key={q} 
+                  onClick={() => sendMessage(q)} 
+                  className="text-left px-5 py-4 bg-white rounded-2xl hover:bg-gray-50 transition-colors border border-gray-100 shadow-sm hover:shadow-md group"
+                >
+                  <p className="text-sm font-medium text-gray-700 group-hover:text-primary transition-colors">{q}</p>
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
         {messages.map(msg => (
-          <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+          <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
             {msg.role !== 'user' && (
-              <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center mr-2 shrink-0 mt-1">
+              <div className="w-8 h-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-full flex items-center justify-center mr-3 shrink-0 mt-1 shadow-md">
                 <Bot className="w-4 h-4 text-white" />
               </div>
             )}
-            <div className="max-w-[80%]">
-              <div className={msg.role === 'user' ? 'chat-bubble-user' : msg.role === 'error' ? 'bg-red-50 border border-red-200 rounded-2xl px-4 py-3 text-red-700 text-sm' : 'chat-bubble-ai'}>
+            <div className={`max-w-[85%] ${msg.role === 'user' ? 'order-1' : 'order-2'}`}>
+              <div className={
+                msg.role === 'user' 
+                  ? 'bg-blue-600 text-white rounded-3xl rounded-tr-sm px-5 py-3.5 text-base shadow-sm' 
+                  : msg.role === 'error' 
+                    ? 'bg-red-50 border border-red-200 rounded-3xl rounded-tl-sm px-5 py-3.5 text-red-700 text-base shadow-sm' 
+                    : 'bg-white border border-gray-100 text-gray-800 rounded-3xl rounded-tl-sm px-5 py-4 text-base shadow-sm'
+              }>
                 {msg.role === 'model'
                   ? <AIResponse content={msg.content} />
-                  : <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                  : <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                 }
               </div>
               {msg.role === 'model' && (
@@ -136,11 +159,11 @@ export default function AIAdvisor() {
         ))}
 
         {loading && (
-          <div className="flex justify-start">
-            <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center mr-2 shrink-0 mt-1">
+          <div className="flex justify-start animate-fade-in">
+            <div className="w-8 h-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-full flex items-center justify-center mr-3 shrink-0 mt-1 shadow-md">
               <Bot className="w-4 h-4 text-white" />
             </div>
-            <div className="chat-bubble-ai">
+            <div className="bg-white border border-gray-100 rounded-3xl rounded-tl-sm px-2 py-2 shadow-sm flex items-center">
               <TypingIndicator />
             </div>
           </div>
@@ -150,32 +173,29 @@ export default function AIAdvisor() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Suggested questions */}
-      {messages.length === 0 && (
-        <div className="flex flex-wrap gap-2 my-3 shrink-0">
-          {SUGGESTED_QUESTIONS.slice(0, 4).map(q => (
-            <button key={q} onClick={() => sendMessage(q)} className="text-xs px-3 py-1.5 bg-surface-blue text-primary rounded-full hover:bg-primary hover:text-white transition-colors border border-primary/20">
-              {q}
-            </button>
-          ))}
-        </div>
-      )}
 
-      {/* Input */}
-      <div className="flex gap-2 shrink-0 mt-2">
-        <textarea
-          ref={inputRef}
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="textarea-field flex-1 resize-none min-h-[44px] max-h-32"
-          placeholder="Ask any business question... (Enter to send)"
-          rows={1}
-          disabled={loading}
-        />
-        <button onClick={() => sendMessage()} disabled={!input.trim() || loading || retrySeconds > 0} className="btn-primary px-4 shrink-0">
-          {retrySeconds > 0 ? <span className="text-xs font-bold">{retrySeconds}s</span> : <Send className="w-4 h-4" />}
-        </button>
+
+      {/* Sleek Input Bar */}
+      <div className="relative shrink-0 mt-2">
+        <div className="relative flex items-end bg-white rounded-[2rem] border border-gray-200 shadow-lg shadow-gray-200/50 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all p-1.5 pl-5">
+          <textarea
+            ref={inputRef}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="flex-1 resize-none bg-transparent py-3 outline-none min-h-[48px] max-h-32 text-gray-800 placeholder-gray-400"
+            placeholder="Ask your assistant anything..."
+            rows={1}
+            disabled={loading}
+          />
+          <button 
+            onClick={() => sendMessage()} 
+            disabled={!input.trim() || loading || retrySeconds > 0} 
+            className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shrink-0 hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:bg-gray-200 disabled:text-gray-400 mb-0.5 ml-2"
+          >
+            {retrySeconds > 0 ? <span className="text-xs font-bold">{retrySeconds}s</span> : <Send className="w-5 h-5 -ml-0.5" />}
+          </button>
+        </div>
       </div>
     </div>
   );
