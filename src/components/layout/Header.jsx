@@ -42,11 +42,11 @@ export default function Header({ onMenuToggle }) {
           {/* Semantic Search Button */}
           <button
             onClick={() => setSearchOpen(true)}
-            className="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-colors rounded-xl px-3 py-2 text-sm font-medium"
+            className="flex items-center gap-2 bg-gray-100/80 hover:bg-gray-200/80 text-gray-500 hover:text-gray-700 transition-colors rounded-full px-4 py-2 text-sm font-medium border border-gray-200/50"
             aria-label="Smart search"
           >
-            <Search className="w-4 h-4" />
-            <span className="hidden sm:block">Search anything...</span>
+            <Search className="w-4 h-4 text-gray-400" />
+            <span className="hidden sm:block font-normal">Search...</span>
           </button>
 
           <button className="p-2 rounded-lg hover:bg-surface-light relative" aria-label="Notifications">

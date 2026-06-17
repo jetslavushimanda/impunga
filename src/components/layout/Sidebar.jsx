@@ -17,11 +17,11 @@ export default function Sidebar({ isOpen, onClose }) {
       )}
 
       <aside className={`
-        fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 z-40
+        fixed top-0 left-0 h-screen w-[280px] bg-white/70 backdrop-blur-2xl border-r border-gray-200/50 z-40
         flex flex-col
-        transform transition-transform duration-300 ease-in-out
-        lg:static lg:translate-x-0 lg:z-auto lg:h-full
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        transform transition-transform duration-400 cubic-bezier(0.16, 1, 0.3, 1)
+        lg:static lg:translate-x-0 lg:z-auto lg:h-full lg:bg-gray-50/50 lg:backdrop-blur-none
+        ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
       `}>
         {/* Header — only on mobile */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100 lg:hidden shrink-0">
@@ -31,55 +31,74 @@ export default function Sidebar({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Scrollable nav — takes all remaining space */}
-        <nav className="flex-1 overflow-y-auto p-3 space-y-4">
-          <div className="space-y-1">
+        {/* Scrollable nav */}
+        <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+          
+          {/* Group 1: Home */}
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
             <NavLink
               to="/dashboard"
               onClick={onClose}
-              className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
+              className={({ isActive }) => `flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
             >
-              <LayoutDashboard className="w-5 h-5 shrink-0" />
-              <span>Home</span>
+              <div className="w-8 h-8 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <LayoutDashboard className="w-4 h-4" />
+              </div>
+              <span className={`font-medium text-[15px] ${selectedPath === '/dashboard' ? 'text-blue-600' : 'text-gray-800'}`}>Home</span>
             </NavLink>
           </div>
 
-          <div className="mt-6">
-            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+          {/* Group 2: Platform Modules */}
+          <div>
+            <p className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
               Platform Modules
             </p>
-            <div className="space-y-1">
-              {engines.map(({ id, title, icon: Icon }) => (
+            <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+              {engines.map(({ id, title, icon: Icon, bg }, index) => (
                 <NavLink 
                   key={id} 
                   to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`} 
                   onClick={onClose} 
-                  className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
+                  className={({ isActive }) => `flex items-center gap-3 px-4 py-3 transition-colors ${index !== engines.length - 1 ? 'border-b border-gray-50' : ''} ${isActive ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
                 >
-                  <Icon className="w-5 h-5 shrink-0" /> 
-                  <span className="truncate">{title.split('—')[1] ? title.split('—')[1].trim() : title}</span>
+                  <div className={`w-8 h-8 rounded-xl text-white flex items-center justify-center shrink-0 shadow-sm ${bg}`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <span className="font-medium text-[15px] text-gray-800 truncate">
+                    {title.split('—')[1] ? title.split('—')[1].trim() : title}
+                  </span>
                 </NavLink>
               ))}
             </div>
           </div>
 
-          <div className="space-y-1 pt-2 border-t border-gray-100 mt-6">
-            <NavLink
-              to="/profile"
-              onClick={onClose}
-              className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
-            >
-              <User className="w-5 h-5 shrink-0" />
-              <span>My Profile</span>
-            </NavLink>
-            <NavLink
-              to="/data-privacy"
-              onClick={onClose}
-              className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
-            >
-              <Shield className="w-5 h-5 shrink-0" />
-              <span>Data Privacy</span>
-            </NavLink>
+          {/* Group 3: Settings */}
+          <div>
+            <p className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              Account
+            </p>
+            <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+              <NavLink
+                to="/profile"
+                onClick={onClose}
+                className={({ isActive }) => `flex items-center gap-3 px-4 py-3 border-b border-gray-50 transition-colors ${isActive ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+              >
+                <div className="w-8 h-8 rounded-xl bg-gray-400 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <User className="w-4 h-4" />
+                </div>
+                <span className="font-medium text-[15px] text-gray-800">My Profile</span>
+              </NavLink>
+              <NavLink
+                to="/data-privacy"
+                onClick={onClose}
+                className={({ isActive }) => `flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+              >
+                <div className="w-8 h-8 rounded-xl bg-green-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <Shield className="w-4 h-4" />
+                </div>
+                <span className="font-medium text-[15px] text-gray-800">Data Privacy</span>
+              </NavLink>
+            </div>
           </div>
         </nav>
 
