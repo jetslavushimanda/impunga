@@ -438,112 +438,117 @@ export default function IdeaValidator() {
             <p className="text-gray-500 font-medium relative z-10">AI Viability Score based on unit economics and market demand.</p>
           </div>
 
-          {/* Core Analysis Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><TrendingUp className="w-5 h-5" /></div>
-                <h3 className="font-bold text-gray-900 text-lg">Unit Economics</h3>
-              </div>
-              <p className="text-gray-600 leading-relaxed">{result.unitEconomics}</p>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center"><Users className="w-5 h-5" /></div>
-                <h3 className="font-bold text-gray-900 text-lg">Competitor Intel</h3>
-              </div>
-              <p className="text-gray-600 leading-relaxed">{result.competitorIntel}</p>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><Banknote className="w-5 h-5" /></div>
-                <h3 className="font-bold text-gray-900 text-lg">Capital Allocation</h3>
-              </div>
-              <p className="text-gray-600 leading-relaxed">{result.capitalAllocation}</p>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><AlertTriangle className="w-5 h-5" /></div>
-                <h3 className="font-bold text-gray-900 text-lg">Risk Assessment</h3>
-              </div>
-              <p className="text-gray-600 leading-relaxed">{result.riskAssessment}</p>
-            </div>
-          </div>
-
-          {/* Consultant Pivot (Only if score <= 5) */}
-          {result.score <= 5 && result.consultantPivot && (
-            <div className="bg-orange-50 rounded-3xl p-8 border border-orange-200 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center"><Briefcase className="w-5 h-5" /></div>
-                <h3 className="font-bold text-orange-900 text-xl">Consultant's Pivot Strategy</h3>
-              </div>
-              <p className="text-orange-800 leading-relaxed text-lg">{result.consultantPivot}</p>
-            </div>
-          )}
-
-          {/* Actions Bar */}
-          <div className="flex gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-            <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
-              <Save className="w-4 h-4" /> Save
-            </button>
-            <button onClick={handleDownloadPDF} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
-              <Download className="w-4 h-4" /> PDF
-            </button>
-            <button onClick={handleReset} className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
-              <RefreshCw className="w-4 h-4" /> New Idea
-            </button>
-          </div>
-
-          {/* AI Co-Founder Banner */}
-          <Link to="/ai-advisor" className="block bg-gradient-to-r from-indigo-600 to-violet-600 rounded-3xl p-6 sm:p-8 relative overflow-hidden group hover:shadow-lg hover:shadow-indigo-500/30 transition-all">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-10 -mt-20 group-hover:bg-white/20 transition-colors" />
-            <div className="flex items-center gap-6 relative z-10">
-              <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center shrink-0 border border-white/20 group-hover:scale-105 transition-transform">
-                <Bot className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white mb-1">Chat with your AI Co-Founder</h3>
-                <p className="text-indigo-100 font-medium text-sm md:text-base">Your Co-Founder has analyzed this Blueprint and is ready to help you execute it.</p>
-              </div>
-              <ArrowRight className="w-6 h-6 text-white ml-auto group-hover:translate-x-2 transition-transform" />
-            </div>
-          </Link>
-
-          {/* Next Steps Pipeline — Context-Aware */}
-          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mt-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className={"w-10 h-10 rounded-full flex items-center justify-center shrink-0 " + (result.score >= 6 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600')}>
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">
-                  {result.score >= 6 ? 'Your Idea is Viable! Next Steps:' : 'Your Idea Needs Refinement. Explore these tools:'}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {result.score >= 6 ? 'Tools recommended for your ' + (BUSINESS_TYPES.find(b => b.value === wizardData.businessType)?.label || 'business') + '.' : 'Use the pivot strategy above, then build your roadmap here.'}
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {getRelevantModules().map((mod, idx) => (
-                <Link key={mod.path} to={mod.path} className={"group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:shadow-md transition-all " + mod.hoverBorder}>
-                  <div className="flex items-center gap-3">
-                    <div className={"w-10 h-10 rounded-xl flex items-center justify-center " + mod.bgColor + " " + mod.textColor}><mod.icon className="w-5 h-5" /></div>
-                    <div>
-                      <h4 className="font-bold text-gray-900 text-sm">{mod.name}</h4>
-                      <p className="text-xs text-gray-500">{mod.desc}</p>
-                    </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* Left Column - Core Analysis (2/3 width) */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Core Analysis Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><TrendingUp className="w-5 h-5" /></div>
+                    <h3 className="font-bold text-gray-900 text-lg">Unit Economics</h3>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-gray-300 shrink-0" />
-                </Link>
-              ))}
+                  <p className="text-gray-600 leading-relaxed">{result.unitEconomics}</p>
+                </div>
+
+                <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center"><Users className="w-5 h-5" /></div>
+                    <h3 className="font-bold text-gray-900 text-lg">Competitor Intel</h3>
+                  </div>
+                  <p className="text-gray-600 leading-relaxed">{result.competitorIntel}</p>
+                </div>
+
+                <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><Banknote className="w-5 h-5" /></div>
+                    <h3 className="font-bold text-gray-900 text-lg">Capital Allocation</h3>
+                  </div>
+                  <p className="text-gray-600 leading-relaxed">{result.capitalAllocation}</p>
+                </div>
+
+                <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><AlertTriangle className="w-5 h-5" /></div>
+                    <h3 className="font-bold text-gray-900 text-lg">Risk Assessment</h3>
+                  </div>
+                  <p className="text-gray-600 leading-relaxed">{result.riskAssessment}</p>
+                </div>
+              </div>
+
+              {/* Consultant Pivot (Only if score <= 5) */}
+              {result.score <= 5 && result.consultantPivot && (
+                <div className="bg-orange-50 rounded-3xl p-8 border border-orange-200 shadow-sm animate-fade-in">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center"><Briefcase className="w-5 h-5" /></div>
+                    <h3 className="font-bold text-orange-900 text-xl">Consultant's Pivot Strategy</h3>
+                  </div>
+                  <p className="text-orange-800 leading-relaxed text-lg">{result.consultantPivot}</p>
+                </div>
+              )}
+
+              {/* Actions Bar */}
+              <div className="flex gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
+                  <Save className="w-4 h-4" /> Save
+                </button>
+                <button onClick={handleDownloadPDF} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
+                  <Download className="w-4 h-4" /> PDF
+                </button>
+                <button onClick={handleReset} className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
+                  <RefreshCw className="w-4 h-4" /> New Idea
+                </button>
+              </div>
+
+              {/* AI Co-Founder Banner */}
+              <Link to="/ai-advisor" className="block bg-gradient-to-r from-indigo-600 to-violet-600 rounded-3xl p-6 sm:p-8 relative overflow-hidden group hover:shadow-lg hover:shadow-indigo-500/30 transition-all">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-10 -mt-20 group-hover:bg-white/20 transition-colors" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center shrink-0 border border-white/20 group-hover:scale-105 transition-transform">
+                    <Bot className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-1">Chat with your AI Co-Founder</h3>
+                    <p className="text-indigo-100 font-medium text-sm md:text-base">Your Co-Founder has analyzed this Blueprint and is ready to help you execute it.</p>
+                  </div>
+                  <ArrowRight className="w-6 h-6 text-white ml-auto group-hover:translate-x-2 transition-transform" />
+                </div>
+              </Link>
+            </div>
+
+            {/* Right Column - Recommended Modules (1/3 width) */}
+            <div className="lg:col-span-1 space-y-4 lg:sticky lg:top-6">
+              <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={"w-10 h-10 rounded-full flex items-center justify-center shrink-0 " + (result.score >= 6 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600')}>
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-gray-900 text-lg leading-tight">Recommended Tools</h3>
+                    <p className="text-xs text-gray-500 font-medium mt-0.5">
+                      Tailored for {BUSINESS_TYPES.find(b => b.value === wizardData.businessType)?.label || 'your business'}.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {getRelevantModules().map((mod) => (
+                    <Link key={mod.path} to={mod.path} className={"group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:shadow-md transition-all " + mod.hoverBorder}>
+                      <div className="flex items-center gap-3">
+                        <div className={"w-10 h-10 rounded-xl flex items-center justify-center shrink-0 " + mod.bgColor + " " + mod.textColor}><mod.icon className="w-5 h-5" /></div>
+                        <div>
+                          <h4 className="font-bold text-gray-900 text-sm group-hover:text-indigo-600 transition-colors">{mod.name}</h4>
+                          <p className="text-xs text-gray-500 leading-normal">{mod.desc}</p>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-gray-300 shrink-0 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  ))}
+              </div>
             </div>
           </div>
         </div>
+      </div>
       )}
     </div>
   );
