@@ -75,22 +75,22 @@ export default function SemanticSearch({ isOpen, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-slide-up">
+      <div className="relative w-full max-w-2xl bg-white/85 backdrop-blur-3xl rounded-3xl shadow-2xl overflow-hidden animate-slide-up border border-white/50 ring-1 ring-black/5">
         {/* Search Input */}
-        <div className="flex items-center gap-3 p-4 border-b border-gray-100">
-          <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shrink-0">
-            <Search className="w-4 h-4 text-white" />
+        <div className="flex items-center gap-3 p-4 border-b border-gray-200/50 bg-white/50">
+          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shrink-0 shadow-sm border border-white/20">
+            <Search className="w-4 h-4 text-white drop-shadow-sm" />
           </div>
           <input
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            className="flex-1 text-gray-800 text-base placeholder-gray-400 outline-none bg-transparent"
-            placeholder='Try "I want to sell fish in Kasama"...'
+            className="flex-1 text-gray-800 text-lg placeholder-gray-400/80 outline-none bg-transparent font-medium"
+            placeholder="Search IMPUNGA..."
           />
           {loading ? (
             <Loader2 className="w-5 h-5 text-primary animate-spin shrink-0" />
@@ -111,24 +111,21 @@ export default function SemanticSearch({ isOpen, onClose }) {
         <div className="p-4 max-h-[70vh] overflow-y-auto">
           {/* Initial state — example queries */}
           {!hasSearched && (
-            <div>
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> Try these searches
+            <div className="py-2">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-blue-500" /> Suggested Searches
               </p>
               <div className="flex flex-wrap gap-2">
                 {EXAMPLE_QUERIES.map(ex => (
                   <button
                     key={ex}
                     onClick={() => handleExampleClick(ex)}
-                    className="text-sm text-primary bg-blue-50 border border-primary/20 px-3 py-1.5 rounded-xl hover:bg-primary hover:text-white transition-colors"
+                    className="text-sm text-gray-700 bg-white/60 border border-gray-200/60 px-4 py-2 rounded-full hover:bg-white hover:shadow-sm transition-all"
                   >
                     {ex}
                   </button>
                 ))}
               </div>
-              <p className="text-xs text-gray-400 mt-4 text-center">
-                Type anything in natural language — IMPUNGA understands your intent
-              </p>
             </div>
           )}
 
@@ -163,7 +160,7 @@ export default function SemanticSearch({ isOpen, onClose }) {
                       <button
                         key={i}
                         onClick={() => handleNavigate(mod.path)}
-                        className={`w-full text-left rounded-xl p-3 border border-l-4 ${PRIORITY_COLORS[mod.priority] || PRIORITY_COLORS.low} hover:shadow-sm transition-shadow`}
+                        className={`w-full text-left rounded-2xl p-3 border bg-white/60 hover:bg-white hover:shadow-md transition-all ${PRIORITY_COLORS[mod.priority] || PRIORITY_COLORS.low}`}
                       >
                         <div className="flex items-center justify-between">
                           <div>
@@ -238,10 +235,10 @@ export default function SemanticSearch({ isOpen, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="border-t border-gray-100 px-4 py-2 flex items-center justify-between">
-          <p className="text-xs text-gray-400">Powered by Gemini AI · Understanding natural language</p>
-          <button onClick={onClose} className="text-xs text-gray-400 hover:text-gray-600 font-medium">
-            Press ESC to close
+        <div className="border-t border-gray-200/50 bg-white/30 px-4 py-3 flex items-center justify-between">
+          <p className="text-xs text-gray-500 font-medium">Powered by Gemini AI</p>
+          <button onClick={onClose} className="text-xs bg-gray-200/50 hover:bg-gray-300/50 px-2 py-1 rounded-md text-gray-600 font-medium transition-colors">
+            ESC
           </button>
         </div>
       </div>
