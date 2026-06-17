@@ -4,7 +4,7 @@ import {
   Lightbulb, Building2, FileText, Target, Sparkles,
   Calculator, Receipt, ShoppingCart, BookOpen,
   DollarSign, Share2, MessageCircle,
-  Bot, GraduationCap,
+  Bot, GraduationCap, User, Briefcase,
   ArrowRight, Sprout, ChevronRight
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
@@ -13,55 +13,22 @@ import { getGreeting, getFirstName, getDaysSince } from '../lib/utils';
 import { getDailyTip } from '../data/dailyTips';
 import { PageLoader } from '../components/shared/LoadingSpinner';
 
-const CATEGORIES = [
-  {
-    label: 'Get Started',
-    color: '#F39C12',
-    bg: 'bg-yellow-50',
-    text: 'text-yellow-600',
-    border: 'border-l-yellow-400',
-    modules: [
-      { path: '/idea-validator', icon: Lightbulb, name: 'Idea Validator', desc: 'Test if your idea works in Zambia' },
-      { path: '/registration-guide', icon: Building2, name: 'Registration Guide', desc: 'Step-by-step PACRA and ZRA guide' },
-    ],
-  },
-  {
-    label: 'Build Your Business',
-    color: '#1B4F72',
-    bg: 'bg-blue-50',
-    text: 'text-blue-600',
-    border: 'border-l-blue-400',
-    modules: [
-      { path: '/business-plan', icon: FileText, name: 'Business Plan Builder', desc: 'Build and download your plan as PDF' },
-      { path: '/swot-analysis', icon: Target, name: 'SWOT Analysis', desc: 'Analyse strengths and opportunities' },
-      { path: '/name-generator', icon: Sparkles, name: 'Name Generator', desc: 'AI generates Zambian business names' },
-    ],
-  },
-  {
-    label: 'Money and Finance',
-    color: '#1E8449',
-    bg: 'bg-green-50',
-    text: 'text-green-600',
-    border: 'border-l-green-400',
-    modules: [
-      { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Calculate true costs and profit margins' },
-      { path: '/business-ledger', icon: BookOpen, name: 'Business Ledger', desc: 'Track sales, expenses and debtors' },
-      { path: '/invoice-generator', icon: Receipt, name: 'Invoice Generator', desc: 'Create professional Kwacha invoices' },
-      { path: '/market-prices', icon: ShoppingCart, name: 'Market Prices', desc: 'Current prices across Zambian markets' },
-    ],
-  },
-  {
-    label: 'Grow and Market',
-    color: '#7D3C98',
-    bg: 'bg-purple-50',
-    text: 'text-purple-600',
-    border: 'border-l-purple-400',
-    modules: [
-      { path: '/funding-finder', icon: DollarSign, name: 'Funding Finder', desc: '25+ real Zambian funding sources' },
-      { path: '/social-media', icon: Share2, name: 'Social Media Generator', desc: 'AI writes your marketing posts' },
-      { path: '/whatsapp-templates', icon: MessageCircle, name: 'WhatsApp Templates', desc: 'Professional business messages' },
-    ],
-  },
+const SECTION_1_MODULES = [
+  { path: '/idea-validator', icon: Lightbulb, name: 'Idea Validator', desc: 'Test if your idea works in Zambia', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
+  { path: '/business-plan', icon: FileText, name: 'Business Plan Builder', desc: 'Build and download your plan as PDF', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
+  { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Calculate true costs and profit margins', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+  { path: '/funding-finder', icon: DollarSign, name: 'Funding Finder', desc: '25+ real Zambian funding sources', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
+  { path: '/ai-advisor', icon: Bot, name: 'AI Business Advisor', desc: 'Your personal AI mentor available 24 hours a day', bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-l-orange-400' },
+  { path: '/invoice-generator', icon: Receipt, name: 'Invoice Generator', desc: 'Create professional Kwacha invoices', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+  { path: '/registration-guide', icon: Building2, name: 'Registration Guide', desc: 'Step-by-step PACRA and ZRA guide', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
+  { path: '/swot-analysis', icon: Target, name: 'SWOT Analysis', desc: 'Analyse strengths and opportunities', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
+  { path: '/name-generator', icon: Sparkles, name: 'Business Name Generator', desc: 'AI generates Zambian business names', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
+  { path: '/business-ledger', icon: BookOpen, name: 'Business Ledger', desc: 'Track sales, expenses and debtors', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+];
+
+const SECTION_2_MODULES = [
+  { icon: User, name: 'Skill Profile Builder', desc: 'Build your professional skill portfolio' },
+  { icon: Briefcase, name: 'Career Matches', desc: 'Match your skills with Zambian job opportunities' },
 ];
 
 function ModuleCard({ path, icon: Icon, name, desc, bg, text, border }) {
@@ -107,6 +74,25 @@ function FullWidthCard({ path, icon: Icon, name, desc, bg, text, badge }) {
   );
 }
 
+function ComingSoonCard({ icon: Icon, name, desc }) {
+  return (
+    <div
+      className="flex flex-col gap-3 bg-gray-50 rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 border-l-gray-300 opacity-70 cursor-not-allowed"
+    >
+      <div className="flex items-start justify-between">
+        <div className="w-9 h-9 bg-gray-200/50 rounded-xl flex items-center justify-center shrink-0">
+          <Icon className="w-4 h-4 text-gray-400" />
+        </div>
+        <span className="text-[10px] bg-gray-200/80 text-gray-500 font-semibold px-2 py-0.5 rounded-full">Coming Soon</span>
+      </div>
+      <div>
+        <p className="font-bold text-gray-800 text-sm leading-tight">{name}</p>
+        <p className="text-gray-400 text-xs mt-0.5 leading-snug">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const { user, userProfile, loading } = useAuthStore();
   const { getUserDocumentCount } = useFirestore();
@@ -141,7 +127,7 @@ export default function Dashboard() {
         <div className="relative z-10">
           <p className="text-blue-200 text-sm font-medium">{getGreeting()}</p>
           <h1 className="text-2xl font-bold text-white mt-0.5">{userProfile?.fullName || 'Entrepreneur'}</h1>
-          <p className="text-blue-200 text-sm mt-1">Plant Your Idea. Grow Your Business.</p>
+          <p className="text-blue-200 text-sm mt-1">Start. Match. Build Zambia.</p>
           <div className="flex items-center gap-2 mt-3">
             <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full font-medium">Day {daysSince + 1} on IMPUNGA</span>
             {userProfile?.province && <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full">{userProfile.province}</span>}
@@ -184,46 +170,27 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Categorised Module Grid */}
-      {CATEGORIES.map(({ label, bg, text, border, modules }) => (
-        <div key={label} className="mb-6">
-          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">{label}</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {modules.map(mod => (
-              <ModuleCard key={mod.path} {...mod} bg={bg} text={text} border={border} />
-            ))}
-          </div>
-        </div>
-      ))}
-
-      {/* AI Powered — Full Width */}
-      <div className="mb-4">
-        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">AI Powered</h2>
+      {/* Engine 1 — Start Your Business */}
+      <div className="mb-6">
+        <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
+          Engine 1 — Start Your Business
+        </h2>
         <div className="grid grid-cols-2 gap-3">
-          <FullWidthCard
-            path="/ai-advisor"
-            icon={Bot}
-            name="AI Business Advisor"
-            desc="Your personal AI mentor available 24 hours a day"
-            bg="bg-orange-50"
-            text="text-orange-600"
-            badge="Premium"
-          />
+          {SECTION_1_MODULES.map(mod => (
+            <ModuleCard key={mod.path} {...mod} />
+          ))}
         </div>
       </div>
 
-      {/* Business Quiz — Full Width */}
+      {/* Engine 2 — Match Your Skills */}
       <div className="mb-6">
-        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Test Your Knowledge</h2>
+        <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
+          Engine 2 — Match Your Skills
+        </h2>
         <div className="grid grid-cols-2 gap-3">
-          <FullWidthCard
-            path="/business-quiz"
-            icon={GraduationCap}
-            name="Business Quiz"
-            desc="20 questions on Zambian entrepreneurship knowledge"
-            bg="bg-indigo-50"
-            text="text-indigo-600"
-          />
+          {SECTION_2_MODULES.map(mod => (
+            <ComingSoonCard key={mod.name} {...mod} />
+          ))}
         </div>
       </div>
     </div>

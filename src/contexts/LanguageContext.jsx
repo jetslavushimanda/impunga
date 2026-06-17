@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 
 const translations = {
   en: {
-    appTagline: 'Plant Your Idea. Grow Your Business. Feed Zambia.',
+    appTagline: 'Start. Match. Build Zambia.',
     dashboard: 'Dashboard',
     ideaValidator: 'Idea Validator',
     registrationGuide: 'Registration Guide',

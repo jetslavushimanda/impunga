@@ -11,7 +11,7 @@ export default defineConfig({
       manifest: {
         name: 'IMPUNGA - Business Advisor',
         short_name: 'IMPUNGA',
-        description: 'Plant Your Idea. Grow Your Business. Feed Zambia.',
+        description: 'Start. Match. Build Zambia.',
         theme_color: '#1B4F72',
         background_color: '#F4F6F7',
         display: 'standalone',

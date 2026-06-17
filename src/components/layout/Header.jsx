@@ -27,7 +27,7 @@ export default function Header({ onMenuToggle }) {
         </button>
         <Link to="/dashboard" className="flex items-center gap-2">
           <span className="text-xl font-bold text-primary">IMPUNGA</span>
-          <span className="hidden sm:block text-xs text-gray-400 font-medium">Plant. Grow. Feed Zambia.</span>
+          <span className="hidden sm:block text-xs text-gray-400 font-medium">Start. Match. Build Zambia.</span>
         </Link>
       </div>
 

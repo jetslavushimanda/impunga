@@ -14,11 +14,11 @@ export default function Landing() {
         </div>
 
         <p className="text-xl md:text-2xl font-semibold text-primary-light mb-2">
-          Plant Your Idea. Grow Your Business. Feed Zambia.
+          Start. Match. Build Zambia.
         </p>
 
         <p className="text-blue-300 text-sm md:text-base mb-12">
-          Zambia's first AI-powered entrepreneurship platform.
+          Zambia's Economic Intelligence Platform
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4">
@@ -37,7 +37,7 @@ export default function Landing() {
       {/* STATS STRIP */}
       <div className="bg-primary-dark py-4 px-6">
         <p className="text-center text-blue-300 text-sm font-medium tracking-wide">
-          13 Tools &nbsp;·&nbsp; AI Powered &nbsp;·&nbsp; 25+ Funders &nbsp;·&nbsp; 116 Districts &nbsp;·&nbsp; K0 Cost
+          Multiple Modules &nbsp;·&nbsp; AI Powered &nbsp;·&nbsp; 25+ Funders &nbsp;·&nbsp; 116 Districts &nbsp;·&nbsp; K0 Cost
         </p>
       </div>
 
