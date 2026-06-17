@@ -119,28 +119,33 @@ function StartupModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, ba
 
 function SectionHeader({ title, description, icon: Icon, badge, gradient = "from-indigo-500 to-purple-600", rightAction }) {
   return (
-    <div className="relative overflow-hidden bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem] p-6 sm:p-8 mb-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-      <div className={`absolute -right-20 -top-20 w-64 h-64 bg-gradient-to-br ${gradient} opacity-10 blur-3xl rounded-full pointer-events-none`} />
+    <div className="relative pb-6 mb-8 border-b border-gray-200/60 flex flex-col md:flex-row md:items-end justify-between gap-4 z-10">
+      {/* Very subtle ambient background glow */}
+      <div className={`absolute -left-10 -top-10 w-48 h-48 bg-gradient-to-br ${gradient} opacity-[0.03] blur-3xl rounded-full pointer-events-none`} />
       
-      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-        {Icon && (
-          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20`}>
-            <Icon className="w-8 h-8 text-white drop-shadow-sm" />
+      <div className="relative z-10">
+        {badge && (
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 text-gray-600 text-[10px] font-bold uppercase tracking-wider rounded-full mb-3">
+            {badge}
           </div>
         )}
-        <div>
-          {badge && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 text-gray-800 text-xs font-bold uppercase tracking-wider rounded-full mb-3 shadow-sm border border-gray-100">
-              {badge}
+        <div className="flex items-center gap-3">
+          {Icon && (
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-sm shadow-indigo-500/10`}>
+              <Icon className="w-5 h-5 text-white drop-shadow-sm" />
             </div>
           )}
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">{title}</h1>
-          <p className="text-gray-500 font-medium text-base max-w-2xl leading-relaxed">{description}</p>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-gray-900 via-gray-800 to-gray-600 tracking-tight pb-0.5">
+            {title}
+          </h1>
         </div>
+        <p className="text-gray-500 font-medium text-sm mt-2 max-w-2xl leading-relaxed">
+          {description}
+        </p>
       </div>
       
       {rightAction && (
-        <div className="relative z-10 shrink-0 w-full lg:w-auto">
+        <div className="relative z-10 shrink-0 w-full md:w-auto mt-2 md:mt-0">
           {rightAction}
         </div>
       )}
@@ -285,51 +290,45 @@ export default function BusinessHubView() {
             gradient="from-blue-600 to-indigo-600"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl">
             {/* Path A */}
             <button 
               onClick={() => setView('ideation')}
-              className="group text-left relative bg-white/85 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/60 hover:border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
+              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-md transition-all duration-200 flex flex-col"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent pointer-events-none" />
-              <div className="relative z-10 w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-[1.25rem] flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
-                <Rocket className="w-8 h-8 text-white" />
-              </div>
-              <h2 className="text-2xl font-extrabold text-gray-900 mb-2 relative z-10">Start a Business</h2>
-              <p className="text-gray-500 font-medium mb-8 relative z-10 flex-1">I have an idea or need guidance figuring out how to start a business in Zambia.</p>
-              
-              <div className="relative z-10 flex items-center justify-between w-full">
-                <span className="text-blue-600 font-bold text-sm">Explore Ideation Tools</span>
-                <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-sm">
-                  <ChevronRight className="w-5 h-5" />
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                  <Rocket className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900 mb-1">Start a Business</h2>
+                  <p className="text-gray-500 text-sm font-medium leading-relaxed">I have an idea or need guidance on how to start a business in Zambia.</p>
                 </div>
               </div>
-
-              {/* Decorative blur element */}
-              <div className="absolute -right-10 -top-10 w-48 h-48 bg-blue-400/10 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-400/20 transition-colors" />
+              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
+                <span className="text-blue-600 font-bold text-xs uppercase tracking-wide">Explore Tools</span>
+                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+              </div>
             </button>
 
             {/* Path B */}
             <button 
               onClick={handlePathBClick}
-              className="group text-left relative bg-white/85 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/60 hover:border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
+              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/30 hover:shadow-md transition-all duration-200 flex flex-col"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent pointer-events-none" />
-              <div className="relative z-10 w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.25rem] flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
-                <Briefcase className="w-8 h-8 text-white" />
-              </div>
-              <h2 className="text-2xl font-extrabold text-gray-900 mb-2 relative z-10">Manage my Business</h2>
-              <p className="text-gray-500 font-medium mb-8 relative z-10 flex-1">I already have a business (registered or unregistered) and need operational tools.</p>
-              
-              <div className="relative z-10 flex items-center justify-between w-full">
-                <span className="text-indigo-600 font-bold text-sm">Enter Workspace</span>
-                <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors shadow-sm">
-                  <ChevronRight className="w-5 h-5" />
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center shrink-0">
+                  <Briefcase className="w-6 h-6 text-indigo-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900 mb-1">Manage my Business</h2>
+                  <p className="text-gray-500 text-sm font-medium leading-relaxed">I already have a business and need operational tools to run it.</p>
                 </div>
               </div>
-              
-              {/* Decorative blur element */}
-              <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-400/20 transition-colors" />
+              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
+                <span className="text-indigo-600 font-bold text-xs uppercase tracking-wide">Enter Workspace</span>
+                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+              </div>
             </button>
           </div>
         </div>
