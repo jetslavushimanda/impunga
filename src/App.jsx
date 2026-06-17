@@ -40,7 +40,10 @@ import CVGenerator from './pages/CVGenerator';
 import CoverLetterGenerator from './pages/CoverLetterGenerator';
 import InterviewPrep from './pages/InterviewPrep';
 import SkillGapCloser from './pages/SkillGapCloser';
-
+import PortfolioShowcase from './pages/PortfolioShowcase';
+import B2BTenders from './pages/B2BTenders';
+import GigBoard from './pages/GigBoard';
+import AssetSharing from './pages/AssetSharing';
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -112,7 +115,10 @@ export default function App() {
           <Route path="/interview-prep" element={<InterviewPrep />} />
           <Route path="/freelance-calculator" element={<FreelanceCalculator />} />
           <Route path="/skill-gap-closer" element={<SkillGapCloser />} />
-          <Route path="/portfolio-showcase" element={<PlaceholderPage title="Portfolio Showcase" />} />
+          <Route path="/portfolio-showcase" element={<PortfolioShowcase />} />
+          <Route path="/b2b-tenders" element={<B2BTenders />} />
+          <Route path="/gig-board" element={<GigBoard />} />
+          <Route path="/asset-sharing" element={<AssetSharing />} />
           <Route path="/verified-directory" element={<PlaceholderPage title="Verified Service Directory" />} />
           <Route path="/learning-insights" element={<PlaceholderPage title="Learning Insight Cards" />} />
           <Route path="/regulatory-gateway" element={<RegistrationGuide />} />

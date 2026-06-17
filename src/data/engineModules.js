@@ -3,7 +3,8 @@ import {
   Calculator, Receipt, ShoppingCart, BookOpen,
   DollarSign, Share2, MessageCircle,
   Bot, GraduationCap, User, Briefcase, ShieldCheck,
-  Globe, TrendingUp, Handshake, Shield, PenTool, Compass
+  Globe, TrendingUp, Handshake, Shield, PenTool, Compass,
+  Package
 } from 'lucide-react';
 
 export const ENGINE_MODULES = {
@@ -57,6 +58,9 @@ export const ENGINE_MODULES = {
     modules: [
       { path: '/market-directory', icon: ShieldCheck, name: 'Verified Directory', desc: 'Marketplace for verified users', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
       { path: '/portfolio-showcase', icon: User, name: 'Portfolio Showcase', desc: 'Monetize skills through P2P trade', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+      { path: '/b2b-tenders', icon: FileText, name: 'B2B Tenders', desc: 'Corporate procurement notices and contracts', bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-l-orange-400' },
+      { path: '/gig-board', icon: Briefcase, name: 'Gig Board', desc: 'Freelance work and short-term projects', bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-l-indigo-400' },
+      { path: '/asset-sharing', icon: Package, name: 'Asset Sharing', desc: 'Rent idle equipment and workspaces', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-l-emerald-400' },
     ]
   },
   gateway: {
