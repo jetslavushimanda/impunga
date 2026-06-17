@@ -45,24 +45,6 @@ export default function Sidebar({ isOpen, onClose }) {
   const { user, updateProfile } = useAuth();
   const { selectedPath, setSelectedPath, userProfile } = useAuthStore();
 
-  const currentPath = selectedPath || userProfile?.selectedPath || 'both';
-
-  const showEngine1 = currentPath === 'engine1' || currentPath === 'both';
-  const showEngine2 = currentPath === 'engine2' || currentPath === 'both';
-
-  async function handleSwitchPath() {
-    try {
-      if (user) {
-        await updateProfile({ selectedPath: null });
-      }
-      setSelectedPath(null);
-      navigate('/choose-path');
-      onClose();
-    } catch (err) {
-      console.error('Failed to switch path:', err);
-    }
-  }
-
   return (
     <>
       {isOpen && (
@@ -97,35 +79,31 @@ export default function Sidebar({ isOpen, onClose }) {
             </NavLink>
           </div>
 
-          {showEngine1 && (
-            <div className="mt-6">
-              <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                Business
-              </p>
-              <div className="space-y-1">
-                {ENGINE_1_ITEMS.map(({ path, icon: Icon, label }) => (
-                  <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
-                    <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
-                  </NavLink>
-                ))}
-              </div>
+          <div className="mt-6">
+            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+              Business
+            </p>
+            <div className="space-y-1">
+              {ENGINE_1_ITEMS.map(({ path, icon: Icon, label }) => (
+                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
+                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
+                </NavLink>
+              ))}
             </div>
-          )}
+          </div>
 
-          {showEngine2 && (
-            <div className="mt-6">
-              <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                Skills
-              </p>
-              <div className="space-y-1">
-                {ENGINE_2_ITEMS.map(({ path, icon: Icon, label }) => (
-                  <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
-                    <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
-                  </NavLink>
-                ))}
-              </div>
+          <div className="mt-6">
+            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+              Skills
+            </p>
+            <div className="space-y-1">
+              {ENGINE_2_ITEMS.map(({ path, icon: Icon, label }) => (
+                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
+                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
+                </NavLink>
+              ))}
             </div>
-          )}
+          </div>
 
           <div className="mt-6">
             <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
@@ -186,15 +164,8 @@ export default function Sidebar({ isOpen, onClose }) {
           </div>
         </nav>
 
-        {/* Footer — always visible at bottom */}
         <div className="shrink-0 p-3 border-t border-gray-100 flex flex-col gap-2">
-          <button
-            onClick={handleSwitchPath}
-            className="text-xs text-gray-500 hover:text-primary font-medium text-center w-full py-1 hover:underline cursor-pointer bg-transparent border-none focus:outline-none"
-          >
-            Switch Path
-          </button>
-          <p className="text-[10px] text-gray-400 text-center">IMPUNGA © JETS 2026 · Zambia</p>
+          <p className="text-[10px] text-gray-400 text-center mt-2">IMPUNGA © JETS 2026 · Zambia</p>
         </div>
       </aside>
     </>

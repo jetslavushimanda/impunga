@@ -28,7 +28,7 @@ export default function Login() {
     setAuthError('');
     try {
       await login(data.email, data.password);
-      navigate('/choose-path');
+      navigate('/dashboard');
     } catch (err) {
       setAuthError(getFriendlyError(err.code));
     } finally {
@@ -41,7 +41,7 @@ export default function Login() {
     setAuthError('');
     try {
       await loginWithGoogle();
-      navigate('/choose-path');
+      navigate('/dashboard');
     } catch (err) {
       setAuthError('Google sign in failed. Please try again.');
     } finally {

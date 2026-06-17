@@ -15,17 +15,36 @@ import { PageLoader } from '../components/shared/LoadingSpinner';
 import { useAuth } from '../hooks/useAuth';
 import { CAREERS } from './CareerMatches';
 
-const SECTION_1_MODULES = [
+const ENGINE_1_MODULES = [
   { path: '/idea-validator', icon: Lightbulb, name: 'Idea Validator', desc: 'Test if your idea works in Zambia', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
+  { path: '/name-generator', icon: Sparkles, name: 'Name Generator', desc: 'AI generates Zambian business names', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
   { path: '/business-plan', icon: FileText, name: 'Business Plan Builder', desc: 'Build and download your plan as PDF', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
-  { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Calculate true costs and profit margins', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
-  { path: '/funding-finder', icon: DollarSign, name: 'Funding Finder', desc: '25+ real Zambian funding sources', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
-  { path: '/ai-advisor', icon: Bot, name: 'AI Business Advisor', desc: 'Your personal AI mentor available 24 hours a day', bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-l-orange-400' },
-  { path: '/invoice-generator', icon: Receipt, name: 'Invoice Generator', desc: 'Create professional Kwacha invoices', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
-  { path: '/registration-guide', icon: Building2, name: 'Registration Guide', desc: 'Step-by-step PACRA and ZRA guide', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
-  { path: '/swot-analysis', icon: Target, name: 'SWOT Analysis', desc: 'Analyse strengths and opportunities', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
-  { path: '/name-generator', icon: Sparkles, name: 'Business Name Generator', desc: 'AI generates Zambian business names', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
   { path: '/business-ledger', icon: BookOpen, name: 'Business Ledger', desc: 'Track sales, expenses and debtors', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+  { path: '/invoice-generator', icon: Receipt, name: 'Invoice Generator', desc: 'Create professional Kwacha invoices', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+  { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Calculate true costs and profit margins', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+  { path: '/swot-analysis', icon: Target, name: 'SWOT Analysis', desc: 'Analyse strengths and opportunities', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
+  { path: '/social-media', icon: Share2, name: 'Marketing Tools', desc: 'AI-generated content and templates', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
+];
+
+const ENGINE_2_MODULES = [
+  { path: '/skill-profile-builder', icon: User, name: 'Skill Profile Builder', desc: 'Build your professional skill portfolio', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
+  { path: '/career-matches', icon: Briefcase, name: 'Career Matches', desc: 'Match your skills with Zambian jobs', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
+  { path: '/portfolio-showcase', icon: User, name: 'Portfolio Showcase', desc: 'Monetize skills through P2P trade', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+];
+
+const ENGINE_3_MODULES = [
+  { path: '/funding-finder', icon: DollarSign, name: 'Funding Finder', desc: 'Institutional Gateway for Grants & Loans', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+];
+
+const ENGINE_4_MODULES = [
+  { path: '/verified-directory', icon: ShieldCheck, name: 'Verified Directory', desc: 'Marketplace for verified users', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
+  { path: '/ai-advisor', icon: Bot, name: 'Mentorship Hub', desc: 'AI-driven sector-specific mentorship', bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-l-orange-400' },
+];
+
+const ENGINE_5_MODULES = [
+  { path: '/learning-insights', icon: Lightbulb, name: 'Learning Insight Cards', desc: 'Behavioral triggers & education', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
+  { path: '/registration-guide', icon: Building2, name: 'Regulatory Gateway', desc: 'Deterministic interface for PACRA/ZRA', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
+  { path: '/compliance-tracker', icon: ShieldCheck, name: 'Compliance Tracker', desc: 'Automated health checks & deadlines', bg: 'bg-red-50', text: 'text-red-600', border: 'border-l-red-400' },
 ];
 
 
@@ -176,7 +195,6 @@ export default function Dashboard() {
 
   const firstName = getFirstName(userProfile?.fullName || '');
   const daysSince = getDaysSince(userProfile?.createdAt);
-  const currentPath = selectedPath || userProfile?.selectedPath || 'both';
 
   return (
     <div className="max-w-2xl mx-auto pb-24 animate-fade-in">
@@ -197,49 +215,37 @@ export default function Dashboard() {
       </div>
 
       {/* Dynamic Summary Cards */}
-      {(currentPath === 'engine1' || currentPath === 'both') && (
-        <div className="mb-5">
-          {currentPath === 'both' && (
-            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 px-1">Business Summary</h3>
-          )}
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: 'Ideas Validated', value: counts.ideas, color: 'text-yellow-600', border: 'border-l-yellow-400' },
-              { label: 'Business Plans', value: counts.plans, color: 'text-blue-600', border: 'border-l-blue-400' },
-              { label: 'Pricing Done', value: counts.calcs, color: 'text-green-600', border: 'border-l-green-400' },
-              { label: 'Funding Saved', value: counts.funding, color: 'text-purple-600', border: 'border-l-purple-400' },
-            ].map(({ label, value, color, border }) => (
-              <div key={label} className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 ${border}`}>
-                <p className={`text-3xl font-bold ${color}`}>{value}</p>
-                <p className="text-gray-400 text-xs mt-1">{label}</p>
-              </div>
-            ))}
-          </div>
+      <div className="mb-5">
+        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 px-1">Ecosystem Summary</h3>
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          {[
+            { label: 'Ideas Validated', value: counts.ideas, color: 'text-yellow-600', border: 'border-l-yellow-400' },
+            { label: 'Business Plans', value: counts.plans, color: 'text-blue-600', border: 'border-l-blue-400' },
+            { label: 'Pricing Done', value: counts.calcs, color: 'text-green-600', border: 'border-l-green-400' },
+            { label: 'Funding Saved', value: counts.funding, color: 'text-purple-600', border: 'border-l-purple-400' },
+          ].map(({ label, value, color, border }) => (
+            <div key={label} className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 ${border}`}>
+              <p className={`text-3xl font-bold ${color}`}>{value}</p>
+              <p className="text-gray-400 text-xs mt-1">{label}</p>
+            </div>
+          ))}
         </div>
-      )}
-
-      {(currentPath === 'engine2' || currentPath === 'both') && (
-        <div className="mb-5">
-          {currentPath === 'both' && (
-            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 mt-4 px-1">Skills Summary</h3>
-          )}
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: 'Skills Registered', value: skillsStats.skillsCount, color: 'text-blue-600', border: 'border-l-blue-400' },
-              { label: 'Top Career Match', value: skillsStats.topMatch, color: 'text-purple-600', border: 'border-l-purple-400', isText: true },
-              { label: 'Top Match Score', value: skillsStats.matchScore, color: 'text-green-600', border: 'border-l-green-400' },
-              { label: 'Missing Skills', value: skillsStats.missingSkills, color: 'text-orange-600', border: 'border-l-orange-400' },
-            ].map(({ label, value, color, border, isText }) => (
-              <div key={label} className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 ${border} flex flex-col justify-between`}>
-                <p className={`font-bold ${color} ${isText ? 'text-xs sm:text-sm leading-snug line-clamp-2 h-10 flex items-center' : 'text-3xl'}`}>
-                  {value}
-                </p>
-                <p className="text-gray-400 text-xs mt-1">{label}</p>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { label: 'Skills Registered', value: skillsStats.skillsCount, color: 'text-blue-600', border: 'border-l-blue-400' },
+            { label: 'Top Career Match', value: skillsStats.topMatch, color: 'text-purple-600', border: 'border-l-purple-400', isText: true },
+            { label: 'Top Match Score', value: skillsStats.matchScore, color: 'text-green-600', border: 'border-l-green-400' },
+            { label: 'Missing Skills', value: skillsStats.missingSkills, color: 'text-orange-600', border: 'border-l-orange-400' },
+          ].map(({ label, value, color, border, isText }) => (
+            <div key={label} className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 ${border} flex flex-col justify-between`}>
+              <p className={`font-bold ${color} ${isText ? 'text-xs sm:text-sm leading-snug line-clamp-2 h-10 flex items-center' : 'text-3xl'}`}>
+                {value}
+              </p>
+              <p className="text-gray-400 text-xs mt-1">{label}</p>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* Daily Tip Card */}
       <div className="rounded-2xl p-4 mb-6 border border-yellow-200" style={{ background: '#FFFBEB' }}>
@@ -260,79 +266,50 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Engine 1 — Start Your Business */}
-      {(currentPath === 'engine1' || currentPath === 'both') && (
-        <div className="mb-6">
-          <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
-            Engine 1 — Start Your Business
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            {SECTION_1_MODULES.map(mod => (
-              <ModuleCard key={mod.path} {...mod} />
-            ))}
-          </div>
+      <div className="mb-6">
+        <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
+          Engine 1 — Business
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {ENGINE_1_MODULES.map(mod => <ModuleCard key={mod.path} {...mod} />)}
         </div>
-      )}
+      </div>
 
-      {/* Engine 2 — Match Your Skills */}
-      {(currentPath === 'engine2' || currentPath === 'both') && (
-        <div className="mb-6">
-          <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
-            Engine 2 — Match Your Skills
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            <ModuleCard
-              path="/skill-profile-builder"
-              icon={User}
-              name="Skill Profile Builder"
-              desc="Build your professional skill portfolio"
-              bg="bg-blue-50"
-              text="text-blue-600"
-              border="border-l-blue-400"
-            />
-            <ModuleCard
-              path="/career-matches"
-              icon={Briefcase}
-              name="Career Matches"
-              desc="Match your skills with Zambian job opportunities"
-              bg="bg-purple-50"
-              text="text-purple-600"
-              border="border-l-purple-400"
-            />
-          </div>
+      <div className="mb-6">
+        <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
+          Engine 2 — Skills
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {ENGINE_2_MODULES.map(mod => <ModuleCard key={mod.path} {...mod} />)}
         </div>
-      )}
+      </div>
 
-      {/* Unlock banners */}
-      {currentPath === 'engine1' && (
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 animate-slide-up">
-          <div>
-            <p className="font-bold text-gray-800 text-sm">Want to match your skills too?</p>
-            <p className="text-gray-500 text-xs mt-0.5">Switch to full access to unlock career matching tools.</p>
-          </div>
-          <button
-            onClick={handleUnlock}
-            className="btn-primary text-xs py-2 px-4 whitespace-nowrap min-h-[36px]"
-          >
-            Unlock Engine 2
-          </button>
+      <div className="mb-6">
+        <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
+          Engine 3 — Finance
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {ENGINE_3_MODULES.map(mod => <ModuleCard key={mod.path} {...mod} />)}
         </div>
-      )}
+      </div>
 
-      {currentPath === 'engine2' && (
-        <div className="mt-8 bg-green-50 border border-green-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 animate-slide-up">
-          <div>
-            <p className="font-bold text-gray-800 text-sm">Want to start a business too?</p>
-            <p className="text-gray-500 text-xs mt-0.5">Switch to full access to unlock entrepreneurship tools.</p>
-          </div>
-          <button
-            onClick={handleUnlock}
-            className="btn-green text-xs py-2 px-4 whitespace-nowrap min-h-[36px]"
-          >
-            Unlock Engine 1
-          </button>
+      <div className="mb-6">
+        <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
+          Engine 4 — Connect
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {ENGINE_4_MODULES.map(mod => <ModuleCard key={mod.path} {...mod} />)}
         </div>
-      )}
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
+          Engine 5 — Gateway
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {ENGINE_5_MODULES.map(mod => <ModuleCard key={mod.path} {...mod} />)}
+        </div>
+      </div>
     </div>
   );
 }
