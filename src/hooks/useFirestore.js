@@ -60,15 +60,25 @@ export function useFirestore() {
     setLoading(true);
     setError(null);
     try {
-      const q = query(
-        collection(db, collectionName),
-        where('userId', '==', user.uid),
-        orderBy(orderByField, 'desc'),
-        limit(limitCount),
-      );
+      let q;
+      if (orderByField) {
+        q = query(
+          collection(db, collectionName),
+          where('userId', '==', user.uid),
+          orderBy(orderByField, 'desc'),
+          limit(limitCount)
+        );
+      } else {
+        q = query(
+          collection(db, collectionName),
+          where('userId', '==', user.uid),
+          limit(limitCount)
+        );
+      }
       const snap = await getDocs(q);
       return snap.docs.map(d => ({ id: d.id, ...d.data() }));
     } catch (err) {
+      console.error('getUserDocuments error:', err);
       setError(err.message);
       return [];
     } finally {

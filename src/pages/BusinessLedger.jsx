@@ -311,13 +311,20 @@ export default function BusinessLedger() {
 
   async function loadData() {
     const [s, e, d] = await Promise.all([
-      getUserDocuments('sales', 'createdAt', 200),
-      getUserDocuments('expenses', 'createdAt', 200),
-      getUserDocuments('debtors', 'createdAt', 200),
+      getUserDocuments('sales', null, 500),
+      getUserDocuments('expenses', null, 500),
+      getUserDocuments('debtors', null, 500),
     ]);
-    setSales(s);
-    setExpenses(e);
-    setDebtors(d);
+    
+    const sortByDate = (a, b) => {
+      const da = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+      const db = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+      return db - da;
+    };
+    
+    setSales(s.sort(sortByDate));
+    setExpenses(e.sort(sortByDate));
+    setDebtors(d.sort(sortByDate));
   }
 
   async function handleAddSale() {
