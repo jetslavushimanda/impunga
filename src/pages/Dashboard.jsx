@@ -5,7 +5,7 @@ import {
   Calculator, Receipt, ShoppingCart, BookOpen,
   DollarSign, Share2, MessageCircle,
   Bot, GraduationCap, User, Briefcase,
-  ArrowRight, Sprout, ChevronRight
+  ArrowRight, Sprout, ChevronRight, ShieldCheck
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import { useFirestore } from '../hooks/useFirestore';
