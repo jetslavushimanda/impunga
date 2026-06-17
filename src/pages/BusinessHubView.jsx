@@ -1,11 +1,70 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2, Lightbulb, Sparkles, ArrowRight, Trash2 } from 'lucide-react';
+import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2, Lightbulb, Sparkles, ArrowRight, Trash2, Target, FileText, Presentation, Share2, Calculator } from 'lucide-react';
 import { ENGINE_MODULES } from '../data/engineModules';
 import useAuthStore from '../store/authStore';
 import { useAuth } from '../hooks/useAuth';
 import { useFirestore } from '../hooks/useFirestore';
 import { ModuleCard } from './EngineView'; 
+
+const STARTUP_TOOLS = [
+  {
+    path: '/name-generator',
+    icon: Sparkles,
+    name: 'Name Generator',
+    desc: 'Generate catchy, brandable business names tailored for Zambia.',
+    bg: 'bg-blue-50',
+    text: 'text-blue-600'
+  },
+  {
+    path: '/swot-analysis',
+    icon: Target,
+    name: 'SWOT Analysis',
+    desc: 'Assess your strengths, weaknesses, opportunities, and threats.',
+    bg: 'bg-cyan-50',
+    text: 'text-cyan-600'
+  },
+  {
+    path: '/business-plan',
+    icon: FileText,
+    name: 'Business Plan',
+    desc: 'Generate a structured business plan outline and strategic roadmap.',
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-600'
+  },
+  {
+    path: '/registration-guide',
+    icon: Building2,
+    name: 'PACRA Setup Guide',
+    desc: 'Step-by-step instructions for formalising your business in Zambia.',
+    bg: 'bg-emerald-50',
+    text: 'text-emerald-600'
+  },
+  {
+    path: '/pitch-deck',
+    icon: Presentation,
+    name: 'Pitch Deck Generator',
+    desc: 'Structure a compelling presentation for potential investors or partners.',
+    bg: 'bg-fuchsia-50',
+    text: 'text-fuchsia-600'
+  },
+  {
+    path: '/social-media',
+    icon: Share2,
+    name: 'Social Media Strategy',
+    desc: 'Build a local marketing plan and generate content calendars.',
+    bg: 'bg-pink-50',
+    text: 'text-pink-600'
+  },
+  {
+    path: '/pricing-calculator',
+    icon: Calculator,
+    name: 'Pricing Calculator',
+    desc: 'Determine unit economics, cost structures, and optimal pricing.',
+    bg: 'bg-amber-50',
+    text: 'text-amber-600'
+  }
+];
 
 export default function BusinessHubView() {
   const { userProfile } = useAuthStore();
@@ -290,6 +349,18 @@ export default function BusinessHubView() {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Startup Planning Modules Grid */}
+          <div className="mt-12 animate-slide-up">
+            <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <Rocket className="w-5 h-5 text-indigo-500" /> Startup Planning Modules
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {STARTUP_TOOLS.map((tool) => (
+                <ModuleCard key={tool.path} {...tool} />
+              ))}
             </div>
           </div>
         </div>
