@@ -6,14 +6,14 @@ import ErrorMessage from '../components/shared/ErrorMessage';
 import AIResponse from '../components/shared/AIResponse';
 
 const SUGGESTED_QUESTIONS = [
+  'How do I use the Idea Validator?',
+  'Where can I create a professional profile?',
+  'I need to write a business plan. Which module do I use?',
   'How do I register my business with PACRA?',
-  'I am not making profit. What am I doing wrong?',
-  'How do I open a business bank account in Zambia?',
   'Where can I find funding for my startup?',
-  'How do I market my business on social media in Zambia?',
+  'How do I use the Verified Directory?',
+  'Can you help me calculate my product pricing?',
   'What taxes do I need to pay as a small business?',
-  'How do I write a quotation or invoice?',
-  'How do I handle a difficult customer?',
 ];
 
 function TypingIndicator() {
@@ -91,8 +91,8 @@ export default function AIAdvisor() {
             <Bot className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">AI Business Advisor</h1>
-            <p className="text-gray-500 text-xs">AI Powered · Zambia-specific advice</p>
+            <h1 className="text-xl font-bold text-gray-800">IMPUNGA AI Assistant</h1>
+            <p className="text-gray-500 text-xs">Platform Guide · Business Advisor</p>
           </div>
         </div>
         {messages.length > 0 && (

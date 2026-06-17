@@ -23,7 +23,6 @@ const ENGINE_1_ITEMS = [
 const ENGINE_2_ITEMS = [
   { path: '/skill-profile-builder', icon: User, label: 'Skill Profile Builder' },
   { path: '/career-matches', icon: Briefcase, label: 'Career Matches' },
-  { path: '/portfolio-showcase', icon: User, label: 'Portfolio Showcase' },
 ];
 
 const ENGINE_3_ITEMS = [
@@ -31,13 +30,12 @@ const ENGINE_3_ITEMS = [
 ];
 
 const ENGINE_4_ITEMS = [
-  { path: '/verified-directory', icon: ShieldCheck, label: 'Verified Service Directory' },
-  { path: '/ai-advisor', icon: Bot, label: 'Mentorship Hub' },
+  { path: '/verified-directory', icon: ShieldCheck, label: 'Verified Directory' },
+  { path: '/portfolio-showcase', icon: User, label: 'Portfolio Showcase' },
 ];
 
 const ENGINE_5_ITEMS = [
-  { path: '/learning-insights', icon: Lightbulb, label: 'Learning Insight Cards' },
-  { path: '/regulatory-gateway', icon: Building2, label: 'Regulatory Gateway' },
+  { path: '/ai-advisor', icon: Bot, label: 'AI Chatbot' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -120,7 +118,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
           <div className="mt-6">
             <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-              Connect
+              Market
             </p>
             <div className="space-y-1">
               {ENGINE_4_ITEMS.map(({ path, icon: Icon, label }) => (
@@ -133,7 +131,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
           <div className="mt-6">
             <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-              Learn & Gateway
+              AI Assistant
             </p>
             <div className="space-y-1">
               {ENGINE_5_ITEMS.map(({ path, icon: Icon, label }) => (

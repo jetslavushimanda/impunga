@@ -31,7 +31,7 @@ export default function Dashboard() {
           return (
             <Link
               key={id}
-              to={`/engine/${id}`}
+              to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`}
               className={`group relative overflow-hidden rounded-3xl p-6 md:p-8 flex items-center justify-between shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${bg}`}
             >
               <div className="relative z-10 flex items-center gap-6">

@@ -33,7 +33,6 @@ export const ENGINE_MODULES = {
     modules: [
       { path: '/skill-profile-builder', icon: User, name: 'Skill Profile Builder', desc: 'Build your professional skill portfolio', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
       { path: '/career-matches', icon: Briefcase, name: 'Career Matches', desc: 'Match your skills with Zambian jobs', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
-      { path: '/portfolio-showcase', icon: User, name: 'Portfolio Showcase', desc: 'Monetize skills through P2P trade', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
     ]
   },
   finance: {
@@ -48,25 +47,21 @@ export const ENGINE_MODULES = {
   },
   connect: {
     id: 'connect',
-    title: 'Engine 4 — Connect',
+    title: 'Engine 4 — Market',
     description: 'Community Utility. A trust-based ecosystem for trade and human connection.',
     icon: Handshake,
     bg: 'bg-orange-500',
     modules: [
       { path: '/verified-directory', icon: ShieldCheck, name: 'Verified Directory', desc: 'Marketplace for verified users', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
-      { path: '/ai-advisor', icon: Bot, name: 'Mentorship Hub', desc: 'AI-driven sector-specific mentorship', bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-l-orange-400' },
+      { path: '/portfolio-showcase', icon: User, name: 'Portfolio Showcase', desc: 'Monetize skills through P2P trade', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
     ]
   },
   gateway: {
     id: 'gateway',
-    title: 'Engine 5 — Gateway',
-    description: 'Infrastructure Utility. The institutional backbone connecting you to the Zambian state.',
-    icon: Shield,
+    title: 'Engine 5 — AI Assistant',
+    description: 'Your intelligent platform guide. Get tailored advice on business, skills, and how to use IMPUNGA.',
+    icon: Bot,
     bg: 'bg-red-600',
-    modules: [
-      { path: '/learning-insights', icon: Lightbulb, name: 'Learning Insight Cards', desc: 'Behavioral triggers & education', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
-      { path: '/registration-guide', icon: Building2, name: 'Regulatory Gateway', desc: 'Deterministic interface for PACRA/ZRA', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
-      { path: '/compliance-tracker', icon: ShieldCheck, name: 'Compliance Tracker', desc: 'Automated health checks & deadlines', bg: 'bg-red-50', text: 'text-red-600', border: 'border-l-red-400' },
-    ]
+    modules: []
   }
 };
