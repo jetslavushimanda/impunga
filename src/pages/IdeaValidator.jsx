@@ -167,7 +167,7 @@ export default function IdeaValidator() {
     };
 
     addSection('Executive Summary', result.executiveSummary);
-    addSection('Viability Score', \`\${result.score}/10 - \${result.verdict}\`);
+    addSection('Viability Score', `${result.score}/10 - ${result.verdict}`);
     addSection('Unit Economics', result.unitEconomics);
     addSection('Competitor Intelligence', result.competitorIntel);
     addSection('Capital Allocation', result.capitalAllocation);
