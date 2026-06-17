@@ -32,23 +32,23 @@ export default function Dashboard() {
             <Link
               key={id}
               to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`}
-              className={`group relative overflow-hidden rounded-[2rem] p-6 md:p-8 flex items-center justify-between shadow-xl hover:shadow-2xl border border-white/20 transition-all duration-500 hover:scale-[1.02] ${bg}`}
+              className="group relative bg-white overflow-hidden rounded-3xl p-6 md:p-8 flex items-center justify-between shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
             >
               <div className="relative z-10 flex items-center gap-6">
-                <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 backdrop-blur-md shadow-inner border border-white/30">
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-md border border-white/20 ${bg}`}>
                   <Icon className="w-8 h-8 text-white drop-shadow-sm" />
                 </div>
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-1.5 tracking-tight">{title}</h2>
-                  <p className="text-white/80 text-sm md:text-base max-w-xl font-medium leading-relaxed">{description}</p>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-1 tracking-tight">{title}</h2>
+                  <p className="text-gray-500 text-sm md:text-base max-w-xl leading-relaxed">{description}</p>
                 </div>
               </div>
-              <div className="relative z-10 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-colors">
-                <ChevronRight className="w-6 h-6 text-white" />
+              <div className="relative z-10 w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors border border-gray-100 text-gray-400">
+                <ChevronRight className="w-5 h-5" />
               </div>
               
               {/* Decorative background icon */}
-              <div className="absolute -right-8 -bottom-8 w-64 h-64 text-white/10 pointer-events-none group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700 blur-sm">
+              <div className="absolute -right-6 -bottom-6 w-48 h-48 text-gray-50/80 pointer-events-none group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700">
                 <Icon className="w-full h-full" />
               </div>
             </Link>
