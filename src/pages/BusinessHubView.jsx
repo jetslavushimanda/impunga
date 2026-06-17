@@ -46,7 +46,7 @@ export default function BusinessHubView() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
-      <div className="mb-6">
+      <div className="mb-8">
         <Link 
           to="/dashboard" 
           onClick={(e) => {
@@ -71,38 +71,51 @@ export default function BusinessHubView() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
             {/* Path A */}
             <button 
               onClick={() => setView('ideation')}
-              className="group text-left bg-white rounded-3xl p-8 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300"
+              className="group text-left relative bg-white/85 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/60 hover:border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
             >
-              <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Lightbulb className="w-8 h-8 text-blue-600" />
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent pointer-events-none" />
+              <div className="relative z-10 w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-[1.25rem] flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
+                <Lightbulb className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Start a Business</h2>
-              <p className="text-gray-500 mb-6">I have an idea or need guidance figuring out how to start a business in Zambia.</p>
-              <div className="flex items-center text-blue-600 font-semibold text-sm gap-1 group-hover:gap-2 transition-all">
-                Explore Ideation Tools <ChevronRight className="w-4 h-4" />
+              <h2 className="text-2xl font-extrabold text-gray-900 mb-2 relative z-10">Start a Business</h2>
+              <p className="text-gray-500 font-medium mb-8 relative z-10 flex-1">I have an idea or need guidance figuring out how to start a business in Zambia.</p>
+              
+              <div className="relative z-10 flex items-center justify-between w-full">
+                <span className="text-blue-600 font-bold text-sm">Explore Ideation Tools</span>
+                <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-sm">
+                  <ChevronRight className="w-5 h-5" />
+                </div>
               </div>
+
+              {/* Decorative blur element */}
+              <div className="absolute -right-10 -top-10 w-48 h-48 bg-blue-400/10 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-400/20 transition-colors" />
             </button>
 
             {/* Path B */}
             <button 
               onClick={handlePathBClick}
-              className="group text-left bg-white rounded-3xl p-8 border border-gray-200 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+              className="group text-left relative bg-white/85 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/60 hover:border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
             >
-              <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform relative z-10">
-                <Building2 className="w-8 h-8 text-indigo-600" />
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent pointer-events-none" />
+              <div className="relative z-10 w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.25rem] flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
+                <Building2 className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2 relative z-10">Manage my Business</h2>
-              <p className="text-gray-500 mb-6 relative z-10">I already have a business (registered or unregistered) and need operational tools.</p>
-              <div className="flex items-center text-indigo-600 font-semibold text-sm gap-1 group-hover:gap-2 transition-all relative z-10">
-                Enter Workspace <ChevronRight className="w-4 h-4" />
+              <h2 className="text-2xl font-extrabold text-gray-900 mb-2 relative z-10">Manage my Business</h2>
+              <p className="text-gray-500 font-medium mb-8 relative z-10 flex-1">I already have a business (registered or unregistered) and need operational tools.</p>
+              
+              <div className="relative z-10 flex items-center justify-between w-full">
+                <span className="text-indigo-600 font-bold text-sm">Enter Workspace</span>
+                <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors shadow-sm">
+                  <ChevronRight className="w-5 h-5" />
+                </div>
               </div>
               
-              {/* Decorative backdrop */}
-              <div className="absolute -right-8 -bottom-8 w-48 h-48 bg-indigo-50/50 rounded-full blur-3xl group-hover:bg-indigo-100/50 transition-colors pointer-events-none" />
+              {/* Decorative blur element */}
+              <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-400/20 transition-colors" />
             </button>
           </div>
         </div>
