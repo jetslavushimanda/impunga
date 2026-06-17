@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Lightbulb, Building2, FileText,
   Calculator, DollarSign, Bot, User, X,
-  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2, GraduationCap,
+  Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2,
   BookOpen, Briefcase
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -22,7 +22,6 @@ const ENGINE_1_ITEMS = [
   { path: '/whatsapp-templates', icon: MessageCircle, label: 'WhatsApp Templates' },
   { path: '/swot-analysis', icon: Target, label: 'SWOT Analysis' },
   { path: '/social-media', icon: Share2, label: 'Social Media' },
-  { path: '/business-quiz', icon: GraduationCap, label: 'Business Quiz' },
 ];
 
 const ENGINE_2_ITEMS = [

@@ -183,7 +183,6 @@ src/
 │   ├── SWOTAnalysis.jsx        # AI SWOT generator
 │   ├── SocialMediaGenerator.jsx # AI marketing content
 │   ├── WhatsAppTemplates.jsx   # Business message templates
-│   ├── BusinessQuiz.jsx        # 20-question knowledge test
 │   ├── BusinessLedger.jsx      # Sales, expenses, and debtor tracker
 │   ├── SkillProfileBuilder.jsx # User skill portfolio builder (dropdown selectors)
 │   ├── CareerMatches.jsx       # Skill-to-career matchmaker
@@ -207,7 +206,6 @@ src/
 │   ├── pacraSteps.js           # PACRA and ZRA registration steps
 │   ├── dailyTips.js            # 100 Zambian business tips
 │   ├── businessSectors.js      # 20 Zambian business sectors
-│   ├── quizQuestions.js        # 20 quiz questions and answers
 │   └── marketPrices.js         # Zambian market price data
 └── styles/
     └── index.css               # Tailwind v4 global styles and components
