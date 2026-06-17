@@ -39,17 +39,14 @@ export default function EngineView() {
         Back to Dashboard
       </Link>
 
-      <div className={`rounded-3xl p-8 mb-8 text-white shadow-lg ${bg} bg-opacity-90 relative overflow-hidden`}>
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-6">
-          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 backdrop-blur-sm">
-            <EngineIcon className="w-8 h-8 text-white" />
+      <div className="mb-8">
+        <div className="flex items-center gap-4 mb-2">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm border border-white/20 shrink-0 ${bg}`}>
+            <EngineIcon className="w-6 h-6 text-white drop-shadow-sm" />
           </div>
-          <div>
-            <h1 className="text-3xl font-bold mb-2">{title}</h1>
-            <p className="text-white/80 text-lg max-w-2xl">{description}</p>
-          </div>
+          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">{title}</h1>
         </div>
-        <EngineIcon className="absolute -right-8 -bottom-8 w-64 h-64 text-white/10 pointer-events-none" />
+        <p className="text-gray-500 text-base max-w-2xl leading-relaxed">{description}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
