@@ -29,6 +29,7 @@ import SkillProfileBuilder from './pages/SkillProfileBuilder';
 import CareerMatches from './pages/CareerMatches';
 import ChoosePath from './pages/ChoosePath';
 import DataPrivacy from './pages/DataPrivacy';
+import ComplianceTracker from './pages/ComplianceTracker';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
@@ -82,6 +83,7 @@ export default function App() {
           <Route path="/skill-profile-builder" element={<SkillProfileBuilder />} />
           <Route path="/career-matches" element={<CareerMatches />} />
           <Route path="/data-privacy" element={<DataPrivacy />} />
+          <Route path="/compliance-tracker" element={<ComplianceTracker />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

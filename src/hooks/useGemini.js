@@ -230,6 +230,157 @@ Be specific, use Kwacha amounts, and reference real Zambian market conditions.`;
     }
   }
 
+  async function generateComplianceReport(businessProfile, ledgerSummary) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are a Zambian tax and regulatory compliance expert. Analyze this business profile and generate a detailed compliance health report.
+
+Business Profile:
+${JSON.stringify(businessProfile, null, 2)}
+
+Ledger Summary:
+${JSON.stringify(ledgerSummary, null, 2)}
+
+Generate a compliance report in this EXACT JSON format:
+{
+  "healthScore": 75,
+  "summary": "One sentence overall compliance summary",
+  "deadlines": [
+    {
+      "title": "ZRA Monthly VAT Return",
+      "authority": "Zambia Revenue Authority",
+      "legalRef": "VAT Act Cap 331",
+      "dueDate": "2026-07-18",
+      "status": "upcoming",
+      "description": "Monthly VAT return must be filed by 18th of each month",
+      "action": "File on ZRA TaxOnline portal at www.zra.org.zm"
+    }
+  ],
+  "recommendations": [
+    "Specific actionable recommendation 1 citing ZRA/PACRA/NAPSA rules",
+    "Specific actionable recommendation 2"
+  ]
+}
+
+Status must be one of: "overdue", "due_soon", "upcoming", "compliant"
+Include ALL relevant compliance items for this business type: ZRA PAYE (monthly, due 10th), ZRA VAT if turnover >K800,000 (18th monthly), NAPSA contributions (10th monthly), NHIMA levy, PACRA annual returns (within 90 days of financial year end), Workers Compensation Fund, provisional tax (quarterly).
+Return ONLY valid JSON, no other text.`;
+
+      const response = await callGemini(prompt, 'You are a Zambian tax compliance expert. Return only valid JSON compliance reports. Reference exact ZRA, PACRA, NAPSA, NHIMA regulations.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function semanticSearch(query, userContext) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are IMPUNGA's semantic search engine for Zambian entrepreneurs. A user typed: "${query}"
+
+User context: ${userContext || 'General Zambian entrepreneur'}
+
+Available modules in the app:
+- /idea-validator: Idea Validator (validate business ideas)
+- /business-plan: Business Plan Builder (create business plans)
+- /pricing-calculator: Pricing Calculator (set product prices)
+- /business-ledger: Business Ledger (track finances)
+- /funding-finder: Funding Finder (find funding sources)
+- /ai-advisor: AI Business Advisor (get business advice)
+- /registration-guide: Registration Guide (PACRA/ZRA registration)
+- /name-generator: Business Name Generator
+- /invoice-generator: Invoice Generator
+- /market-prices: Market Prices (check commodity prices)
+- /swot-analysis: SWOT Analysis
+- /social-media: Social Media Generator
+- /skill-profile-builder: Skill Profile Builder
+- /career-matches: Career Matches
+- /compliance-tracker: Compliance Tracker (ZRA/PACRA deadlines)
+- /market-trends: Market Trend Predictor
+
+Market price categories available: Grains & Staples, Vegetables & Fruits, Meat & Protein, Fuel & Transport
+
+Return a JSON object in this EXACT format:
+{
+  "intent": "One sentence describing what the user wants to do",
+  "modules": [
+    {"path": "/registration-guide", "name": "Registration Guide", "reason": "Why this is relevant to their query", "priority": "high"},
+    {"path": "/market-prices", "name": "Market Prices", "reason": "Check fish prices in Kasama", "priority": "medium"}
+  ],
+  "marketCategory": "Grains & Staples or null",
+  "fundingKeyword": "agriculture or null",
+  "tip": "One specific practical tip for this user's situation in Zambia"
+}
+
+Priority must be "high", "medium", or "low". Return maximum 4 modules. Return ONLY valid JSON.`;
+
+      const response = await callGemini(prompt, 'You are a semantic search engine for a Zambian business platform. Understand user intent and return structured JSON results mapping to available app modules.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function generateMarketForecast(category, province, priceData) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are a Zambian agricultural and commodity market analyst with deep knowledge of seasonal price patterns.
+
+Category: ${category}
+Province: ${province}
+Current price data: ${JSON.stringify(priceData, null, 2)}
+
+Generate a market forecast in this EXACT JSON format:
+{
+  "headline": "Short headline forecast for this category in this province",
+  "narrative": "3-4 sentence AI forecast explaining seasonal patterns, peak months, and recommended actions for businesses in ${province}",
+  "peakMonths": ["July", "August"],
+  "lowMonths": ["February", "March"],
+  "monthlyIndex": [
+    {"month": "Jan", "index": 85, "label": "Low season"},
+    {"month": "Feb", "index": 78, "label": "Lowest prices"},
+    {"month": "Mar", "index": 82, "label": "Harvest begins"},
+    {"month": "Apr", "index": 88, "label": "Post-harvest"},
+    {"month": "May", "index": 95, "label": "Rising"},
+    {"month": "Jun", "index": 105, "label": "Dry season"},
+    {"month": "Jul", "index": 118, "label": "Peak prices"},
+    {"month": "Aug", "index": 122, "label": "Peak season"},
+    {"month": "Sep", "index": 115, "label": "Declining"},
+    {"month": "Oct", "index": 102, "label": "Normalising"},
+    {"month": "Nov", "index": 90, "label": "Rains begin"},
+    {"month": "Dec", "index": 88, "label": "Seasonal low"}
+  ],
+  "businessAdvice": "Specific advice for entrepreneurs buying/selling this category in ${province}",
+  "riskFactors": ["Risk 1", "Risk 2"]
+}
+
+The monthlyIndex represents price relative to annual average (100 = average, 120 = 20% above average). Base this on real Zambian seasonal agricultural and commodity patterns. Return ONLY valid JSON.`;
+
+      const response = await callGemini(prompt, 'You are a Zambian commodity market analyst. Use real seasonal knowledge of Zambian agriculture, rainfall patterns, harvest cycles, and market dynamics. Return only valid JSON.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function getFriendlyError(err) {
     if (err.message === 'GEMINI_API_KEY_MISSING') {
       return 'AI features need a Gemini API key. Add your key to the .env file.';
@@ -244,5 +395,6 @@ Be specific, use Kwacha amounts, and reference real Zambian market conditions.`;
     return `Error: ${err.message}. Check internet and try again.`;
   }
 
-  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends };
+  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast };
 }
+

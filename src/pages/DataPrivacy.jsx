@@ -1,67 +1,106 @@
-import { Shield, Lock, Server, Eye, UserCheck, FileText, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Shield, Lock, Server, Eye, UserCheck, FileText, CheckCircle, Activity, BarChart2, Trash2, X } from 'lucide-react';
+import { useFirestore } from '../hooks/useFirestore';
+import useAuthStore from '../store/authStore';
 
-const PRIVACY_SECTIONS = [
-  {
-    icon: Shield,
-    color: 'bg-blue-50 text-blue-600',
-    title: 'Data Encryption at Rest',
-    content: 'All user data — including your business ideas, ledger entries, and skill profiles — is stored in Google Firebase Firestore. Firebase encrypts all data at rest using AES-256 encryption, one of the strongest encryption standards available. Your financial records, business plans, and personal details are never stored in plain text.',
-  },
-  {
-    icon: Lock,
-    color: 'bg-green-50 text-green-600',
-    title: 'Data Encryption in Transit',
-    content: 'All communication between your device and IMPUNGA servers uses TLS 1.3 (Transport Layer Security). This means your data is encrypted during transmission and cannot be read by third parties, even on public Wi-Fi networks.',
-  },
-  {
-    icon: UserCheck,
-    color: 'bg-purple-50 text-purple-600',
-    title: 'User Authentication',
-    content: 'IMPUNGA uses Firebase Authentication, which is compliant with industry standards including OAuth 2.0. Your password is never stored in our database — only a secure cryptographic hash managed by Google Firebase. We support secure session management and automatic sign-out.',
-  },
-  {
-    icon: Eye,
-    color: 'bg-orange-50 text-orange-600',
-    title: 'Who Can See Your Data',
-    content: 'Only you can access your personal data. Firestore Security Rules are configured so that each user can only read and write their own documents. No IMPUNGA staff member or other user can view your business ledger, ideas, plans, or skill profile. Your data belongs to you.',
-  },
-  {
-    icon: Server,
-    color: 'bg-indigo-50 text-indigo-600',
-    title: 'Where Your Data is Stored',
-    content: 'Your data is stored on Google Cloud infrastructure managed by Firebase (Google LLC). Firebase servers are hosted in ISO 27001-certified data centers. Google Firebase complies with GDPR, SOC 2, and other international data protection standards. Your data is never sold to third parties.',
-  },
-  {
-    icon: FileText,
-    color: 'bg-yellow-50 text-yellow-600',
-    title: 'AI Features and Privacy',
-    content: 'When you use AI features (Idea Validator, AI Advisor, Skill Extraction), your input text is sent to the Google Gemini API to generate responses. Google\'s AI usage policies apply to these interactions. We do not store your AI conversation history on our servers beyond your current session.',
-  },
+const PRIVACY_PILLARS = [
+  { key: 'encryption', label: 'Data Encryption', points: 25, description: 'AES-256 at rest + TLS 1.3 in transit', icon: Lock, color: 'text-green-600', bg: 'bg-green-50' },
+  { key: 'isolation', label: 'Data Isolation', points: 25, description: 'Firestore Rules: only you access your data', icon: Shield, color: 'text-blue-600', bg: 'bg-blue-50' },
+  { key: 'minimal', label: 'Data Minimisation', points: 20, description: 'We collect only what is needed', icon: Eye, color: 'text-purple-600', bg: 'bg-purple-50' },
+  { key: 'auth', label: 'Secure Authentication', points: 20, description: 'Passwords hashed, never stored plain', icon: UserCheck, color: 'text-orange-600', bg: 'bg-orange-50' },
+  { key: 'noSale', label: 'No Data Sale', points: 10, description: 'Your data is never sold to third parties', icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
 ];
 
 const DATA_ITEMS = [
-  { label: 'Full Name', purpose: 'Personalize your dashboard experience', stored: 'Firebase Firestore (encrypted)' },
-  { label: 'Email Address', purpose: 'Account authentication and login', stored: 'Firebase Authentication (hashed)' },
-  { label: 'Province & District', purpose: 'Localize advice to your region', stored: 'Firebase Firestore (encrypted)' },
-  { label: 'Business Ideas', purpose: 'Save and review your validated ideas', stored: 'Firebase Firestore (encrypted)' },
-  { label: 'Ledger Entries', purpose: 'Track your business finances', stored: 'Firebase Firestore (encrypted)' },
-  { label: 'Business Plans', purpose: 'Store and download your plans as PDF', stored: 'Firebase Firestore (encrypted)' },
-  { label: 'Skill Profile', purpose: 'Match you with career opportunities', stored: 'Firebase Firestore (encrypted)' },
-  { label: 'Pricing Calculations', purpose: 'Save your pricing work for reference', stored: 'Firebase Firestore (encrypted)' },
+  { label: 'Full Name', collection: null, stored: 'Firebase Auth + Firestore', icon: '👤' },
+  { label: 'Business Ideas', collection: 'businessIdeas', stored: 'Firestore (encrypted)', icon: '💡' },
+  { label: 'Business Plans', collection: 'businessPlans', stored: 'Firestore (encrypted)', icon: '📄' },
+  { label: 'Ledger Entries', collection: 'sales', stored: 'Firestore (encrypted)', icon: '📒' },
+  { label: 'Pricing Calculations', collection: 'pricingCalculations', stored: 'Firestore (encrypted)', icon: '🧮' },
+  { label: 'Skill Profile', collection: 'skillProfiles', stored: 'Firestore (encrypted)', icon: '🎓' },
+  { label: 'Bookmarked Funding', collection: 'bookmarkedFunding', stored: 'Firestore (encrypted)', icon: '💰' },
 ];
 
 const YOUR_RIGHTS = [
-  'Access your data at any time through your Profile page',
+  'Access all your data at any time through your Profile page',
   'Update or correct your personal information',
-  'Delete your account and all associated data by contacting us',
-  'Export your business data (business plans can be downloaded as PDF)',
+  'Delete your account and all associated data — contact us',
+  'Export your business data (plans downloadable as PDF)',
   'Opt out of any future communications from IMPUNGA',
 ];
 
+function PrivacyScoreMeter({ score }) {
+  const color = score >= 80 ? '#22c55e' : score >= 60 ? '#f59e0b' : '#ef4444';
+  const label = score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : 'Needs Attention';
+  const circumference = 2 * Math.PI * 52;
+  const offset = circumference - (score / 100) * circumference;
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative w-36 h-36">
+        <svg className="w-36 h-36 -rotate-90" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#f3f4f6" strokeWidth="10" />
+          <circle
+            cx="60" cy="60" r="52" fill="none"
+            stroke={color}
+            strokeWidth="10"
+            strokeDasharray={`${circumference}`}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 1.2s ease' }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-4xl font-bold text-gray-800">{score}</span>
+          <span className="text-xs font-semibold text-gray-500">/ 100</span>
+        </div>
+      </div>
+      <span className="mt-2 text-sm font-bold" style={{ color }}>{label}</span>
+      <p className="text-xs text-gray-400 mt-0.5">Privacy Score</p>
+    </div>
+  );
+}
+
 export default function DataPrivacy() {
+  const { userProfile, user } = useAuthStore();
+  const { getUserDocumentCount } = useFirestore();
+  const [docCounts, setDocCounts] = useState({});
+  const [loadingCounts, setLoadingCounts] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  useEffect(() => {
+    async function loadCounts() {
+      if (!user) { setLoadingCounts(false); return; }
+      setLoadingCounts(true);
+      const results = {};
+      for (const item of DATA_ITEMS) {
+        if (item.collection) {
+          results[item.collection] = await getUserDocumentCount(item.collection);
+        }
+      }
+      setDocCounts(results);
+      setLoadingCounts(false);
+    }
+    loadCounts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  // Calculate privacy score dynamically
+  const privacyScore = (() => {
+    let score = 0;
+    // Base security score from platform (always 100% from platform side)
+    PRIVACY_PILLARS.forEach(p => { score += p.points; });
+    // Small deductions for incomplete profile (data minimisation angle)
+    if (!userProfile?.province) score -= 2;
+    if (!userProfile?.fullName) score -= 3;
+    return Math.min(100, Math.max(0, score));
+  })();
+
+  const totalDocuments = Object.values(docCounts).reduce((a, b) => a + b, 0);
+
   return (
     <div className="max-w-3xl mx-auto pb-24 animate-fade-in">
-      {/* Header */}
+      {/* Header Banner */}
       <div className="rounded-2xl p-6 mb-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1B4F72 0%, #1a237e 100%)' }}>
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-3">
@@ -69,46 +108,122 @@ export default function DataPrivacy() {
               <Shield className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Data Privacy & Governance</h1>
-              <p className="text-blue-200 text-xs">How IMPUNGA protects your information</p>
+              <h1 className="text-xl font-bold text-white">Data Governance Dashboard</h1>
+              <p className="text-blue-200 text-xs">Your live privacy and data protection status</p>
             </div>
           </div>
           <p className="text-blue-100 text-sm leading-relaxed">
-            At IMPUNGA, your privacy is fundamental. We handle all your business data — ledgers, ideas, plans, and skills — with military-grade encryption and strict access controls. This page explains exactly how we protect your data.
+            See exactly what data IMPUNGA holds about you, how it is protected, and your Privacy Score.
           </p>
         </div>
         <Shield className="absolute right-4 top-4 w-20 h-20 text-white/5" />
       </div>
 
-      {/* Security Sections */}
-      <div className="space-y-4 mb-8">
-        {PRIVACY_SECTIONS.map(({ icon: Icon, color, title, content }) => (
-          <div key={title} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <div className="flex items-start gap-4">
-              <div className={`w-10 h-10 ${color} rounded-xl flex items-center justify-center shrink-0 mt-0.5`}>
-                <Icon className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-bold text-gray-800 mb-1">{title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{content}</p>
-              </div>
+      {/* Privacy Score + Pillars */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+        <div className="flex flex-col sm:flex-row items-center gap-6">
+          <PrivacyScoreMeter score={privacyScore} />
+          <div className="flex-1 w-full">
+            <h2 className="text-base font-bold text-gray-800 mb-3">Privacy Protection Breakdown</h2>
+            <div className="space-y-2">
+              {PRIVACY_PILLARS.map(p => {
+                const Icon = p.icon;
+                return (
+                  <div key={p.key} className="flex items-center gap-3">
+                    <div className={`w-7 h-7 ${p.bg} rounded-lg flex items-center justify-center shrink-0`}>
+                      <Icon className={`w-4 h-4 ${p.color}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <p className="text-xs font-bold text-gray-700 truncate">{p.label}</p>
+                        <span className="text-xs text-green-600 font-bold shrink-0 ml-2">+{p.points}pts ✓</span>
+                      </div>
+                      <div className="w-full bg-gray-100 rounded-full h-1.5">
+                        <div className="bg-green-500 h-1.5 rounded-full" style={{ width: '100%' }} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        ))}
+        </div>
       </div>
 
-      {/* What Data We Collect */}
+      {/* Live Data Usage Panel */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6">
-        <h2 className="text-base font-bold text-gray-800 mb-4">What Data We Collect and Why</h2>
-        <div className="space-y-3">
-          {DATA_ITEMS.map(({ label, purpose, stored }) => (
-            <div key={label} className="border border-gray-100 rounded-xl p-3">
-              <div className="flex items-start justify-between gap-3 mb-1">
-                <p className="font-semibold text-gray-800 text-sm">{label}</p>
-                <span className="text-xs bg-green-100 text-green-700 font-semibold px-2 py-0.5 rounded-full shrink-0">Encrypted</span>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-base font-bold text-gray-800 flex items-center gap-2">
+              <Activity className="w-4 h-4 text-primary" /> Your Data Activity
+            </h2>
+            <p className="text-xs text-gray-400 mt-0.5">Live count of your stored documents across all collections</p>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold text-primary">{loadingCounts ? '...' : totalDocuments}</p>
+            <p className="text-xs text-gray-400">total records</p>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {DATA_ITEMS.map(({ label, collection, stored, icon }) => {
+            const count = collection ? (docCounts[collection] ?? '...') : 1;
+            return (
+              <div key={label} className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">{icon}</span>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">{label}</p>
+                    <p className="text-xs text-gray-400">{stored}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-sm font-bold text-gray-700">
+                    {loadingCounts && collection ? '...' : collection ? count : '✓'}
+                  </span>
+                  {!collection ? (
+                    <span className="text-xs bg-green-100 text-green-700 font-semibold px-2 py-0.5 rounded-full">Active</span>
+                  ) : (
+                    <span className="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded-full">
+                      {count === 0 ? 'Empty' : `${count} items`}
+                    </span>
+                  )}
+                </div>
               </div>
-              <p className="text-xs text-gray-500 mb-1"><span className="font-medium text-gray-600">Purpose:</span> {purpose}</p>
-              <p className="text-xs text-gray-400"><span className="font-medium text-gray-500">Stored in:</span> {stored}</p>
+            );
+          })}
+        </div>
+
+        {/* Delete Data CTA */}
+        <button
+          onClick={() => setShowDeleteModal(true)}
+          className="mt-4 flex items-center gap-2 text-sm text-red-500 hover:text-red-700 font-medium transition-colors"
+        >
+          <Trash2 className="w-4 h-4" /> Request data deletion
+        </button>
+      </div>
+
+      {/* Encryption Details */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6">
+        <h2 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <Lock className="w-4 h-4 text-green-600" /> Encryption Details
+        </h2>
+        <div className="space-y-3">
+          {[
+            { label: 'Data at Rest', method: 'AES-256 Encryption', status: 'Active', detail: 'All Firestore documents encrypted by Google Firebase' },
+            { label: 'Data in Transit', method: 'TLS 1.3', status: 'Active', detail: 'All API communication uses Transport Layer Security' },
+            { label: 'Password Storage', method: 'bcrypt Hash (Firebase Auth)', status: 'Active', detail: 'Your password is never stored — only a cryptographic hash' },
+            { label: 'Session Security', method: 'Firebase JWT Tokens', status: 'Active', detail: 'Short-lived authentication tokens with automatic refresh' },
+          ].map(({ label, method, status, detail }) => (
+            <div key={label} className="border border-gray-100 rounded-xl p-3 flex items-start gap-3">
+              <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="font-semibold text-gray-800 text-sm">{label}</p>
+                  <span className="text-xs bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full shrink-0">{status}</span>
+                </div>
+                <p className="text-xs text-primary font-medium mt-0.5">{method}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{detail}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -116,9 +231,11 @@ export default function DataPrivacy() {
 
       {/* Your Rights */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6">
-        <h2 className="text-base font-bold text-gray-800 mb-4">Your Data Rights</h2>
+        <h2 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <BarChart2 className="w-4 h-4 text-purple-600" /> Your Data Rights
+        </h2>
         <div className="space-y-2">
-          {YOUR_RIGHTS.map((right) => (
+          {YOUR_RIGHTS.map(right => (
             <div key={right} className="flex items-start gap-3">
               <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
               <p className="text-sm text-gray-600">{right}</p>
@@ -127,33 +244,59 @@ export default function DataPrivacy() {
         </div>
       </div>
 
-      {/* Firebase Compliance Banner */}
-      <div className="rounded-2xl p-5 border border-blue-200" style={{ background: '#EBF5FB' }}>
+      {/* Firebase Compliance */}
+      <div className="rounded-2xl p-5 border border-blue-200 bg-blue-50 mb-6">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
             <Server className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <p className="font-bold text-blue-800 mb-1">Google Firebase Compliance</p>
-            <p className="text-sm text-blue-600 leading-relaxed">
-              IMPUNGA uses Google Firebase, which is certified for ISO 27001, SOC 2 Type II, and GDPR compliance. Firebase undergoes regular independent security audits. For more information on Firebase's security practices, visit{' '}
-              <a
-                href="https://firebase.google.com/support/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold underline"
-              >
+            <p className="font-bold text-blue-800 mb-1">Google Firebase Compliance Certifications</p>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {['ISO 27001', 'SOC 2 Type II', 'GDPR', 'HIPAA eligible'].map(cert => (
+                <span key={cert} className="text-xs bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">{cert}</span>
+              ))}
+            </div>
+            <p className="text-sm text-blue-600">
+              IMPUNGA uses Google Firebase, certified for ISO 27001, SOC 2 Type II, and GDPR. Data centres undergo regular independent security audits.{' '}
+              <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer" className="font-semibold underline">
                 firebase.google.com/support/privacy
-              </a>.
+              </a>
             </p>
           </div>
         </div>
       </div>
 
-      {/* Last Updated */}
-      <p className="text-center text-xs text-gray-400 mt-6">
-        Last updated: June 2025 · IMPUNGA Platform
-      </p>
+      <p className="text-center text-xs text-gray-400">Last updated: June 2026 · IMPUNGA Platform</p>
+
+      {/* Delete Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-gray-800">Request Data Deletion</h3>
+              <button onClick={() => setShowDeleteModal(false)} className="p-1 rounded-lg hover:bg-gray-100">
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              To permanently delete all your IMPUNGA data, please contact us with your registered email address. We will process your request within 30 days as per data protection best practices.
+            </p>
+            <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4">
+              <p className="text-xs text-red-700 font-semibold">⚠️ This action cannot be undone. All your business plans, ledger data, and skill profiles will be permanently deleted.</p>
+            </div>
+            <a
+              href="mailto:privacy@impunga.co.zm?subject=Data Deletion Request"
+              className="btn-primary w-full text-center"
+            >
+              Send Deletion Request
+            </a>
+            <button onClick={() => setShowDeleteModal(false)} className="btn-secondary w-full mt-2">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

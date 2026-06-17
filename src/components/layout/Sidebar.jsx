@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Lightbulb, Building2, FileText,
   Calculator, DollarSign, Bot, User, X,
   Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2,
-  BookOpen, Briefcase, Shield
+  BookOpen, Briefcase, Shield, ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
@@ -16,6 +16,7 @@ const ENGINE_1_ITEMS = [
   { path: '/business-ledger', icon: BookOpen, label: 'Business Ledger' },
   { path: '/funding-finder', icon: DollarSign, label: 'Funding Finder' },
   { path: '/ai-advisor', icon: Bot, label: 'AI Business Advisor' },
+  { path: '/compliance-tracker', icon: ShieldCheck, label: 'Compliance Tracker' },
   { path: '/name-generator', icon: Sparkles, label: 'Name Generator' },
   { path: '/invoice-generator', icon: Receipt, label: 'Invoice Generator' },
   { path: '/market-prices', icon: ShoppingCart, label: 'Market Prices' },
