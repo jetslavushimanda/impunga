@@ -5,7 +5,7 @@ import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { MessageCircle, ArrowLeft, Send, Play, CheckCircle } from 'lucide-react';
-import { CAREERS } from './CareerMatches';
+import { CAREERS } from '../data/careers';
 
 export default function InterviewPrep() {
   const { userProfile } = useAuthStore();
