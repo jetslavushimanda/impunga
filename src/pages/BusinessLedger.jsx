@@ -3,9 +3,10 @@ import {
   BookOpen, TrendingUp, TrendingDown, Users,
   Plus, Trash2, ChevronDown, ChevronUp, Download,
   AlertCircle, Clock, CheckCircle2, Copy, ShoppingBag,
-  Award,
+  Award, Bot, Loader2, Sparkles
 } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
+import { useGemini } from '../hooks/useGemini';
 import useAuthStore from '../store/authStore';
 import { formatKwacha } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
@@ -169,6 +170,9 @@ export default function BusinessLedger() {
   
   const [loadingCredit, setLoadingCredit] = useState(false);
   const [creditResult, setCreditResult] = useState(null);
+
+  const { analyzeMarketTrends, loading: aiHealthLoading } = useGemini();
+  const [aiHealthResult, setAiHealthResult] = useState(null);
 
   const [sales, setSales] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -469,6 +473,16 @@ export default function BusinessLedger() {
     .filter(x => x.amount > 0)
     .sort((a, b) => b.amount - a.amount);
   const maxExpCat = Math.max(...expCatBreakdown.map(x => x.amount), 1);
+
+  async function handleAIHealthCheck() {
+    try {
+      const ledgerData = { plIncome, plExpTotal, plProfit, plMargin, plExpCatBreakdown };
+      const res = await analyzeMarketTrends(ledgerData, userProfile?.sector, userProfile?.province);
+      setAiHealthResult(res);
+    } catch (err) {
+      show(err.message || 'AI Health Check failed', 'error');
+    }
+  }
 
   function getChartWeeks() {
     const weeks = [];
@@ -1072,6 +1086,31 @@ export default function BusinessLedger() {
               </div>
             );
           })()}
+
+          {/* AI Financial Health Check */}
+          {plIncome > 0 && (
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 mt-6 mb-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-blue-900 flex items-center gap-2">
+                  <Bot className="w-5 h-5 text-blue-600" /> AI Financial Health Check
+                </h3>
+                {!aiHealthResult && (
+                  <button onClick={handleAIHealthCheck} disabled={aiHealthLoading} className="btn-primary py-1.5 text-sm gap-2">
+                    {aiHealthLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    Analyze against Zambian averages
+                  </button>
+                )}
+              </div>
+              
+              {aiHealthResult && (
+                <div className="space-y-4 animate-fade-in text-sm">
+                  {aiHealthResult.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').split('\n\n').map((section, idx) => (
+                    <div key={idx} className="bg-white rounded-lg p-3 border border-blue-100 text-blue-900 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: section }} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Download PDF */}
           <button onClick={downloadPDF}

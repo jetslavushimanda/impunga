@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { FileText, ChevronLeft, ChevronRight, Save, Download, Plus, Trash2, Sparkles, X } from 'lucide-react';
+import { FileText, ChevronLeft, ChevronRight, Save, Download, Plus, Trash2, Sparkles, X, Bot, Loader2 } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
+import { useGemini } from '../hooks/useGemini';
 import { useAuth } from '../hooks/useAuth';
 import { getProvinces, getDistricts } from '../data/provinces';
 import { BUSINESS_SECTORS } from '../data/businessSectors';
@@ -44,8 +45,10 @@ export default function BusinessPlanBuilder() {
   const [savedId, setSavedId] = useState(null);
   const [pipelineBanner, setPipelineBanner] = useState('');
   const { addDocument, updateDocument } = useFirestore();
+  const { critiqueBusinessPlan, loading } = useGemini();
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
+  const [critiqueResult, setCritiqueResult] = useState(null);
 
   useEffect(() => {
     const raw = localStorage.getItem('impunga_idea_pipeline');
@@ -112,6 +115,15 @@ export default function BusinessPlanBuilder() {
   const monthlyCostOfGoods = data.products.reduce((s, p) => s + ((parseFloat(p.costToProduce) || 0) * (parseFloat(p.monthlyUnits) || 0)), 0);
   const grossProfit = monthlyRevenue - monthlyCostOfGoods;
   const netProfit = grossProfit - totalMonthly;
+
+  async function handleAICritique() {
+    try {
+      const result = await critiqueBusinessPlan({ ...data, totalStartup, totalMonthly, monthlyRevenue, netProfit });
+      setCritiqueResult(result);
+    } catch (err) {
+      show(err.message || 'AI Review failed', 'error');
+    }
+  }
 
   async function saveDraft() {
     try {
@@ -394,7 +406,63 @@ export default function BusinessPlanBuilder() {
                 </div>
               ))}
             </div>
-            <button onClick={generatePDF} className="btn-green w-full gap-2">
+
+            {/* AI Co-Pilot Critique Section */}
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 mt-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-blue-900 flex items-center gap-2">
+                  <Bot className="w-5 h-5 text-blue-600" /> AI Co-Pilot Review
+                </h3>
+                {!critiqueResult && (
+                  <button onClick={handleAICritique} disabled={loading} className="btn-primary py-1.5 text-sm gap-2">
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    Review My Plan
+                  </button>
+                )}
+              </div>
+              
+              {critiqueResult && (
+                <div className="space-y-4 animate-fade-in">
+                  <div className="flex items-center gap-3 bg-white p-3 rounded-lg border border-blue-100">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-700 text-lg">
+                      {critiqueResult.overallScore}
+                    </div>
+                    <p className="text-sm text-gray-700">{critiqueResult.summary}</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-green-50 p-3 rounded-lg border border-green-100">
+                      <h4 className="text-xs font-bold text-green-800 mb-2 uppercase">Strengths</h4>
+                      <ul className="text-sm text-green-900 space-y-1 list-disc pl-4">
+                        {critiqueResult.strengths?.map((s, i) => <li key={i}>{s}</li>)}
+                      </ul>
+                    </div>
+                    <div className="bg-red-50 p-3 rounded-lg border border-red-100">
+                      <h4 className="text-xs font-bold text-red-800 mb-2 uppercase">Weaknesses</h4>
+                      <ul className="text-sm text-red-900 space-y-1 list-disc pl-4">
+                        {critiqueResult.weaknesses?.map((w, i) => <li key={i}>{w}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-amber-50 p-3 rounded-lg border border-amber-100">
+                    <h4 className="text-xs font-bold text-amber-800 mb-2 uppercase">Market Realities</h4>
+                    <ul className="text-sm text-amber-900 space-y-1 list-disc pl-4">
+                      {critiqueResult.marketRealities?.map((m, i) => <li key={i}>{m}</li>)}
+                    </ul>
+                  </div>
+
+                  <div className="bg-blue-100/50 p-3 rounded-lg border border-blue-200">
+                    <h4 className="text-xs font-bold text-blue-800 mb-2 uppercase">Actionable Advice</h4>
+                    <ul className="text-sm text-blue-900 space-y-1 list-disc pl-4">
+                      {critiqueResult.actionableAdvice?.map((a, i) => <li key={i}>{a}</li>)}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button onClick={generatePDF} className="btn-green w-full gap-2 mt-4">
               <Download className="w-4 h-4" /> Generate & Download Business Plan PDF
             </button>
           </div>

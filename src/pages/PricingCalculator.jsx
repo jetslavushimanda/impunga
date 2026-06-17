@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Calculator, Plus, Trash2, Save, TrendingUp, Sparkles } from 'lucide-react';
+import { Calculator, Plus, Trash2, Save, TrendingUp, Sparkles, Loader2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useFirestore } from '../hooks/useFirestore';
-import { useAI } from '../hooks/useAI';
+import { useGemini } from '../hooks/useGemini';
 import useAuthStore from '../store/authStore';
 import { formatKwacha, calculateRecommendedPrice } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
@@ -28,7 +28,7 @@ export default function PricingCalculator() {
   const [marketTrends, setMarketTrends] = useState('');
   const [trendsLoading, setTrendsLoading] = useState(false);
   const { addDocument } = useFirestore();
-  const { analyzeMarketTrends } = useAI();
+  const { analyzePricingTrend } = useGemini();
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
 
@@ -94,22 +94,12 @@ export default function PricingCalculator() {
     if (!result) return;
     setTrendsLoading(true);
     try {
-      // Build a ledger-style summary for the AI
-      const ledgerData = {
-        product: productName || 'Product',
-        costPerUnit: result.costPerUnit,
-        sellingPrice: result.recommendedPrice,
-        profitMargin: result.margin,
-        costs: costs.map(c => ({ category: c.type, amount: parseFloat(c.amount) || 0 })),
-        totalBatchCost,
-        breakEvenUnits: result.breakEvenUnits,
-      };
-      const sector = userProfile?.occupation || 'Retail';
+      const sector = userProfile?.sector || 'Retail';
       const province = userProfile?.province || 'Lusaka';
-      const analysis = await analyzeMarketTrends(ledgerData, sector, province);
+      const analysis = await analyzePricingTrend(result.costPerUnit, result.recommendedPrice, sector, province);
       setMarketTrends(analysis);
     } catch {
-      setMarketTrends('Failed to load market trends. Please try again.');
+      setMarketTrends({ verdict: 'Error', advice: 'Failed to load pricing trends. Please try again.' });
     } finally {
       setTrendsLoading(false);
     }
@@ -249,12 +239,12 @@ export default function PricingCalculator() {
             </ResponsiveContainer>
           </div>
 
-          {/* Market Trends Analysis */}
+          {/* Predictive Pricing Insight */}
           <div className="card border-l-4 border-l-indigo-400">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h3 className="font-bold text-gray-800">Market Trends Analysis</h3>
-                <p className="text-xs text-gray-400 mt-0.5">AI compares your costs against Zambian sector averages</p>
+                <h3 className="font-bold text-gray-800">Predictive Pricing Insight</h3>
+                <p className="text-xs text-gray-400 mt-0.5">AI compares your price to Zambian sector averages</p>
               </div>
               <button
                 onClick={handleAnalyzeMarketTrends}
@@ -262,18 +252,35 @@ export default function PricingCalculator() {
                 className="flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-indigo-700 transition-colors shrink-0"
               >
                 {trendsLoading ? (
-                  <><LoadingSpinner size="sm" /> Analyzing...</>
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing...</>
                 ) : (
-                  <><TrendingUp className="w-4 h-4" /> Analyze Trends</>
+                  <><Sparkles className="w-4 h-4" /> AI Trend</>
                 )}
               </button>
             </div>
+            
             {marketTrends ? (
-              <AIResponse content={marketTrends} />
+              <div className="bg-indigo-50/50 rounded-xl p-4 animate-fade-in border border-indigo-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                    marketTrends.verdict === 'Underpriced' ? 'bg-red-100 text-red-700' :
+                    marketTrends.verdict === 'Overpriced' ? 'bg-orange-100 text-orange-700' :
+                    'bg-green-100 text-green-700'
+                  }`}>
+                    {marketTrends.verdict || 'Analysis'}
+                  </span>
+                  {marketTrends.marketAverage && (
+                    <span className="text-xs text-gray-500 font-medium">
+                      Market Avg: {marketTrends.marketAverage}
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed mt-2">{marketTrends.advice}</p>
+              </div>
             ) : (
               <div className="bg-indigo-50 rounded-xl p-4 text-center">
-                <Sparkles className="w-8 h-8 text-indigo-300 mx-auto mb-2" />
-                <p className="text-sm text-indigo-600 font-medium">Click "Analyze Trends" to compare your costs against {userProfile?.province || 'Zambian'} sector averages</p>
+                <TrendingUp className="w-8 h-8 text-indigo-300 mx-auto mb-2" />
+                <p className="text-sm text-indigo-600 font-medium">Click "AI Trend" to check if you are underpricing for the {userProfile?.province || 'Zambian'} market.</p>
               </div>
             )}
           </div>

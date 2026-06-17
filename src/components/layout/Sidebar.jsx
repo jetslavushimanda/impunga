@@ -10,24 +10,33 @@ import useAuthStore from '../../store/authStore';
 
 const ENGINE_1_ITEMS = [
   { path: '/idea-validator', icon: Lightbulb, label: 'Idea Validator' },
-  { path: '/registration-guide', icon: Building2, label: 'Registration Guide' },
-  { path: '/business-plan', icon: FileText, label: 'Business Plan Builder' },
-  { path: '/pricing-calculator', icon: Calculator, label: 'Pricing Calculator' },
-  { path: '/business-ledger', icon: BookOpen, label: 'Business Ledger' },
-  { path: '/funding-finder', icon: DollarSign, label: 'Funding Finder' },
-  { path: '/ai-advisor', icon: Bot, label: 'AI Business Advisor' },
-  { path: '/compliance-tracker', icon: ShieldCheck, label: 'Compliance Tracker' },
   { path: '/name-generator', icon: Sparkles, label: 'Name Generator' },
+  { path: '/business-plan', icon: FileText, label: 'Business Plan Builder' },
+  { path: '/business-ledger', icon: BookOpen, label: 'Business Ledger' },
   { path: '/invoice-generator', icon: Receipt, label: 'Invoice Generator' },
+  { path: '/pricing-calculator', icon: Calculator, label: 'Pricing Calculator' },
+  { path: '/swot-analysis', icon: Target, label: 'SWOT Analysis' },
   { path: '/market-prices', icon: ShoppingCart, label: 'Market Prices' },
   { path: '/whatsapp-templates', icon: MessageCircle, label: 'WhatsApp Templates' },
-  { path: '/swot-analysis', icon: Target, label: 'SWOT Analysis' },
   { path: '/social-media', icon: Share2, label: 'Social Media' },
 ];
 
 const ENGINE_2_ITEMS = [
   { path: '/skill-profile-builder', icon: User, label: 'Skill Profile Builder' },
   { path: '/career-matches', icon: Briefcase, label: 'Career Matches' },
+];
+
+const ENGINE_3_ITEMS = [
+  { path: '/funding-finder', icon: DollarSign, label: 'Funding Finder' },
+];
+
+const ENGINE_4_ITEMS = [
+  { path: '/ai-advisor', icon: Bot, label: 'Mentorship Hub (AI)' },
+];
+
+const ENGINE_5_ITEMS = [
+  { path: '/registration-guide', icon: Building2, label: 'Regulatory Gateway' },
+  { path: '/compliance-tracker', icon: ShieldCheck, label: 'Compliance Tracker' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -88,20 +97,14 @@ export default function Sidebar({ isOpen, onClose }) {
           </div>
 
           {showEngine1 && (
-            <div>
+            <div className="mt-6">
               <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                Engine 1 — Start Your Business
+                Business
               </p>
               <div className="space-y-1">
                 {ENGINE_1_ITEMS.map(({ path, icon: Icon, label }) => (
-                  <NavLink
-                    key={path}
-                    to={path}
-                    onClick={onClose}
-                    className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
-                  >
-                    <Icon className="w-5 h-5 shrink-0" />
-                    <span className="truncate">{label}</span>
+                  <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
+                    <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
                   </NavLink>
                 ))}
               </div>
@@ -109,25 +112,58 @@ export default function Sidebar({ isOpen, onClose }) {
           )}
 
           {showEngine2 && (
-            <div>
+            <div className="mt-6">
               <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                Engine 2 — Match Your Skills
+                Skills
               </p>
               <div className="space-y-1">
                 {ENGINE_2_ITEMS.map(({ path, icon: Icon, label }) => (
-                  <NavLink
-                    key={path}
-                    to={path}
-                    onClick={onClose}
-                    className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
-                  >
-                    <Icon className="w-5 h-5 shrink-0" />
-                    <span className="truncate">{label}</span>
+                  <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
+                    <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
                   </NavLink>
                 ))}
               </div>
             </div>
           )}
+
+          <div className="mt-6">
+            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+              Finance
+            </p>
+            <div className="space-y-1">
+              {ENGINE_3_ITEMS.map(({ path, icon: Icon, label }) => (
+                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
+                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+              Connect
+            </p>
+            <div className="space-y-1">
+              {ENGINE_4_ITEMS.map(({ path, icon: Icon, label }) => (
+                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
+                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+              Learn & Gateway
+            </p>
+            <div className="space-y-1">
+              {ENGINE_5_ITEMS.map(({ path, icon: Icon, label }) => (
+                <NavLink key={path} to={path} onClick={onClose} className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}>
+                  <Icon className="w-5 h-5 shrink-0" /> <span className="truncate">{label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
 
           <div className="space-y-1 pt-2 border-t border-gray-100">
             <NavLink

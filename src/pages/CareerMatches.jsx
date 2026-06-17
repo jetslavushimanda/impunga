@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFirestore } from '../hooks/useFirestore';
+import { useGemini } from '../hooks/useGemini';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
-import { Briefcase, ArrowRight } from 'lucide-react';
+import { Briefcase, ArrowRight, Map, Sparkles, Loader2, Bot } from 'lucide-react';
 
 export const CAREERS = [
   {
@@ -121,7 +122,22 @@ export default function CareerMatches() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [topMatches, setTopMatches] = useState([]);
+  const [roadmaps, setRoadmaps] = useState({});
+  const [activeRoadmap, setActiveRoadmap] = useState(null);
+  const { generatePredictiveRoadmap } = useGemini();
   const navigate = useNavigate();
+
+  async function handleGenerateRoadmap(career) {
+    setActiveRoadmap(career.name);
+    try {
+      const roadmap = await generatePredictiveRoadmap(career, profile.selectedSkills || [], profile.province || 'Zambia');
+      setRoadmaps(prev => ({ ...prev, [career.name]: roadmap }));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActiveRoadmap(null);
+    }
+  }
 
   const calculateMatches = (profileData) => {
     const userSkills = profileData.selectedSkills || [];
@@ -325,6 +341,70 @@ export default function CareerMatches() {
                 )}
               </div>
 
+            </div>
+
+            {/* Predictive Roadmap Section */}
+            <div className="pt-4 border-t border-gray-50">
+              {!roadmaps[item.name] ? (
+                <button
+                  onClick={() => handleGenerateRoadmap(item)}
+                  disabled={activeRoadmap === item.name}
+                  className="w-full flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold py-2.5 rounded-xl transition-colors text-sm"
+                >
+                  {activeRoadmap === item.name ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Map className="w-4 h-4" />
+                  )}
+                  Generate Predictive Roadmap
+                </button>
+              ) : (
+                <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100 space-y-4 animate-fade-in">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Bot className="w-5 h-5 text-blue-600" />
+                    <h3 className="font-bold text-blue-900 text-sm">AI Career Roadmap</h3>
+                  </div>
+                  
+                  <p className="text-sm text-gray-700 leading-relaxed">{roadmaps[item.name].summary}</p>
+                  
+                  {roadmaps[item.name].steps?.length > 0 && (
+                    <div className="space-y-3 mt-3">
+                      <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Step-by-Step Path</h4>
+                      {roadmaps[item.name].steps.map(step => (
+                        <div key={step.step} className="flex gap-3">
+                          <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                            {step.step}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-gray-800">{step.title}</p>
+                            <p className="text-xs text-gray-600 mt-0.5">{step.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {roadmaps[item.name].trainingInstitutions?.length > 0 && (
+                    <div className="mt-4 p-3 bg-white rounded-lg border border-gray-100">
+                      <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Local Training Options</h4>
+                      <ul className="space-y-2">
+                        {roadmaps[item.name].trainingInstitutions.map((inst, i) => (
+                          <li key={i} className="text-sm">
+                            <span className="font-bold text-gray-800">{inst.name}</span>
+                            <span className="text-gray-500"> — {inst.location}</span>
+                            <p className="text-xs text-blue-600 mt-0.5">{inst.course}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="bg-green-50 text-green-800 p-3 rounded-lg text-xs font-medium border border-green-100 flex gap-2 items-start mt-2">
+                    <Sparkles className="w-4 h-4 shrink-0 text-green-600" />
+                    <p>{roadmaps[item.name].jobMarketOutlook}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
           </div>

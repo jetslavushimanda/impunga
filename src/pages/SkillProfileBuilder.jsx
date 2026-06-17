@@ -385,7 +385,7 @@ export default function SkillProfileBuilder() {
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-6">
             <div>
               <h2 className="text-base font-bold text-gray-800">Step 2 — Skills Extraction</h2>
-              <p className="text-xs text-gray-400 mt-1">Describe your experience and let AI identify your skills, or add them manually.</p>
+              <p className="text-xs text-gray-400 mt-1">Describe your experience and let AI identify your skills automatically.</p>
             </div>
 
             {/* AI Experience Description */}
@@ -432,16 +432,7 @@ export default function SkillProfileBuilder() {
             {/* Extracted / Selected Skills */}
             {formData.selectedSkills.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-bold text-gray-700">Your Skills ({formData.selectedSkills.length})</p>
-                  <button
-                    type="button"
-                    onClick={() => setShowAllSkills(s => !s)}
-                    className="text-xs text-primary font-semibold"
-                  >
-                    {showAllSkills ? 'Hide all skills' : '+ Add more skills'}
-                  </button>
-                </div>
+                <p className="text-sm font-bold text-gray-700 mb-2">Your Extracted Skills ({formData.selectedSkills.length})</p>
                 <div className="flex flex-wrap gap-2">
                   {formData.selectedSkills.map(skill => (
                     <span key={skill} className="flex items-center gap-1 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
@@ -450,25 +441,6 @@ export default function SkillProfileBuilder() {
                         <X className="w-3 h-3" />
                       </button>
                     </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Manual Add Skills */}
-            {showAllSkills && (
-              <div className="border border-gray-100 rounded-xl p-3 max-h-60 overflow-y-auto">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">All Available Skills — tap to add</p>
-                <div className="flex flex-wrap gap-2">
-                  {ALL_SKILLS.filter(s => !formData.selectedSkills.includes(s)).map(skill => (
-                    <button
-                      key={skill}
-                      type="button"
-                      onClick={() => handleSkillToggle(skill)}
-                      className="flex items-center gap-1 text-xs text-gray-600 border border-gray-200 px-2 py-1 rounded-full hover:border-primary hover:text-primary transition-colors"
-                    >
-                      <Plus className="w-3 h-3" /> {skill}
-                    </button>
                   ))}
                 </div>
               </div>

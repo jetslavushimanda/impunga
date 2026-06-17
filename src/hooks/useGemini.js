@@ -381,6 +381,113 @@ The monthlyIndex represents price relative to annual average (100 = average, 120
     }
   }
 
+  async function critiqueBusinessPlan(planData) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are a strict but helpful Zambian business consultant. Review this draft business plan and provide a constructive critique based on Zambian market realities.
+      
+Business Plan Draft:
+${JSON.stringify(planData, null, 2)}
+
+Provide your critique in this EXACT JSON format:
+{
+  "overallScore": "X/10",
+  "summary": "2-3 sentences summarizing the strengths and weaknesses of the plan",
+  "strengths": ["Strength 1", "Strength 2"],
+  "weaknesses": ["Weakness 1", "Weakness 2"],
+  "marketRealities": ["Insight about the specific Zambian province/sector"],
+  "actionableAdvice": ["Action 1", "Action 2"]
+}
+
+Base your critique on realistic costs, revenue expectations, and market dynamics in ${planData.province || 'Zambia'} for the ${planData.sector || 'business'} sector. Use Kwacha for any monetary references. Return ONLY valid JSON.`;
+
+      const response = await callGemini(prompt, 'You are an expert Zambian business consultant. Return only valid JSON.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function generatePredictiveRoadmap(career, currentSkills, province) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are a Zambian career counselor. Create a predictive career roadmap for someone wanting to become a ${career.name} in Zambia.
+
+Target Career: ${career.name}
+User's Current Skills: ${currentSkills.join(', ')}
+Location: ${province || 'Zambia'}
+
+Provide a roadmap in this EXACT JSON format:
+{
+  "summary": "1-2 sentences on their current readiness and what they need",
+  "skillGaps": ["Gap 1", "Gap 2"],
+  "trainingInstitutions": [
+    {"name": "Institution Name", "location": "City/Province or Online", "course": "Course/Program Name"}
+  ],
+  "steps": [
+    {"step": 1, "title": "First step title", "description": "What to do first"},
+    {"step": 2, "title": "Second step title", "description": "What to do next"}
+  ],
+  "jobMarketOutlook": "Brief sentence on the demand for this role in Zambia"
+}
+
+Identify local Zambian training institutions (e.g. TEVETA institutions, UNZA, CBU, Evelyn Hone, ZCAS, local trades schools) relevant to their province (${province}) and skill gaps. Return ONLY valid JSON.`;
+
+      const response = await callGemini(prompt, 'You are an expert Zambian career and education counselor. Return only valid JSON.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function analyzePricingTrend(costPrice, sellingPrice, sector, province) {
+    setLoading(true);
+    setError(null);
+    try {
+      const margin = sellingPrice - costPrice;
+      const marginPercent = costPrice > 0 ? (margin / costPrice) * 100 : 0;
+      
+      const prompt = `You are a Zambian pricing and market analyst. Analyze the following pricing strategy for a small business:
+      
+Sector: ${sector || 'General Retail'}
+Location: ${province || 'Zambia'}
+Cost Price: K${costPrice}
+Selling Price: K${sellingPrice}
+Profit Margin: ${marginPercent.toFixed(1)}%
+
+Determine if this is underpriced, overpriced, or fairly priced based on sector averages in Zambia.
+Provide the assessment in this EXACT JSON format:
+{
+  "verdict": "Underpriced" | "Overpriced" | "Fair",
+  "marketAverage": "Estimated average price or margin for this sector in Zambia",
+  "advice": "1-2 short sentences of actionable advice"
+}
+Return ONLY valid JSON.`;
+
+      const response = await callGemini(prompt, 'You are an expert Zambian pricing analyst. Return only valid JSON.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function getFriendlyError(err) {
     if (err.message === 'GEMINI_API_KEY_MISSING') {
       return 'AI features need a Gemini API key. Add your key to the .env file.';
@@ -395,6 +502,6 @@ The monthlyIndex represents price relative to annual average (100 = average, 120
     return `Error: ${err.message}. Check internet and try again.`;
   }
 
-  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast };
+  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast, critiqueBusinessPlan, generatePredictiveRoadmap, analyzePricingTrend };
 }
 
