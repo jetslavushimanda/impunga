@@ -151,76 +151,78 @@ export default function InvoiceGenerator() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto animate-fade-in">
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-          <Receipt className="w-5 h-5 text-accent-green" />
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/20">
+          <Receipt className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Invoice Generator</h1>
-          <p className="text-gray-500 text-sm">Create professional invoices in Kwacha and download as PDF</p>
+          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Invoice Generator</h1>
+          <p className="text-gray-500 font-medium">Create professional invoices in Kwacha and download as PDF</p>
         </div>
       </div>
 
       {/* Invoice details */}
-      <div className="card mb-4">
-        <h2 className="font-bold text-gray-800 mb-4">Invoice Details</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <div><label className="label">Invoice Number</label><input value={invoice.invoiceNumber} onChange={e => update('invoiceNumber', e.target.value)} className="input-field" /></div>
-          <div><label className="label">Invoice Date</label><input type="date" value={invoice.date} onChange={e => update('date', e.target.value)} className="input-field" /></div>
-          <div><label className="label">Due Date</label><input type="date" value={invoice.dueDate} onChange={e => update('dueDate', e.target.value)} className="input-field" /></div>
+      <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">
+        <h2 className="font-extrabold text-gray-800 mb-5 text-lg">Invoice Details</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 relative z-10">
+          <div><label className="block text-sm font-semibold text-gray-700 mb-2">Invoice Number</label><input value={invoice.invoiceNumber} onChange={e => update('invoiceNumber', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" /></div>
+          <div><label className="block text-sm font-semibold text-gray-700 mb-2">Invoice Date</label><input type="date" value={invoice.date} onChange={e => update('date', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" /></div>
+          <div><label className="block text-sm font-semibold text-gray-700 mb-2">Due Date</label><input type="date" value={invoice.dueDate} onChange={e => update('dueDate', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" /></div>
         </div>
       </div>
 
       {/* From / To */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-        <div className="card">
-          <h3 className="font-bold text-gray-800 mb-3">Your Business</h3>
-          <div className="space-y-3">
-            <div><label className="label">Business Name</label><input value={invoice.businessName} onChange={e => update('businessName', e.target.value)} className="input-field" placeholder="Your business name" /></div>
-            <div><label className="label">Phone</label><input value={invoice.businessPhone} onChange={e => update('businessPhone', e.target.value)} className="input-field" placeholder="+260..." /></div>
-            <div><label className="label">Email</label><input value={invoice.businessEmail} onChange={e => update('businessEmail', e.target.value)} className="input-field" placeholder="email@example.com" /></div>
-            <div><label className="label">Address</label><input value={invoice.businessAddress} onChange={e => update('businessAddress', e.target.value)} className="input-field" placeholder="Lusaka, Zambia" /></div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+          <div className="absolute -right-16 -top-16 w-48 h-48 bg-green-200/20 rounded-full blur-3xl pointer-events-none" />
+          <h3 className="font-extrabold text-gray-800 mb-5 text-lg relative z-10">Your Business</h3>
+          <div className="space-y-4 relative z-10">
+            <div><label className="block text-sm font-semibold text-gray-700 mb-2">Business Name</label><input value={invoice.businessName} onChange={e => update('businessName', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" placeholder="Your business name" /></div>
+            <div><label className="block text-sm font-semibold text-gray-700 mb-2">Phone</label><input value={invoice.businessPhone} onChange={e => update('businessPhone', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" placeholder="+260..." /></div>
+            <div><label className="block text-sm font-semibold text-gray-700 mb-2">Email</label><input value={invoice.businessEmail} onChange={e => update('businessEmail', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" placeholder="email@example.com" /></div>
+            <div><label className="block text-sm font-semibold text-gray-700 mb-2">Address</label><input value={invoice.businessAddress} onChange={e => update('businessAddress', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" placeholder="Lusaka, Zambia" /></div>
           </div>
         </div>
-        <div className="card">
-          <h3 className="font-bold text-gray-800 mb-3">Bill To (Client)</h3>
-          <div className="space-y-3">
-            <div><label className="label">Client Name</label><input value={invoice.clientName} onChange={e => update('clientName', e.target.value)} className="input-field" placeholder="Client or company name" /></div>
-            <div><label className="label">Phone</label><input value={invoice.clientPhone} onChange={e => update('clientPhone', e.target.value)} className="input-field" placeholder="+260..." /></div>
-            <div><label className="label">Address</label><input value={invoice.clientAddress} onChange={e => update('clientAddress', e.target.value)} className="input-field" placeholder="Client address" /></div>
+        <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+          <div className="absolute -left-16 -top-16 w-48 h-48 bg-blue-200/20 rounded-full blur-3xl pointer-events-none" />
+          <h3 className="font-extrabold text-gray-800 mb-5 text-lg relative z-10">Bill To (Client)</h3>
+          <div className="space-y-4 relative z-10">
+            <div><label className="block text-sm font-semibold text-gray-700 mb-2">Client Name</label><input value={invoice.clientName} onChange={e => update('clientName', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all shadow-sm" placeholder="Client or company name" /></div>
+            <div><label className="block text-sm font-semibold text-gray-700 mb-2">Phone</label><input value={invoice.clientPhone} onChange={e => update('clientPhone', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all shadow-sm" placeholder="+260..." /></div>
+            <div><label className="block text-sm font-semibold text-gray-700 mb-2">Address</label><input value={invoice.clientAddress} onChange={e => update('clientAddress', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all shadow-sm" placeholder="Client address" /></div>
           </div>
         </div>
       </div>
 
       {/* Line items */}
-      <div className="card mb-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-bold text-gray-800">Items / Services</h2>
-          <button onClick={addItem} className="text-primary text-sm font-medium flex items-center gap-1 hover:text-primary-dark">
+      <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-extrabold text-gray-800 text-lg">Items / Services</h2>
+          <button onClick={addItem} className="bg-green-50 text-green-700 hover:bg-green-100 text-sm font-bold flex items-center gap-1.5 px-4 py-2 rounded-xl transition-colors">
             <Plus className="w-4 h-4" /> Add Item
           </button>
         </div>
-        <div className="space-y-2">
-          <div className="hidden sm:grid grid-cols-12 gap-2 text-xs font-semibold text-gray-500 px-1">
+        <div className="space-y-3">
+          <div className="hidden sm:grid grid-cols-12 gap-3 text-xs font-bold text-gray-400 uppercase tracking-wider px-1">
             <span className="col-span-6">Description</span>
             <span className="col-span-2 text-center">Qty</span>
             <span className="col-span-2 text-right">Unit Price (K)</span>
             <span className="col-span-2 text-right">Total</span>
           </div>
           {invoice.items.map((item, i) => (
-            <div key={i} className="grid grid-cols-12 gap-2 items-center">
-              <input value={item.description} onChange={e => updateItem(i, 'description', e.target.value)} className="input-field col-span-6" placeholder="Item or service description" />
-              <input type="number" value={item.quantity} onChange={e => updateItem(i, 'quantity', e.target.value)} className="input-field col-span-2 text-center" min="1" />
-              <input type="number" value={item.unitPrice} onChange={e => updateItem(i, 'unitPrice', e.target.value)} className="input-field col-span-2 text-right" placeholder="0.00" min="0" />
-              <div className="col-span-1 text-right text-sm font-medium text-primary">
+            <div key={i} className="grid grid-cols-12 gap-3 items-center bg-gray-50/50 p-2 rounded-2xl">
+              <input value={item.description} onChange={e => updateItem(i, 'description', e.target.value)} className="col-span-12 sm:col-span-6 w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" placeholder="Item or service description" />
+              <input type="number" value={item.quantity} onChange={e => updateItem(i, 'quantity', e.target.value)} className="col-span-4 sm:col-span-2 w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm text-center" min="1" />
+              <input type="number" value={item.unitPrice} onChange={e => updateItem(i, 'unitPrice', e.target.value)} className="col-span-4 sm:col-span-2 w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm text-right" placeholder="0.00" min="0" />
+              <div className="col-span-3 sm:col-span-1 text-right text-sm font-extrabold text-green-700">
                 {formatKwacha((parseFloat(item.unitPrice) || 0) * (parseFloat(item.quantity) || 0))}
               </div>
               {invoice.items.length > 1 && (
-                <button onClick={() => removeItem(i)} className="col-span-1 text-red-400 hover:text-red-600 flex justify-center">
-                  <Trash2 className="w-4 h-4" />
+                <button onClick={() => removeItem(i)} className="col-span-1 sm:col-span-1 text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-xl flex justify-center transition-colors">
+                  <Trash2 className="w-5 h-5" />
                 </button>
               )}
             </div>
@@ -228,22 +230,26 @@ export default function InvoiceGenerator() {
         </div>
 
         {/* Totals */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
+        <div className="mt-6 pt-6 border-t border-gray-100/80">
           <div className="flex justify-end">
-            <div className="w-64 space-y-2">
-              <div className="flex justify-between text-sm"><span className="text-gray-600">Subtotal</span><span className="font-medium">{formatKwacha(subtotal)}</span></div>
-              <div className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={invoice.includeTax} onChange={e => update('includeTax', e.target.checked)} className="w-4 h-4" id="tax" />
-                <label htmlFor="tax" className="text-gray-600">Include VAT</label>
+            <div className="w-full sm:w-72 space-y-3">
+              <div className="flex justify-between text-sm"><span className="text-gray-500 font-semibold">Subtotal</span><span className="font-extrabold text-gray-800">{formatKwacha(subtotal)}</span></div>
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" checked={invoice.includeTax} onChange={e => update('includeTax', e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500" id="tax" />
+                  <label htmlFor="tax" className="text-gray-500 font-semibold cursor-pointer">Include VAT</label>
+                </div>
                 {invoice.includeTax && (
-                  <input type="number" value={invoice.taxRate} onChange={e => update('taxRate', e.target.value)} className="input-field w-16 text-center py-1" style={{minHeight: 'auto'}} />
+                  <div className="flex items-center gap-1">
+                    <input type="number" value={invoice.taxRate} onChange={e => update('taxRate', e.target.value)} className="w-16 bg-white/50 border border-gray-200 rounded-lg px-2 py-1 text-center font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500" />
+                    <span className="text-gray-500 font-bold">%</span>
+                  </div>
                 )}
-                {invoice.includeTax && <span className="text-gray-500">%</span>}
               </div>
-              {invoice.includeTax && <div className="flex justify-between text-sm"><span className="text-gray-600">VAT ({invoice.taxRate}%)</span><span>{formatKwacha(tax)}</span></div>}
-              <div className="flex justify-between font-bold text-base pt-2 border-t border-gray-200">
-                <span className="text-primary">TOTAL</span>
-                <span className="text-primary">{formatKwacha(total)}</span>
+              {invoice.includeTax && <div className="flex justify-between text-sm"><span className="text-gray-500 font-semibold">VAT ({invoice.taxRate}%)</span><span className="font-extrabold text-gray-800">{formatKwacha(tax)}</span></div>}
+              <div className="flex justify-between font-extrabold text-xl pt-4 border-t border-gray-200">
+                <span className="text-gray-800">TOTAL</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">{formatKwacha(total)}</span>
               </div>
             </div>
           </div>
@@ -251,12 +257,12 @@ export default function InvoiceGenerator() {
       </div>
 
       {/* Notes */}
-      <div className="card mb-4">
-        <label className="label">Notes (optional)</label>
-        <textarea value={invoice.notes} onChange={e => update('notes', e.target.value)} className="textarea-field" rows={2} placeholder="Payment terms, bank details, thank you message..." />
+      <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">Notes (optional)</label>
+        <textarea value={invoice.notes} onChange={e => update('notes', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm resize-none" rows={2} placeholder="Payment terms, bank details, thank you message..." />
       </div>
 
-      <button onClick={generatePDF} className="btn-green w-full gap-2 text-base">
+      <button onClick={generatePDF} className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-green-500/30 disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2 text-lg">
         <Download className="w-5 h-5" /> Download Invoice PDF
       </button>
     </div>

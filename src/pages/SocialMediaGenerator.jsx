@@ -99,55 +99,56 @@ Return ONLY valid JSON:
   }
 
   return (
-    <div className="max-w-3xl mx-auto animate-fade-in">
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center">
-          <Share2 className="w-5 h-5 text-pink-500" />
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/20">
+          <Share2 className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Social Media Caption Generator</h1>
-          <p className="text-gray-500 text-sm">AI writes marketing posts for Facebook, WhatsApp, TikTok and Instagram</p>
+          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Social Media Generator</h1>
+          <p className="text-gray-500 font-medium">AI writes marketing posts for Facebook, WhatsApp, TikTok and Instagram</p>
         </div>
       </div>
 
-      <div className="card mb-4">
-        <div className="space-y-4">
-          <div><label className="label">Business Name</label>
-            <input value={businessName} onChange={e => setBusinessName(e.target.value)} className="input-field" placeholder="e.g. Chanda's Fashion House" /></div>
-          <div><label className="label">What are you promoting? *</label>
-            <input value={product} onChange={e => setProduct(e.target.value)} className="input-field" placeholder="e.g. Chitenge dresses at K250, 50% off chicken this weekend" /></div>
-          <div><label className="label">Goal</label>
-            <select value={goal} onChange={e => setGoal(e.target.value)} className="select-field">
+      <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">
+        <div className="absolute -right-16 -top-16 w-64 h-64 bg-pink-200/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="space-y-6 relative z-10">
+          <div><label className="block text-sm font-semibold text-gray-700 mb-2">Business Name</label>
+            <input value={businessName} onChange={e => setBusinessName(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500 transition-all shadow-sm" placeholder="e.g. Chanda's Fashion House" /></div>
+          <div><label className="block text-sm font-semibold text-gray-700 mb-2">What are you promoting? *</label>
+            <input value={product} onChange={e => setProduct(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500 transition-all shadow-sm" placeholder="e.g. Chitenge dresses at K250, 50% off chicken this weekend" /></div>
+          <div><label className="block text-sm font-semibold text-gray-700 mb-2">Goal</label>
+            <select value={goal} onChange={e => setGoal(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500 transition-all shadow-sm appearance-none cursor-pointer">
               {GOALS.map(g => <option key={g} value={g}>{g}</option>)}
             </select>
           </div>
-          <div><label className="label">Extra details (optional)</label>
-            <input value={extraDetails} onChange={e => setExtraDetails(e.target.value)} className="input-field" placeholder="e.g. Sale ends Sunday, delivery available in Lusaka" /></div>
+          <div><label className="block text-sm font-semibold text-gray-700 mb-2">Extra details (optional)</label>
+            <input value={extraDetails} onChange={e => setExtraDetails(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500 transition-all shadow-sm" placeholder="e.g. Sale ends Sunday, delivery available in Lusaka" /></div>
           <div>
-            <label className="label">Platforms</label>
-            <div className="flex flex-wrap gap-2">
+            <label className="block text-sm font-semibold text-gray-700 mb-3">Platforms</label>
+            <div className="flex flex-wrap gap-3">
               {PLATFORMS.map(p => (
                 <button key={p.id} onClick={() => togglePlatform(p.id)}
-                  className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors flex items-center gap-1.5 ${selectedPlatforms.includes(p.id) ? 'bg-primary text-white border-primary' : 'border-gray-300 text-gray-600 hover:border-primary'}`}>
-                  {p.icon} {p.label}
+                  className={`px-4 py-2.5 rounded-xl border text-sm font-bold transition-all shadow-sm flex items-center gap-2 ${selectedPlatforms.includes(p.id) ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent scale-105' : 'bg-white/60 border-gray-200 text-gray-600 hover:border-pink-300'}`}>
+                  <span className="text-lg">{p.icon}</span> {p.label}
                 </button>
               ))}
             </div>
           </div>
         </div>
-        {error && <div className="mt-3"><ErrorMessage message={error} /></div>}
-        <button onClick={handleGenerate} disabled={loading || !product || selectedPlatforms.length === 0} className="btn-primary w-full mt-4 gap-2">
-          {loading ? <><LoadingSpinner size="sm" /> Writing captions...</> : <><Share2 className="w-4 h-4" /> Generate Captions</>}
+        {error && <div className="mt-4 relative z-10"><ErrorMessage message={error} /></div>}
+        <button onClick={handleGenerate} disabled={loading || !product || selectedPlatforms.length === 0} className="w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-pink-500/30 disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2 mt-8 text-lg relative z-10">
+          {loading ? <><LoadingSpinner size="sm" /> Writing captions...</> : <><Share2 className="w-5 h-5" /> Generate Captions</>}
         </button>
       </div>
 
       {Object.keys(captions).length > 0 && (
-        <div className="space-y-4 animate-slide-up">
+        <div className="space-y-6 animate-slide-up pb-8">
           <div className="flex items-center justify-between">
-            <h2 className="font-bold text-gray-800">Your Captions</h2>
-            <button onClick={handleGenerate} className="btn-secondary text-sm gap-1">
+            <h2 className="font-extrabold text-gray-800 text-xl tracking-tight">Your Captions</h2>
+            <button onClick={handleGenerate} className="flex items-center gap-2 bg-white/80 hover:bg-white text-gray-700 border border-gray-200 font-bold px-4 py-2 rounded-xl transition-all shadow-sm active:scale-95 text-sm">
               <RefreshCw className="w-4 h-4" /> Regenerate
             </button>
           </div>
@@ -155,30 +156,32 @@ Return ONLY valid JSON:
             const platform = PLATFORMS.find(p => p.id === id);
             if (!captions[id]) return null;
             return (
-              <div key={id} className="card">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-bold text-gray-800 flex items-center gap-2">
-                    <span className="text-xl">{platform.icon}</span> {platform.label}
-                    <span className="text-xs text-gray-400 font-normal">{captions[id].length} chars</span>
+              <div key={id} className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-sm rounded-3xl p-6 relative overflow-hidden transition-all hover:shadow-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+                  <h3 className="font-extrabold text-gray-800 flex items-center gap-2 text-lg">
+                    <span className="text-2xl drop-shadow-sm">{platform.icon}</span> {platform.label}
+                    <span className="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full">{captions[id].length} chars</span>
                   </h3>
                   <div className="flex gap-2">
-                    <button onClick={() => copy(captions[id], id)} className="flex items-center gap-1 text-xs px-3 py-1.5 border border-gray-300 rounded-lg hover:border-primary hover:text-primary transition-colors">
-                      {copied === id ? <><Check className="w-3 h-3 text-green-500" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy</>}
+                    <button onClick={() => copy(captions[id], id)} className="flex items-center gap-1.5 text-xs font-bold px-4 py-2 border border-gray-200 rounded-xl hover:border-pink-300 hover:text-pink-600 transition-colors bg-white">
+                      {copied === id ? <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
                     </button>
                     {id === 'whatsapp' && (
-                      <button onClick={() => openWhatsApp(captions[id])} className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg text-white" style={{ backgroundColor: '#25D366' }}>
+                      <button onClick={() => openWhatsApp(captions[id])} className="flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl text-white shadow-sm hover:opacity-90 transition-opacity" style={{ backgroundColor: '#25D366' }}>
                         Share
                       </button>
                     )}
                     {id === 'facebook' && (
-                      <button onClick={() => openFacebook(captions[id])} className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg text-white bg-blue-600">
+                      <button onClick={() => openFacebook(captions[id])} className="flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl text-white shadow-sm hover:opacity-90 transition-opacity bg-blue-600">
                         Share
                       </button>
                     )}
                   </div>
                 </div>
-                <div className="bg-surface-light rounded-xl p-4">
-                  <AIResponse content={captions[id]} />
+                <div className="bg-gradient-to-br from-gray-50 to-pink-50/20 border border-gray-100/50 rounded-2xl p-5 shadow-inner">
+                  <div className="text-gray-800 font-medium leading-relaxed">
+                    <AIResponse content={captions[id]} />
+                  </div>
                 </div>
               </div>
             );

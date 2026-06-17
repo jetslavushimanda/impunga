@@ -125,35 +125,36 @@ export default function BusinessHubView() {
       )}
 
       {view === 'registration' && (
-        <div className="max-w-lg mx-auto bg-white rounded-3xl p-8 border border-gray-100 shadow-xl animate-slide-up mt-8">
-          <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Building2 className="w-8 h-8 text-indigo-600" />
+        <div className="max-w-xl mx-auto bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[2rem] p-8 sm:p-10 relative overflow-hidden animate-slide-up mt-8">
+          <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-300/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20 relative z-10">
+            <Building2 className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">Register your Workspace</h2>
-          <p className="text-center text-gray-500 mb-8">
+          <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-3 relative z-10">Register your Workspace</h2>
+          <p className="text-center text-gray-500 font-medium mb-10 relative z-10">
             Before accessing the operational tools, please register your business profile on the IMPUNGA platform.
           </p>
 
-          <form onSubmit={handleRegister} className="space-y-5">
+          <form onSubmit={handleRegister} className="space-y-6 relative z-10">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Business or Project Name</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Business or Project Name</label>
               <input 
                 required
                 type="text"
                 value={formData.businessName}
                 onChange={e => setFormData({...formData, businessName: e.target.value})}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm"
                 placeholder="e.g. Kalulu Farms"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Primary Sector</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Primary Sector</label>
               <select 
                 required
                 value={formData.sector}
                 onChange={e => setFormData({...formData, sector: e.target.value})}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none"
+                className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm appearance-none cursor-pointer"
               >
                 <option value="" disabled>Select a sector...</option>
                 <option value="agriculture">Agriculture & Farming</option>
@@ -165,8 +166,8 @@ export default function BusinessHubView() {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Is it registered with PACRA?</label>
+            <div className="pt-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">Is it registered with PACRA?</label>
               <div className="flex gap-4">
                 <label className="flex-1 cursor-pointer">
                   <input 
@@ -177,7 +178,7 @@ export default function BusinessHubView() {
                     onChange={e => setFormData({...formData, isRegistered: e.target.value})}
                     className="sr-only peer"
                   />
-                  <div className="text-center py-3 border border-gray-200 rounded-xl peer-checked:border-primary peer-checked:bg-blue-50 peer-checked:text-primary font-medium text-gray-600 transition-all">
+                  <div className="text-center py-4 border border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-indigo-500 peer-checked:to-purple-500 peer-checked:text-white font-bold text-gray-600 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-indigo-500/30">
                     Yes, Registered
                   </div>
                 </label>
@@ -190,7 +191,7 @@ export default function BusinessHubView() {
                     onChange={e => setFormData({...formData, isRegistered: e.target.value})}
                     className="sr-only peer"
                   />
-                  <div className="text-center py-3 border border-gray-200 rounded-xl peer-checked:border-primary peer-checked:bg-blue-50 peer-checked:text-primary font-medium text-gray-600 transition-all">
+                  <div className="text-center py-4 border border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-gray-600 peer-checked:to-gray-800 peer-checked:text-white font-bold text-gray-600 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-gray-900/30">
                     Not Yet
                   </div>
                 </label>
@@ -200,9 +201,9 @@ export default function BusinessHubView() {
             <button 
               type="submit"
               disabled={isSubmitting || !formData.businessName || !formData.sector}
-              className="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-primary/90 disabled:opacity-50 transition-all mt-4 flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-2xl disabled:opacity-50 transition-all mt-6 shadow-lg shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
             >
-              {isSubmitting ? 'Registering...' : 'Complete Registration'} <CheckCircle2 className="w-5 h-5" />
+              {isSubmitting ? 'Registering...' : 'Complete Registration'} <CheckCircle2 className="w-6 h-6" />
             </button>
           </form>
         </div>
