@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Volume2, Square, Briefcase, Users, TrendingUp, AlertTriangle, Share2, Bot } from 'lucide-react';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Briefcase, Users, TrendingUp, AlertTriangle, Share2, Bot } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
@@ -23,7 +23,7 @@ export default function IdeaValidator() {
   });
   
   const [result, setResult] = useState(null);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  
   const [savedIdeas, setSavedIdeas] = useState([]);
   const [expandedIdea, setExpandedIdea] = useState(null);
   
@@ -37,11 +37,7 @@ export default function IdeaValidator() {
     loadSavedIdeas();
   }, []);
 
-  useEffect(() => {
-    return () => {
-      window.speechSynthesis.cancel();
-    };
-  }, []);
+
 
   async function loadSavedIdeas() {
     const ideas = await getUserDocuments('businessIdeas');
@@ -95,8 +91,8 @@ export default function IdeaValidator() {
   }
 
   function handleReset() {
-    window.speechSynthesis.cancel();
-    setIsSpeaking(false);
+
+
     setWizardData({
       problem: '',
       solution: '',
@@ -109,33 +105,7 @@ export default function IdeaValidator() {
     setCurrentStep(1);
   }
 
-  function toggleSpeech() {
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-      return;
-    }
 
-    if (!result) return;
-
-    const readText = `
-      Executive Summary: ${result.executiveSummary}. 
-      Viability Score: ${result.score} out of 10. Verdict: ${result.verdict}.
-      Unit Economics: ${result.unitEconomics}.
-      Competitor Intelligence: ${result.competitorIntel}.
-      Capital Allocation: ${result.capitalAllocation}.
-      Risk Assessment: ${result.riskAssessment}.
-      ${result.consultantPivot ? 'Consultant Strategy: ' + result.consultantPivot : ''}
-    `;
-
-    const utterance = new SpeechSynthesisUtterance(readText);
-    utterance.lang = 'en-GB'; 
-    utterance.rate = 1.0;
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-    setIsSpeaking(true);
-    window.speechSynthesis.speak(utterance);
-  }
 
   function handleDownloadPDF() {
     if (!result) return;
@@ -297,7 +267,7 @@ export default function IdeaValidator() {
           <div className="flex items-center gap-2 mb-8">
             {[1, 2, 3, 4, 5].map(step => (
               <div key={step} className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
-                <div className={\`h-full \${step <= currentStep ? 'bg-indigo-600' : 'bg-transparent'} transition-all duration-300\`} />
+                <div className={step <= currentStep ? "h-full bg-indigo-600 transition-all duration-300" : "h-full bg-transparent transition-all duration-300"} />
               </div>
             ))}
           </div>
@@ -343,10 +313,10 @@ export default function IdeaValidator() {
         <div className="bg-transparent animate-slide-up space-y-6">
           {/* Header Card */}
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden">
-            <div className={\`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 -mr-20 -mt-20 \${result.score >= 6 ? 'bg-green-400' : 'bg-yellow-400'}\`} />
+            <div className={"absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 -mr-20 -mt-20 " + (result.score >= 6 ? 'bg-green-400' : 'bg-yellow-400')} />
             
             <div className="flex items-center justify-between mb-4 relative z-10">
-              <span className={\`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider \${
+              <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider ${
                 result.verdict === 'PROCEED' ? 'bg-green-100 text-green-800' :
                 result.verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-800' :
                 'bg-red-100 text-red-800'
@@ -410,16 +380,6 @@ export default function IdeaValidator() {
 
           {/* Actions Bar */}
           <div className="flex flex-wrap gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-            <button 
-              onClick={toggleSpeech} 
-              className={\`flex items-center gap-2 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95 \${
-                isSpeaking 
-                  ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200' 
-                  : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'
-              }\`}
-            >
-              {isSpeaking ? <><Square className="w-4 h-4 fill-current" /> Stop</> : <><Volume2 className="w-4 h-4" /> Listen</>}
-            </button>
             <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
               <Save className="w-4 h-4" /> Save
             </button>
