@@ -32,15 +32,15 @@ export default function Dashboard() {
             <Link
               key={id}
               to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`}
-              className={`group relative overflow-hidden rounded-3xl p-6 md:p-8 flex items-center justify-between shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${bg}`}
+              className={`group relative overflow-hidden rounded-[2rem] p-6 md:p-8 flex items-center justify-between shadow-xl hover:shadow-2xl border border-white/20 transition-all duration-500 hover:scale-[1.02] ${bg}`}
             >
               <div className="relative z-10 flex items-center gap-6">
-                <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 backdrop-blur-sm">
-                  <Icon className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 backdrop-blur-md shadow-inner border border-white/30">
+                  <Icon className="w-8 h-8 text-white drop-shadow-sm" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white mb-1">{title}</h2>
-                  <p className="text-white/80 text-sm md:text-base max-w-xl">{description}</p>
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-1.5 tracking-tight">{title}</h2>
+                  <p className="text-white/80 text-sm md:text-base max-w-xl font-medium leading-relaxed">{description}</p>
                 </div>
               </div>
               <div className="relative z-10 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-colors">
@@ -48,7 +48,9 @@ export default function Dashboard() {
               </div>
               
               {/* Decorative background icon */}
-              <Icon className="absolute -right-4 -bottom-4 w-40 h-40 text-white/10 pointer-events-none group-hover:scale-110 transition-transform duration-500" />
+              <div className="absolute -right-8 -bottom-8 w-64 h-64 text-white/10 pointer-events-none group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700 blur-sm">
+                <Icon className="w-full h-full" />
+              </div>
             </Link>
           );
         })}

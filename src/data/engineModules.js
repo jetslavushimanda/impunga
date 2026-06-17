@@ -9,10 +9,10 @@ import {
 export const ENGINE_MODULES = {
   business: {
     id: 'business',
-    title: 'Engine 1 — Business',
+    title: 'Business Hub',
     description: 'The Economic Journey. De-risk your startup phase and scale your operations.',
     icon: TrendingUp,
-    bg: 'bg-blue-600',
+    bg: 'bg-gradient-to-br from-blue-600 to-indigo-800',
     modules: [
       { path: '/idea-validator', icon: Lightbulb, name: 'Idea Validator', desc: 'Test if your idea works in Zambia', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
       { path: '/name-generator', icon: Sparkles, name: 'Name Generator', desc: 'AI generates Zambian business names', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
@@ -26,10 +26,10 @@ export const ENGINE_MODULES = {
   },
   skills: {
     id: 'skills',
-    title: 'Engine 2 — Skills',
+    title: 'Skills Identity',
     description: 'The Professional Journey. Define your professional product and monetize it.',
     icon: GraduationCap,
-    bg: 'bg-purple-600',
+    bg: 'bg-gradient-to-br from-purple-600 to-pink-700',
     modules: [
       { path: '/skill-profile-builder', icon: User, name: 'Skill Profile Builder', desc: 'Build your professional skill portfolio', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
       { path: '/career-matches', icon: Briefcase, name: 'Career Matches', desc: 'Match your skills with Zambian jobs', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
@@ -37,20 +37,20 @@ export const ENGINE_MODULES = {
   },
   finance: {
     id: 'finance',
-    title: 'Engine 3 — Finance',
+    title: 'Finance & Funding',
     description: 'Universal Utility. Secure funding, grants, and investment for your ventures.',
     icon: DollarSign,
-    bg: 'bg-green-600',
+    bg: 'bg-gradient-to-br from-emerald-500 to-teal-700',
     modules: [
       { path: '/funding-finder', icon: DollarSign, name: 'Funding Finder', desc: 'Institutional Gateway for Grants & Loans', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
     ]
   },
   connect: {
     id: 'connect',
-    title: 'Engine 4 — Market',
+    title: 'Marketplace',
     description: 'Community Utility. A trust-based ecosystem for trade and human connection.',
     icon: Handshake,
-    bg: 'bg-orange-500',
+    bg: 'bg-gradient-to-br from-orange-500 to-rose-600',
     modules: [
       { path: '/verified-directory', icon: ShieldCheck, name: 'Verified Directory', desc: 'Marketplace for verified users', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
       { path: '/portfolio-showcase', icon: User, name: 'Portfolio Showcase', desc: 'Monetize skills through P2P trade', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
@@ -58,10 +58,10 @@ export const ENGINE_MODULES = {
   },
   gateway: {
     id: 'gateway',
-    title: 'Engine 5 — AI Assistant',
+    title: 'AI Assistant',
     description: 'Your intelligent platform guide. Get tailored advice on business, skills, and how to use IMPUNGA.',
     icon: Bot,
-    bg: 'bg-red-600',
+    bg: 'bg-gradient-to-br from-slate-800 to-slate-900',
     modules: []
   }
 };
