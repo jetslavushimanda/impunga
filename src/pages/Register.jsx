@@ -79,8 +79,12 @@ export default function Register() {
   const districts = getDistricts(selectedProvince || province || '');
 
   return (
-    <div className="min-h-screen bg-surface-light flex items-center justify-center px-4 py-12">
-      <div className="card w-full max-w-md">
+    <div className="min-h-screen bg-primary-dark flex items-center justify-center px-4 py-12 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #154360 0%, #1B4F72 100%)' }}>
+      {/* Decorative Sprouts in Background */}
+      <Sprout className="absolute -right-8 -top-8 w-48 h-48 text-white/5 pointer-events-none" />
+      <Sprout className="absolute -left-8 -bottom-8 w-48 h-48 text-white/5 pointer-events-none" />
+
+      <div className="card w-full max-w-md relative z-10 shadow-2xl">
         <div className="text-center mb-6">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Sprout className="w-7 h-7 text-accent-gold" />

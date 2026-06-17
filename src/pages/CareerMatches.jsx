@@ -5,7 +5,7 @@ import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import { Briefcase, ArrowRight } from 'lucide-react';
 
-const CAREERS = [
+export const CAREERS = [
   {
     name: 'Software Developer',
     sector: 'Information Technology',

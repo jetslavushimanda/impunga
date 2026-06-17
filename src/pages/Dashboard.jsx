@@ -13,6 +13,7 @@ import { getGreeting, getFirstName, getDaysSince } from '../lib/utils';
 import { getDailyTip } from '../data/dailyTips';
 import { PageLoader } from '../components/shared/LoadingSpinner';
 import { useAuth } from '../hooks/useAuth';
+import { CAREERS } from './CareerMatches';
 
 const SECTION_1_MODULES = [
   { path: '/idea-validator', icon: Lightbulb, name: 'Idea Validator', desc: 'Test if your idea works in Zambia', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
@@ -94,8 +95,14 @@ function ComingSoonCard({ icon: Icon, name, desc }) {
 export default function Dashboard() {
   const { user, userProfile, loading, selectedPath, setSelectedPath } = useAuthStore();
   const { updateProfile } = useAuth();
-  const { getUserDocumentCount } = useFirestore();
+  const { getUserDocumentCount, getDocument } = useFirestore();
   const [counts, setCounts] = useState({ ideas: 0, plans: 0, calcs: 0, funding: 0 });
+  const [skillsStats, setSkillsStats] = useState({
+    skillsCount: 0,
+    topMatch: 'None',
+    matchScore: '0%',
+    missingSkills: 0
+  });
   const [tipIndex, setTipIndex] = useState(0);
   const tip = getDailyTip(tipIndex);
 
@@ -110,7 +117,49 @@ export default function Dashboard() {
       ]);
       setCounts({ ideas, plans, calcs, funding });
     }
+
+    async function loadSkillsStats() {
+      try {
+        const profile = await getDocument('skillProfiles', user.uid);
+        if (profile) {
+          const userSkills = profile.selectedSkills || [];
+          // Calculate matches using the same algorithm
+          const scored = CAREERS.map(career => {
+            const matched = career.requiredSkills.filter(skill => userSkills.includes(skill));
+            const missing = career.requiredSkills.filter(skill => !userSkills.includes(skill));
+            const totalRequired = career.requiredSkills.length;
+            const baseScore = totalRequired > 0 ? (matched.length / totalRequired) * 100 : 0;
+            
+            let bonus = 0;
+            if (career.sector === profile.topIndustry) {
+              bonus += 20;
+            }
+            if (career.sector === profile.secondIndustry) {
+              bonus += 10;
+            }
+            
+            const score = Math.min(100, Math.round(baseScore + bonus));
+            return { name: career.name, score, missing };
+          });
+          
+          scored.sort((a, b) => b.score - a.score);
+          
+          if (scored.length > 0) {
+            setSkillsStats({
+              skillsCount: userSkills.length,
+              topMatch: scored[0].name,
+              matchScore: `${scored[0].score}%`,
+              missingSkills: scored[0].missing.length
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load skills stats:', err);
+      }
+    }
+
     loadCounts();
+    loadSkillsStats();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -147,20 +196,50 @@ export default function Dashboard() {
         <Sprout className="absolute right-4 top-4 w-16 h-16 text-white/10" />
       </div>
 
-      {/* Quick Stats 2x2 */}
-      <div className="grid grid-cols-2 gap-3 mb-5">
-        {[
-          { label: 'Ideas Validated', value: counts.ideas, color: 'text-yellow-600', border: 'border-l-yellow-400' },
-          { label: 'Business Plans', value: counts.plans, color: 'text-blue-600', border: 'border-l-blue-400' },
-          { label: 'Pricing Done', value: counts.calcs, color: 'text-green-600', border: 'border-l-green-400' },
-          { label: 'Funding Saved', value: counts.funding, color: 'text-purple-600', border: 'border-l-purple-400' },
-        ].map(({ label, value, color, border }) => (
-          <div key={label} className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 ${border}`}>
-            <p className={`text-3xl font-bold ${color}`}>{value}</p>
-            <p className="text-gray-400 text-xs mt-1">{label}</p>
+      {/* Dynamic Summary Cards */}
+      {(currentPath === 'engine1' || currentPath === 'both') && (
+        <div className="mb-5">
+          {currentPath === 'both' && (
+            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 px-1">Business Summary</h3>
+          )}
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: 'Ideas Validated', value: counts.ideas, color: 'text-yellow-600', border: 'border-l-yellow-400' },
+              { label: 'Business Plans', value: counts.plans, color: 'text-blue-600', border: 'border-l-blue-400' },
+              { label: 'Pricing Done', value: counts.calcs, color: 'text-green-600', border: 'border-l-green-400' },
+              { label: 'Funding Saved', value: counts.funding, color: 'text-purple-600', border: 'border-l-purple-400' },
+            ].map(({ label, value, color, border }) => (
+              <div key={label} className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 ${border}`}>
+                <p className={`text-3xl font-bold ${color}`}>{value}</p>
+                <p className="text-gray-400 text-xs mt-1">{label}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+
+      {(currentPath === 'engine2' || currentPath === 'both') && (
+        <div className="mb-5">
+          {currentPath === 'both' && (
+            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 mt-4 px-1">Skills Summary</h3>
+          )}
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: 'Skills Registered', value: skillsStats.skillsCount, color: 'text-blue-600', border: 'border-l-blue-400' },
+              { label: 'Top Career Match', value: skillsStats.topMatch, color: 'text-purple-600', border: 'border-l-purple-400', isText: true },
+              { label: 'Top Match Score', value: skillsStats.matchScore, color: 'text-green-600', border: 'border-l-green-400' },
+              { label: 'Missing Skills', value: skillsStats.missingSkills, color: 'text-orange-600', border: 'border-l-orange-400' },
+            ].map(({ label, value, color, border, isText }) => (
+              <div key={label} className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-l-4 ${border} flex flex-col justify-between`}>
+                <p className={`font-bold ${color} ${isText ? 'text-xs sm:text-sm leading-snug line-clamp-2 h-10 flex items-center' : 'text-3xl'}`}>
+                  {value}
+                </p>
+                <p className="text-gray-400 text-xs mt-1">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Daily Tip Card */}
       <div className="rounded-2xl p-4 mb-6 border border-yellow-200" style={{ background: '#FFFBEB' }}>
