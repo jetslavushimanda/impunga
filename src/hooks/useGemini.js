@@ -37,11 +37,16 @@ export function useGemini() {
     setLoading(true);
     setError(null);
     try {
-      const prompt = `Analyze this business idea for the Zambian market:
+      const prompt = `Critically analyze this business idea for the Zambian market:
 
 ${ideaText}
 
 User context: ${userContext}
+
+CRITICAL INSTRUCTIONS:
+1. DO NOT default to a 6/10 or 7/10 score. Be brutal and realistic. If the idea is vague, lacks a clear profit mechanism, or is highly saturated, give it a 2/10 to 4/10. Only give 8/10+ for truly exceptional, well-thought-out ideas.
+2. Analyze the CORE MECHANICS: Is this business BUYING, SELLING, PRODUCING, or SERVICING? Focus deeply on the unit economics of that specific angle.
+3. DO NOT give generic advice about PACRA or ZRA registration unless absolutely critical. Focus on market demand, supply chain, customer acquisition, and profit margins.
 
 Provide a structured analysis with these exact sections:
 
@@ -72,9 +77,9 @@ Provide a structured analysis with these exact sections:
 - Opportunity 3
 
 **7. RECOMMENDED NEXT STEPS**
-[3-5 specific, practical action steps the person should take now in Zambia]
+[3-5 specific, practical action steps (e.g., finding suppliers, testing demand). Do NOT mention business registration here; focus on business mechanics.]
 
-Be specific to Zambia. Use Kwacha for money references. Be honest - if the idea needs work, say so constructively.`;
+Be highly specific to Zambia. Use Kwacha for money references. Be brutally honest - if the idea needs major work, say so constructively and score it low.`;
 
       const response = await callGemini(prompt, IDEA_VALIDATOR_SYSTEM);
       return response;
