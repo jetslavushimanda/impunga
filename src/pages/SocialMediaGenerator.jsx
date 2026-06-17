@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Share2, Copy, Check, RefreshCw, ArrowLeft, Facebook, MessageCircle, Music, Instagram } from 'lucide-react';
+import { Share2, Copy, Check, RefreshCw, ArrowLeft, ThumbsUp, MessageCircle, Music, Camera } from 'lucide-react';
 import { callAI } from '../lib/gemini';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
@@ -9,10 +9,10 @@ import { Toast, useToast } from '../components/shared/SuccessToast';
 import useAuthStore from '../store/authStore';
 
 const PLATFORMS = [
-  { id: 'facebook', label: 'Facebook', icon: <Facebook className="w-5 h-5 text-blue-600" />, char: 500 },
+  { id: 'facebook', label: 'Facebook', icon: <ThumbsUp className="w-5 h-5 text-blue-600" />, char: 500 },
   { id: 'whatsapp', label: 'WhatsApp Status', icon: <MessageCircle className="w-5 h-5 text-green-500" />, char: 700 },
   { id: 'tiktok', label: 'TikTok', icon: <Music className="w-5 h-5 text-black" />, char: 150 },
-  { id: 'instagram', label: 'Instagram', icon: <Instagram className="w-5 h-5 text-pink-600" />, char: 300 },
+  { id: 'instagram', label: 'Instagram', icon: <Camera className="w-5 h-5 text-pink-600" />, char: 300 },
 ];
 
 const GOALS = [
