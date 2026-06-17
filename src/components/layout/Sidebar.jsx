@@ -4,106 +4,263 @@ import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
 import { ENGINE_MODULES } from '../../data/engineModules';
 
+// Product colour map for sidebar icons
+const PRODUCT_COLOURS = {
+  business: 'var(--c-business)',
+  skills:   'var(--c-skills)',
+  finance:  'var(--c-finance)',
+  connect:  'var(--c-market)',
+  gateway:  'var(--c-ai)',
+};
+
+const PRODUCT_BG = {
+  business: 'rgba(79, 142, 247, 0.15)',
+  skills:   'rgba(155, 114, 245, 0.15)',
+  finance:  'rgba(45, 212, 191, 0.15)',
+  connect:  'rgba(245, 158, 11, 0.15)',
+  gateway:  'rgba(34, 211, 238, 0.15)',
+};
+
 export default function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { user, updateProfile } = useAuth();
   const { selectedPath, setSelectedPath, userProfile } = useAuthStore();
   const engines = Object.values(ENGINE_MODULES);
 
+  const sidebarItemBase = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '0 12px',
+    height: '44px',
+    borderRadius: '10px',
+    fontFamily: "'Inter', sans-serif",
+    fontWeight: 500,
+    fontSize: '14px',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    transition: 'background 0.15s ease, color 0.15s ease',
+    border: 'none',
+    width: '100%',
+    textAlign: 'left',
+  };
+
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 bg-black/40 z-30 lg:hidden" onClick={onClose} />
+        <div
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 30 }}
+          className="lg:hidden"
+          onClick={onClose}
+        />
       )}
 
-      <aside className={`
-        fixed top-0 left-0 h-screen w-[280px] bg-white/70 backdrop-blur-2xl border-r border-gray-200/50 z-40
-        flex flex-col
-        transform transition-transform duration-400 cubic-bezier(0.16, 1, 0.3, 1)
-        lg:static lg:translate-x-0 lg:z-auto lg:h-full lg:bg-gray-50/50 lg:backdrop-blur-none
-        ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
+      <aside style={{
+        background: 'var(--bg-surface)',
+        borderRight: '1px solid var(--border-subtle)',
+        width: '280px',
+        flexShrink: 0,
+        zIndex: 40,
+        display: 'flex',
+        flexDirection: 'column',
+        // Mobile: slide in/out
+        position: isOpen ? 'fixed' : undefined,
+        top: 0,
+        left: 0,
+        height: isOpen ? '100vh' : '100%',
+        transform: isOpen ? 'translateX(0)' : undefined,
+        boxShadow: isOpen ? '0 0 40px rgba(0,0,0,0.6)' : 'none',
+      }} className={`
+        ${isOpen ? 'fixed top-0 left-0 h-screen translate-x-0 shadow-2xl' : '-translate-x-full'}
+        lg:static lg:translate-x-0 lg:h-full lg:shadow-none
+        transform transition-transform duration-300
+        hidden lg:flex lg:flex-col
+        ${isOpen ? '!flex' : ''}
       `}>
-        {/* Header — only on mobile */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-100 lg:hidden shrink-0">
-          <span className="font-bold text-primary text-lg">IMPUNGA</span>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-surface-light">
-            <X className="w-5 h-5 text-gray-500" />
+        {/* Header — mobile only */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 16px',
+          height: '56px',
+          borderBottom: '1px solid var(--border-subtle)',
+          flexShrink: 0,
+        }} className="lg:hidden">
+          <span style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 700,
+            fontSize: '20px',
+            color: 'var(--gold-bright)',
+            letterSpacing: '-0.01em',
+          }}>IMPUNGA</span>
+          <button
+            onClick={onClose}
+            style={{
+              width: '36px', height: '36px',
+              borderRadius: '8px',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--text-muted)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Scrollable nav */}
-        <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
-          
-          {/* Group 1: Home */}
-          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+        <nav style={{ flex: 1, overflowY: 'auto', padding: '20px 12px' }}>
+
+          {/* Home */}
+          <NavLink
+            to="/dashboard"
+            onClick={onClose}
+            style={({ isActive }) => ({
+              ...sidebarItemBase,
+              display: 'flex',
+              background: isActive ? 'var(--gold-glow)' : 'transparent',
+              borderLeft: isActive ? '3px solid var(--gold-bright)' : '3px solid transparent',
+              borderRadius: isActive ? '0 10px 10px 0' : '10px',
+              color: isActive ? 'var(--gold-bright)' : 'var(--text-secondary)',
+              fontWeight: isActive ? 600 : 500,
+              marginBottom: '4px',
+              paddingLeft: isActive ? '9px' : '12px',
+            })}
+          >
+            <div style={{
+              width: '32px', height: '32px',
+              borderRadius: '8px',
+              background: 'rgba(79, 142, 247, 0.15)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <LayoutDashboard style={{ width: '16px', height: '16px', color: 'var(--c-business)' }} />
+            </div>
+            <span>Home</span>
+          </NavLink>
+
+          {/* Platform Modules section label */}
+          <p style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '11px',
+            fontWeight: 600,
+            color: 'var(--text-muted)',
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            marginTop: '24px',
+            marginBottom: '8px',
+            paddingLeft: '12px',
+          }}>Platform Modules</p>
+
+          {engines.map(({ id, title, icon: Icon }) => (
             <NavLink
-              to="/dashboard"
+              key={id}
+              to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`}
               onClick={onClose}
-              className={({ isActive }) => `flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+              style={({ isActive }) => ({
+                ...sidebarItemBase,
+                display: 'flex',
+                background: isActive ? 'var(--gold-glow)' : 'transparent',
+                borderLeft: isActive ? '3px solid var(--gold-bright)' : '3px solid transparent',
+                borderRadius: isActive ? '0 10px 10px 0' : '10px',
+                color: isActive ? 'var(--gold-bright)' : 'var(--text-secondary)',
+                fontWeight: isActive ? 600 : 500,
+                marginBottom: '2px',
+                paddingLeft: isActive ? '9px' : '12px',
+              })}
             >
-              <div className="w-8 h-8 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-sm">
-                <LayoutDashboard className="w-4 h-4" />
+              <div style={{
+                width: '32px', height: '32px',
+                borderRadius: '8px',
+                background: PRODUCT_BG[id] || 'var(--bg-overlay)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <Icon style={{ width: '16px', height: '16px', color: PRODUCT_COLOURS[id] || 'var(--text-secondary)' }} />
               </div>
-              <span className={`font-medium text-[15px] ${selectedPath === '/dashboard' ? 'text-blue-600' : 'text-gray-800'}`}>Home</span>
+              <span className="truncate">
+                {title.split('—')[1] ? title.split('—')[1].trim() : title}
+              </span>
             </NavLink>
-          </div>
+          ))}
 
-          {/* Group 2: Platform Modules */}
-          <div>
-            <p className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-              Platform Modules
-            </p>
-            <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-              {engines.map(({ id, title, icon: Icon, bg }, index) => (
-                <NavLink 
-                  key={id} 
-                  to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`} 
-                  onClick={onClose} 
-                  className={({ isActive }) => `flex items-center gap-3 px-4 py-3 transition-colors ${index !== engines.length - 1 ? 'border-b border-gray-50' : ''} ${isActive ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
-                >
-                  <div className={`w-8 h-8 rounded-xl text-white flex items-center justify-center shrink-0 shadow-sm ${bg}`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <span className="font-medium text-[15px] text-gray-800 truncate">
-                    {title.split('—')[1] ? title.split('—')[1].trim() : title}
-                  </span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
+          {/* Account section label */}
+          <p style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '11px',
+            fontWeight: 600,
+            color: 'var(--text-muted)',
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            marginTop: '24px',
+            marginBottom: '8px',
+            paddingLeft: '12px',
+          }}>Account</p>
 
-          {/* Group 3: Settings */}
-          <div>
-            <p className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-              Account
-            </p>
-            <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-              <NavLink
-                to="/profile"
-                onClick={onClose}
-                className={({ isActive }) => `flex items-center gap-3 px-4 py-3 border-b border-gray-50 transition-colors ${isActive ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
-              >
-                <div className="w-8 h-8 rounded-xl bg-gray-400 text-white flex items-center justify-center shrink-0 shadow-sm">
-                  <User className="w-4 h-4" />
-                </div>
-                <span className="font-medium text-[15px] text-gray-800">My Profile</span>
-              </NavLink>
-              <NavLink
-                to="/data-privacy"
-                onClick={onClose}
-                className={({ isActive }) => `flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
-              >
-                <div className="w-8 h-8 rounded-xl bg-green-500 text-white flex items-center justify-center shrink-0 shadow-sm">
-                  <Shield className="w-4 h-4" />
-                </div>
-                <span className="font-medium text-[15px] text-gray-800">Data Privacy</span>
-              </NavLink>
+          <NavLink
+            to="/profile"
+            onClick={onClose}
+            style={({ isActive }) => ({
+              ...sidebarItemBase,
+              display: 'flex',
+              background: isActive ? 'var(--gold-glow)' : 'transparent',
+              borderLeft: isActive ? '3px solid var(--gold-bright)' : '3px solid transparent',
+              borderRadius: isActive ? '0 10px 10px 0' : '10px',
+              color: isActive ? 'var(--gold-bright)' : 'var(--text-secondary)',
+              fontWeight: isActive ? 600 : 500,
+              marginBottom: '2px',
+              paddingLeft: isActive ? '9px' : '12px',
+            })}
+          >
+            <div style={{
+              width: '32px', height: '32px', borderRadius: '8px',
+              background: 'var(--bg-overlay)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <User style={{ width: '16px', height: '16px', color: 'var(--text-secondary)' }} />
             </div>
-          </div>
+            <span>My Profile</span>
+          </NavLink>
+
+          <NavLink
+            to="/data-privacy"
+            onClick={onClose}
+            style={({ isActive }) => ({
+              ...sidebarItemBase,
+              display: 'flex',
+              background: isActive ? 'var(--gold-glow)' : 'transparent',
+              borderLeft: isActive ? '3px solid var(--gold-bright)' : '3px solid transparent',
+              borderRadius: isActive ? '0 10px 10px 0' : '10px',
+              color: isActive ? 'var(--gold-bright)' : 'var(--text-secondary)',
+              fontWeight: isActive ? 600 : 500,
+              paddingLeft: isActive ? '9px' : '12px',
+            })}
+          >
+            <div style={{
+              width: '32px', height: '32px', borderRadius: '8px',
+              background: 'rgba(45, 212, 191, 0.12)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <Shield style={{ width: '16px', height: '16px', color: 'var(--c-finance)' }} />
+            </div>
+            <span>Data Privacy</span>
+          </NavLink>
         </nav>
 
-        <div className="shrink-0 p-3 border-t border-gray-100 flex flex-col gap-2">
-          <p className="text-[10px] text-gray-400 text-center mt-2">IMPUNGA © JETS 2026 · Zambia</p>
+        {/* Footer */}
+        <div style={{
+          padding: '12px 16px',
+          borderTop: '1px solid var(--border-subtle)',
+          flexShrink: 0,
+        }}>
+          <p style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '11px',
+            color: 'var(--text-muted)',
+            textAlign: 'center',
+          }}>IMPUNGA © JETS 2026 · Zambia</p>
         </div>
       </aside>
     </>

@@ -1,43 +1,171 @@
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react';
 import { ENGINE_MODULES } from '../data/engineModules';
 
 import BusinessHubView from './BusinessHubView';
+import { SectionHeader } from '../components/shared/SectionHeader';
 
-export function ModuleCard({ path, icon: Icon, name, desc, bg, text, badge }) {
+// Product colour map
+const PRODUCT_COLOUR = {
+  business: 'var(--c-business)',
+  skills:   'var(--c-skills)',
+  finance:  'var(--c-finance)',
+  connect:  'var(--c-market)',
+  gateway:  'var(--c-ai)',
+};
+
+const PRODUCT_ICON_BG = {
+  business: 'rgba(79, 142, 247, 0.15)',
+  skills:   'rgba(155, 114, 245, 0.15)',
+  finance:  'rgba(45, 212, 191, 0.15)',
+  connect:  'rgba(245, 158, 11, 0.15)',
+  gateway:  'rgba(34, 211, 238, 0.15)',
+};
+
+// Determine section from module bg or text class
+function getIconBg(bg, text) {
+  if (!bg && !text) return 'var(--bg-overlay)';
+  const map = {
+    'bg-blue':   'rgba(79, 142, 247, 0.15)',
+    'bg-indigo': 'rgba(99, 102, 241, 0.15)',
+    'bg-purple': 'rgba(155, 114, 245, 0.15)',
+    'bg-green':  'rgba(45, 212, 191, 0.15)',
+    'bg-emerald':'rgba(16, 185, 129, 0.15)',
+    'bg-teal':   'rgba(45, 212, 191, 0.15)',
+    'bg-cyan':   'rgba(34, 211, 238, 0.15)',
+    'bg-amber':  'rgba(245, 158, 11, 0.15)',
+    'bg-orange': 'rgba(251, 146, 60, 0.15)',
+    'bg-rose':   'rgba(244, 63, 94, 0.15)',
+    'bg-fuchsia':'rgba(232, 121, 249, 0.15)',
+    'bg-red':    'rgba(239, 68, 68, 0.15)',
+  };
+  for (const [key, val] of Object.entries(map)) {
+    if (bg?.includes(key) || text?.includes(key)) return val;
+  }
+  return 'var(--bg-overlay)';
+}
+
+function getIconColour(text) {
+  if (!text) return 'var(--text-secondary)';
+  const map = {
+    'text-blue':   'var(--c-business)',
+    'text-indigo': '#818CF8',
+    'text-purple': 'var(--c-skills)',
+    'text-green':  'var(--c-finance)',
+    'text-emerald':'var(--success)',
+    'text-teal':   'var(--c-finance)',
+    'text-cyan':   'var(--c-ai)',
+    'text-amber':  'var(--c-market)',
+    'text-orange': '#FB923C',
+    'text-rose':   '#FB7185',
+    'text-fuchsia':'#E879F9',
+    'text-red':    'var(--danger)',
+  };
+  for (const [key, val] of Object.entries(map)) {
+    if (text?.includes(key)) return val;
+  }
+  return 'var(--text-secondary)';
+}
+
+export function ModuleCard({ path, icon: Icon, name, desc, bg, text, badge, engineId }) {
+  const iconBg = getIconBg(bg, text);
+  const iconColour = getIconColour(text);
+
   return (
     <Link
       to={path}
-      className="group relative bg-white/70 backdrop-blur-md overflow-hidden rounded-2xl p-4 flex items-center gap-4 border border-white/80 shadow-[0_4px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(99,102,241,0.08)] hover:border-indigo-100 hover:-translate-y-1 transition-all duration-300 w-full"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border-subtle)',
+        borderRadius: '14px',
+        padding: '16px',
+        textDecoration: 'none',
+        cursor: 'pointer',
+        transition: 'background 0.15s ease, border-color 0.15s ease',
+        height: '100%',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.background = 'var(--bg-elevated)';
+        e.currentTarget.style.borderColor = 'var(--border-default)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background = 'var(--bg-surface)';
+        e.currentTarget.style.borderColor = 'var(--border-subtle)';
+      }}
     >
-      {/* Decorative gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-indigo-50/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      
-      <div className="relative shrink-0 z-10">
-        {/* Glowing background */}
-        <div className={`absolute inset-0 opacity-20 blur-md rounded-full ${bg} group-hover:opacity-35 transition-opacity duration-300`} />
-        <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center shadow-md border border-white/50 group-hover:scale-105 transition-transform duration-300 ${bg}`}>
-          <Icon className={`w-6 h-6 ${text || 'text-gray-700'} drop-shadow-sm`} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1 }}>
+        {/* Icon box */}
+        <div style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '12px',
+          background: iconBg,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}>
+          <Icon style={{ width: '22px', height: '22px', color: iconColour }} />
         </div>
-      </div>
 
-      <div className="flex-1 min-w-0 relative z-10 text-left">
-        <div className="flex items-center justify-between mb-1 gap-2">
-          <h4 className="font-bold text-gray-900 text-sm group-hover:text-indigo-600 transition-colors truncate">
-            {name}
-          </h4>
-          {badge && (
-            <span className={`text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badge === 'Folder' ? 'bg-yellow-50/80 text-yellow-600 border-yellow-200/40 group-hover:bg-yellow-500 group-hover:text-white' : 'bg-indigo-50/80 text-indigo-600 border-indigo-100/40 group-hover:bg-indigo-600 group-hover:text-white'}`}>
-              {badge}
-            </span>
-          )}
+        {/* Text */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '3px' }}>
+            <h2 style={{
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 600,
+              fontSize: '15px',
+              color: 'var(--text-primary)',
+              margin: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}>{name}</h2>
+            {badge && (
+              <span style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '10px',
+                fontWeight: 700,
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                padding: '3px 8px',
+                borderRadius: '6px',
+                flexShrink: 0,
+                background: iconBg,
+                border: `1px solid ${iconColour}44`,
+                color: iconColour,
+              }}>{badge}</span>
+            )}
+          </div>
+          <p style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '13px',
+            color: 'var(--text-secondary)',
+            margin: 0,
+            lineHeight: 1.4,
+            overflow: 'hidden',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+          }}>{desc}</p>
         </div>
-        <p className="text-gray-500 text-xs font-medium line-clamp-2 leading-relaxed">{desc}</p>
-      </div>
-      
-      {/* Subtle background icon */}
-      <div className="absolute -right-2 -bottom-2 w-16 h-16 opacity-[0.03] pointer-events-none group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 text-gray-900">
-        <Icon className="w-full h-full" />
+
+        {/* Arrow */}
+        <div style={{
+          width: '28px',
+          height: '28px',
+          borderRadius: '50%',
+          background: 'var(--bg-elevated)',
+          border: '1px solid var(--border-subtle)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}>
+          <ChevronRight style={{ width: '14px', height: '14px', color: 'var(--text-muted)' }} />
+        </div>
       </div>
     </Link>
   );
@@ -55,33 +183,44 @@ export default function EngineView() {
     return <BusinessHubView />;
   }
 
-  const { icon: EngineIcon, title, description, bg, modules } = engine;
+  const { icon: EngineIcon, title, description, modules } = engine;
+  const colour = PRODUCT_COLOUR[engineId] || 'var(--text-secondary)';
 
   return (
-    <div className="max-w-5xl mx-auto pb-24 animate-fade-in relative">
-      <Link to="/dashboard" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-8 transition-colors">
-        <ArrowLeft className="w-4 h-4" />
+    <div style={{ maxWidth: '960px', margin: '0 auto', paddingBottom: '96px' }}>
+      <Link to="/dashboard" style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        fontFamily: "'Inter', sans-serif",
+        fontSize: '14px',
+        fontWeight: 500,
+        color: 'var(--text-secondary)',
+        textDecoration: 'none',
+        marginBottom: '20px',
+        transition: 'color 0.15s ease',
+      }}
+        onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+        onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+      >
+        <ArrowLeft style={{ width: '16px', height: '16px', color: 'var(--text-muted)' }} />
         Back to Home
       </Link>
 
-      <div className="mb-10 relative">
-        <div className="flex items-start md:items-center gap-5 relative z-10">
-          <div className="relative">
-            <div className={`absolute inset-0 blur-2xl opacity-20 rounded-full ${bg}`} />
-            <div className={`relative w-16 h-16 rounded-[1.25rem] flex items-center justify-center shadow-lg border border-white/30 shrink-0 ${bg}`}>
-              <EngineIcon className="w-8 h-8 text-white drop-shadow-md" />
-            </div>
-          </div>
-          <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2">{title}</h1>
-            <p className="text-gray-500 text-base max-w-2xl font-medium leading-relaxed">{description}</p>
-          </div>
-        </div>
-      </div>
+      <SectionHeader
+        title={title}
+        description={description}
+        icon={EngineIcon}
+        colour={colour}
+      />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+        gap: '8px',
+      }}>
         {modules.map(mod => (
-          <ModuleCard key={mod.path} {...mod} />
+          <ModuleCard key={mod.path} {...mod} engineId={engineId} />
         ))}
       </div>
     </div>

@@ -23,59 +23,167 @@ export default function Header({ onMenuToggle }) {
 
   return (
     <>
-      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+      <header style={{
+        background: 'rgba(15, 22, 35, 0.92)',
+        borderBottom: '1px solid var(--border-subtle)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        paddingTop: 'env(safe-area-inset-top)',
+      }} className="px-4 flex items-center justify-between h-14 lg:h-[60px]">
         <div className="flex items-center gap-3">
-          <button onClick={onMenuToggle} className="lg:hidden p-2 rounded-lg hover:bg-surface-light" aria-label="Toggle menu">
-            <Menu className="w-5 h-5 text-gray-600" />
+          <button
+            onClick={onMenuToggle}
+            className="lg:hidden flex items-center justify-center w-11 h-11 rounded-xl transition-colors"
+            style={{ color: 'var(--text-secondary)' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-elevated)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            aria-label="Toggle menu"
+          >
+            <Menu className="w-5 h-5" />
           </button>
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <span className="text-xl font-bold text-primary">IMPUNGA</span>
-            <span className="hidden sm:block text-xs text-gray-400 font-medium">Start. Match. Build Zambia.</span>
+          <Link to="/dashboard" className="flex items-center gap-2 no-underline">
+            <span style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: '20px',
+              color: 'var(--gold-bright)',
+              letterSpacing: '-0.01em',
+            }}>IMPUNGA</span>
+            <span className="hidden sm:block" style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '11px',
+              color: 'var(--text-muted)',
+              fontWeight: 500,
+            }}>Start. Match. Build Zambia.</span>
           </Link>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="hidden md:block text-sm text-gray-600">
+          <span className="hidden md:block" style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '13px',
+            color: 'var(--text-secondary)',
+          }}>
             {getGreeting()}{firstName ? `, ${firstName}` : ''}
           </span>
 
-          {/* Semantic Search Button */}
+          {/* Search Button */}
           <button
             onClick={() => setSearchOpen(true)}
-            className="flex items-center gap-2 bg-gray-100/80 hover:bg-gray-200/80 text-gray-500 hover:text-gray-700 transition-colors rounded-full px-4 py-2 text-sm font-medium border border-gray-200/50"
+            style={{
+              background: 'var(--bg-elevated)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '10px',
+              padding: '8px 12px',
+              color: 'var(--text-secondary)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              transition: 'background 0.15s ease',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '13px',
+              minHeight: '44px',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-overlay)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-elevated)'}
             aria-label="Smart search"
           >
-            <Search className="w-4 h-4 text-gray-400" />
-            <span className="hidden sm:block font-normal">Search...</span>
+            <Search className="w-4 h-4" />
+            <span className="hidden sm:block">Search...</span>
           </button>
 
-          <button className="p-2 rounded-lg hover:bg-surface-light relative" aria-label="Notifications">
-            <Bell className="w-5 h-5 text-gray-600" />
+          {/* Notifications */}
+          <button
+            style={{ color: 'var(--text-secondary)', background: 'transparent', border: 'none', cursor: 'pointer', minHeight: '44px', minWidth: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', transition: 'color 0.15s ease' }}
+            onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+            aria-label="Notifications"
+          >
+            <Bell className="w-5 h-5" />
           </button>
 
+          {/* Avatar */}
           <div className="relative">
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-2 p-1 rounded-lg hover:bg-surface-light"
+              className="flex items-center gap-2"
+              style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px' }}
             >
-              <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+              <div style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                background: 'var(--gold-glow)',
+                border: '1px solid var(--gold-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 600,
+                fontSize: '14px',
+                color: 'var(--gold-bright)',
+                cursor: 'pointer',
+              }}>
                 {initials}
               </div>
-              <ChevronDown className="w-4 h-4 text-gray-500 hidden sm:block" />
+              <ChevronDown className="w-4 h-4 hidden sm:block" style={{ color: 'var(--text-muted)' }} />
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-lg border border-gray-100 z-40">
+              <div style={{
+                position: 'absolute',
+                right: 0,
+                top: 'calc(100% + 6px)',
+                width: '192px',
+                background: 'var(--bg-overlay)',
+                border: '1px solid var(--border-default)',
+                borderRadius: '12px',
+                zIndex: 40,
+                overflow: 'hidden',
+              }}>
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-surface-light rounded-t-xl"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '12px 16px',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '14px',
+                    color: 'var(--text-secondary)',
+                    textDecoration: 'none',
+                    borderBottom: '1px solid var(--border-subtle)',
+                    transition: 'background 0.15s ease, color 0.15s ease',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
                   onClick={() => setDropdownOpen(false)}
                 >
                   <User className="w-4 h-4" /> My Profile
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-4 py-3 text-sm text-accent-red hover:bg-red-50 w-full text-left rounded-b-xl"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '12px 16px',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '14px',
+                    color: 'var(--danger)',
+                    background: 'transparent',
+                    border: 'none',
+                    width: '100%',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    transition: 'background 0.15s ease',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(239,68,68,0.08)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
                   <LogOut className="w-4 h-4" /> Logout
                 </button>

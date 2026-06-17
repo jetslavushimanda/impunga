@@ -7,26 +7,64 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Dark intelligence tokens
+        'bg-base':    '#080D18',
+        'bg-surface': '#0F1623',
+        'bg-elevated':'#161D2E',
+        'bg-overlay': '#1C2438',
+        'bg-hover':   '#212B40',
+
+        // Product colours
+        'c-business': '#4F8EF7',
+        'c-skills':   '#9B72F5',
+        'c-finance':  '#2DD4BF',
+        'c-market':   '#F59E0B',
+        'c-ai':       '#22D3EE',
+
+        // Gold system
+        'gold-bright': '#E8C547',
+        'gold-mid':    '#D4AC0D',
+        'gold-muted':  '#A68A00',
+
+        // Text
+        'text-primary':   '#F0F4FF',
+        'text-secondary': '#8892A4',
+        'text-muted':     '#4A5568',
+        'text-inverse':   '#080D18',
+
+        // Borders
+        'border-subtle':  '#1A2235',
+        'border-default': '#1F2D45',
+        'border-strong':  '#2A3D5C',
+
+        // Semantic
+        'success': '#10B981',
+        'warning': '#F59E0B',
+        'danger':  '#EF4444',
+        'info':    '#4F8EF7',
+
+        // Legacy (kept for backwards compat)
         primary: {
-          DEFAULT: '#1B4F72',
-          light: '#2E86C1',
-          dark: '#154360',
+          DEFAULT: '#E8C547',
+          light: '#F0D060',
+          dark: '#D4AC0D',
         },
         accent: {
-          green: '#1E8449',
-          gold: '#B7950B',
-          orange: '#D35400',
-          red: '#C0392B',
+          green: '#10B981',
+          gold: '#E8C547',
+          orange: '#F59E0B',
+          red: '#EF4444',
         },
         surface: {
-          DEFAULT: '#FFFFFF',
-          light: '#F4F6F7',
-          blue: '#D6EAF8',
-          green: '#D5F5E3',
+          DEFAULT: '#0F1623',
+          light: '#161D2E',
+          blue: '#1C2438',
+          green: '#0F2318',
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
       },
       animation: {
         'fade-in': 'none',
