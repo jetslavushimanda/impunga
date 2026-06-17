@@ -1,0 +1,521 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import useAuthStore from '../store/authStore';
+import LoadingSpinner from '../components/shared/LoadingSpinner';
+import ErrorMessage from '../components/shared/ErrorMessage';
+import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+
+const PROVINCES = [
+  'Central', 'Copperbelt', 'Eastern', 'Luapula', 'Lusaka',
+  'Muchinga', 'Northern', 'North-Western', 'Southern', 'Western'
+];
+
+const EDUCATION_LEVELS = [
+  'Primary School Certificate',
+  'Junior Secondary Certificate',
+  'Senior Secondary Certificate',
+  'TEVET Certificate',
+  'Diploma',
+  "Bachelor's Degree",
+  "Master's Degree or Higher",
+  'No Formal Certificate'
+];
+
+const WORK_TYPES = [
+  'Employment — I want to work for someone',
+  'Self Employment — I want to work for myself',
+  'Both — I am open to either'
+];
+
+const INDUSTRIES = [
+  'Agriculture and Farming',
+  'Mining and Minerals',
+  'Construction and Infrastructure',
+  'Information Technology',
+  'Healthcare and Medicine',
+  'Education and Training',
+  'Finance and Banking',
+  'Retail and Trade',
+  'Tourism and Hospitality',
+  'Manufacturing',
+  'Transport and Logistics',
+  'Media and Communications',
+  'Government and Public Service',
+  'NGO and Development Work',
+  'Self Employment and Entrepreneurship'
+];
+
+const CAT1_SKILLS = [
+  'Computer Programming', 'Web Development', 'Mobile App Development', 'Data Analysis',
+  'Graphic Design', 'Video Editing', 'Social Media Management', 'Accounting and Bookkeeping',
+  'Electrical Installation', 'Plumbing', 'Welding', 'Carpentry and Joinery',
+  'Motor Vehicle Mechanics', 'Air Conditioning and Refrigeration', 'Solar Panel Installation',
+  'Networking and IT Support'
+];
+
+const CAT2_SKILLS = [
+  'Tailoring and Dressmaking', 'Hairdressing and Beauty', 'Bricklaying and Plastering',
+  'Painting and Decorating', 'Catering and Cooking', 'Baking and Confectionery',
+  'Farming and Agriculture', 'Animal Husbandry', 'Fish Farming', 'Driving and Transport',
+  'Security Services', 'Cleaning Services', 'Childcare', 'Teaching and Tutoring',
+  'Nursing and Healthcare', 'Photography'
+];
+
+const CAT3_SKILLS = [
+  'Communication', 'Leadership', 'Teamwork', 'Problem Solving', 'Customer Service',
+  'Sales and Marketing', 'Project Management', 'Public Speaking', 'Negotiation',
+  'Financial Management', 'Research'
+];
+
+const CURRENT_STATUS_OPTIONS = [
+  'Employed full time',
+  'Employed part time',
+  'Self employed',
+  'Unemployed and looking for work',
+  'In school or training',
+  'Not currently looking'
+];
+
+export default function SkillProfileBuilder() {
+  const { user, userProfile } = useAuthStore();
+  const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [validationError, setValidationError] = useState('');
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    fullName: '',
+    age: '',
+    province: '',
+    district: '',
+    educationLevel: '',
+    preferredWorkType: '',
+    selectedSkills: [],
+    languages: '',
+    topIndustry: '',
+    secondIndustry: '',
+    biggestChallenge: '',
+    currentStatus: '',
+  });
+
+  useEffect(() => {
+    if (userProfile?.fullName) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFormData(prev => ({
+        ...prev,
+        fullName: prev.fullName || userProfile.fullName,
+      }));
+    }
+  }, [userProfile]);
+
+  function handleFieldChange(field, val) {
+    setFormData(prev => ({ ...prev, [field]: val }));
+    setValidationError('');
+  }
+
+  function handleSkillToggle(skill) {
+    setValidationError('');
+    setFormData(prev => {
+      const current = prev.selectedSkills;
+      if (current.includes(skill)) {
+        return { ...prev, selectedSkills: current.filter(s => s !== skill) };
+      } else {
+        return { ...prev, selectedSkills: [...current, skill] };
+      }
+    });
+  }
+
+  function validateStep1() {
+    if (!formData.fullName.trim()) return 'Full name is required';
+    if (!formData.age || parseInt(formData.age) <= 0) return 'Valid age is required';
+    if (!formData.province) return 'Please select a province';
+    if (!formData.district.trim()) return 'District is required';
+    if (!formData.educationLevel) return 'Please select your education level';
+    if (!formData.preferredWorkType) return 'Please select your preferred work type';
+    return '';
+  }
+
+  function validateStep2() {
+    if (formData.selectedSkills.length < 3) {
+      return 'Please select at least 3 skills to proceed';
+    }
+    return '';
+  }
+
+  function validateStep3() {
+    if (!formData.topIndustry) return 'Top industry interest is required';
+    if (!formData.secondIndustry) return 'Second industry interest is required';
+    if (!formData.currentStatus) return 'Please select your current employment status';
+    return '';
+  }
+
+  function handleNext() {
+    if (step === 1) {
+      const err = validateStep1();
+      if (err) { setValidationError(err); return; }
+      setStep(2);
+    } else if (step === 2) {
+      const err = validateStep2();
+      if (err) { setValidationError(err); return; }
+      setStep(3);
+    }
+  }
+
+  function handleBack() {
+    if (step > 1) {
+      setStep(step - 1);
+      setValidationError('');
+    }
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (step !== 3) return;
+
+    const err = validateStep3();
+    if (err) { setValidationError(err); return; }
+
+    if (!user) {
+      setSubmitError('You must be logged in to save your profile.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      await setDoc(doc(db, 'skillProfiles', user.uid), {
+        ...formData,
+        userId: user.uid,
+        province: formData.province,
+        createdAt: serverTimestamp(),
+      });
+
+      navigate('/career-matches');
+    } catch (error) {
+      console.error('Error saving skill profile:', error);
+      setSubmitError('Failed to save your skill profile. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  const progress = (step / 3) * 100;
+  const stepTitles = ['Personal Details', 'Skills Selection', 'Career Interests'];
+
+  return (
+    <div className="max-w-2xl mx-auto pb-24 animate-fade-in px-4">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
+          <CheckCircle className="w-5 h-5 text-blue-700" />
+        </div>
+        <div>
+          <h1 className="text-xl font-bold text-gray-800">Skill Profile Builder</h1>
+          <p className="text-xs text-gray-400">Build your professional skills and profile</p>
+        </div>
+      </div>
+
+      {/* Progress Bar & Steps indicator */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6">
+        <div className="w-full bg-gray-100 rounded-full h-2 mb-4">
+          <div
+            className="bg-primary h-2 rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="flex justify-between items-center">
+          {stepTitles.map((title, idx) => {
+            const sNum = idx + 1;
+            return (
+              <div key={idx} className="text-center flex-1">
+                <div className={`text-xs font-semibold ${sNum === step ? 'text-primary' : 'text-gray-400'}`}>
+                  Step {sNum}
+                </div>
+                <div className={`text-[10px] hidden sm:block ${sNum === step ? 'text-gray-700 font-bold' : 'text-gray-400'}`}>
+                  {title}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {validationError && (
+        <div className="mb-4">
+          <ErrorMessage message={validationError} />
+        </div>
+      )}
+
+      {submitError && (
+        <div className="mb-4">
+          <ErrorMessage message={submitError} />
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* STEP 1: Personal Details */}
+        {step === 1 && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-4">
+            <h2 className="text-base font-bold text-gray-800 border-b border-gray-100 pb-2">Step 1 — Personal Details</h2>
+            
+            <div>
+              <label className="label">Full Name *</label>
+              <input
+                type="text"
+                className="input-field"
+                placeholder="e.g. Chanda Mwale"
+                value={formData.fullName}
+                onChange={e => handleFieldChange('fullName', e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="label">Age *</label>
+                <input
+                  type="number"
+                  className="input-field"
+                  placeholder="e.g. 25"
+                  value={formData.age}
+                  onChange={e => handleFieldChange('age', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="label">Province *</label>
+                <select
+                  className="select-field"
+                  value={formData.province}
+                  onChange={e => handleFieldChange('province', e.target.value)}
+                >
+                  <option value="">Select Province</option>
+                  {PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="label">District *</label>
+              <input
+                type="text"
+                className="input-field"
+                placeholder="e.g. Lusaka, Kitwe, Kabwe"
+                value={formData.district}
+                onChange={e => handleFieldChange('district', e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="label">Education Level *</label>
+              <select
+                className="select-field"
+                value={formData.educationLevel}
+                onChange={e => handleFieldChange('educationLevel', e.target.value)}
+              >
+                <option value="">Select Education Level</option>
+                {EDUCATION_LEVELS.map(lvl => <option key={lvl} value={lvl}>{lvl}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label className="label">Preferred Work Type *</label>
+              <select
+                className="select-field"
+                value={formData.preferredWorkType}
+                onChange={e => handleFieldChange('preferredWorkType', e.target.value)}
+              >
+                <option value="">Select Preferred Work Type</option>
+                {WORK_TYPES.map(wt => <option key={wt} value={wt}>{wt}</option>)}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2: Skills Selection */}
+        {step === 2 && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-6">
+            <div>
+              <h2 className="text-base font-bold text-gray-800">Step 2 — Skills Selection</h2>
+              <p className="text-xs text-gray-400 mt-1">Select at least 3 skills that you possess.</p>
+            </div>
+
+            {/* Category 1 */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-1">
+                Category 1 — Technical and Digital Skills
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {CAT1_SKILLS.map(skill => (
+                  <label key={skill} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50 cursor-pointer text-sm text-gray-700">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                      checked={formData.selectedSkills.includes(skill)}
+                      onChange={() => handleSkillToggle(skill)}
+                    />
+                    <span>{skill}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Category 2 */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-1">
+                Category 2 — Vocational and Trade Skills
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {CAT2_SKILLS.map(skill => (
+                  <label key={skill} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50 cursor-pointer text-sm text-gray-700">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                      checked={formData.selectedSkills.includes(skill)}
+                      onChange={() => handleSkillToggle(skill)}
+                    />
+                    <span>{skill}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Category 3 */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-1">
+                Category 3 — Business and Soft Skills
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {CAT3_SKILLS.map(skill => (
+                  <label key={skill} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50 cursor-pointer text-sm text-gray-700">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                      checked={formData.selectedSkills.includes(skill)}
+                      onChange={() => handleSkillToggle(skill)}
+                    />
+                    <span>{skill}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* Languages specify */}
+              <div className="pt-2">
+                <label className="label">Languages — specify which you speak</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="e.g. English, Bemba, Nyanja, Tonga"
+                  value={formData.languages}
+                  onChange={e => handleFieldChange('languages', e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
+              Selected skills: <span className="font-bold">{formData.selectedSkills.length}</span> (Minimum 3 required)
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3: Career Interests */}
+        {step === 3 && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-4">
+            <h2 className="text-base font-bold text-gray-800 border-b border-gray-100 pb-2">Step 3 — Career Interests</h2>
+
+            <div>
+              <label className="label">Top Industry Interest *</label>
+              <select
+                className="select-field"
+                value={formData.topIndustry}
+                onChange={e => handleFieldChange('topIndustry', e.target.value)}
+              >
+                <option value="">Select Top Industry</option>
+                {INDUSTRIES.map(ind => <option key={ind} value={ind}>{ind}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label className="label">Second Industry Interest *</label>
+              <select
+                className="select-field"
+                value={formData.secondIndustry}
+                onChange={e => handleFieldChange('secondIndustry', e.target.value)}
+              >
+                <option value="">Select Second Industry</option>
+                {INDUSTRIES.map(ind => <option key={ind} value={ind}>{ind}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label className="label">What is your biggest challenge in finding work or growing your business? (Optional)</label>
+              <textarea
+                className="input-field min-h-24 py-2"
+                placeholder="Briefly describe your main challenge..."
+                value={formData.biggestChallenge}
+                onChange={e => handleFieldChange('biggestChallenge', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="label">Are you currently: *</label>
+              <div className="space-y-2">
+                {CURRENT_STATUS_OPTIONS.map(opt => (
+                  <label key={opt} className="flex items-center gap-3 p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer text-sm text-gray-700">
+                    <input
+                      type="radio"
+                      name="currentStatus"
+                      className="text-primary focus:ring-primary h-4 w-4"
+                      value={opt}
+                      checked={formData.currentStatus === opt}
+                      onChange={e => handleFieldChange('currentStatus', e.target.value)}
+                    />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Form Controls */}
+        <div className="flex gap-4">
+          {step > 1 && (
+            <button
+              type="button"
+              onClick={handleBack}
+              disabled={isSubmitting}
+              className="btn-secondary flex-1 flex items-center justify-center gap-1.5 py-3"
+            >
+              <ChevronLeft className="w-4 h-4" /> Back
+            </button>
+          )}
+
+          {step < 3 ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              className="btn-primary flex-1 flex items-center justify-center gap-1.5 py-3"
+            >
+              Next <ChevronRight className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn-primary flex-1 flex items-center justify-center gap-1.5 py-3"
+            >
+              {isSubmitting ? (
+                <LoadingSpinner size="sm" text="Saving Profile..." />
+              ) : (
+                'Submit Profile'
+              )}
+            </button>
+          )}
+        </div>
+      </form>
+    </div>
+  );
+}

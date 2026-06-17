@@ -26,6 +26,7 @@ import SWOTAnalysis from './pages/SWOTAnalysis';
 import SocialMediaGenerator from './pages/SocialMediaGenerator';
 import BusinessQuiz from './pages/BusinessQuiz';
 import BusinessLedger from './pages/BusinessLedger';
+import SkillProfileBuilder from './pages/SkillProfileBuilder';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser } = useAuthStore();
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="/social-media" element={<SocialMediaGenerator />} />
           <Route path="/business-quiz" element={<BusinessQuiz />} />
           <Route path="/business-ledger" element={<BusinessLedger />} />
+          <Route path="/skill-profile-builder" element={<SkillProfileBuilder />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

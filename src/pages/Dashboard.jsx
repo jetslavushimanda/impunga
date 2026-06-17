@@ -26,10 +26,7 @@ const SECTION_1_MODULES = [
   { path: '/business-ledger', icon: BookOpen, name: 'Business Ledger', desc: 'Track sales, expenses and debtors', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
 ];
 
-const SECTION_2_MODULES = [
-  { icon: User, name: 'Skill Profile Builder', desc: 'Build your professional skill portfolio' },
-  { icon: Briefcase, name: 'Career Matches', desc: 'Match your skills with Zambian job opportunities' },
-];
+
 
 function ModuleCard({ path, icon: Icon, name, desc, bg, text, border }) {
   return (
@@ -188,9 +185,20 @@ export default function Dashboard() {
           Engine 2 — Match Your Skills
         </h2>
         <div className="grid grid-cols-2 gap-3">
-          {SECTION_2_MODULES.map(mod => (
-            <ComingSoonCard key={mod.name} {...mod} />
-          ))}
+          <ModuleCard
+            path="/skill-profile-builder"
+            icon={User}
+            name="Skill Profile Builder"
+            desc="Build your professional skill portfolio"
+            bg="bg-blue-50"
+            text="text-blue-600"
+            border="border-l-blue-400"
+          />
+          <ComingSoonCard
+            icon={Briefcase}
+            name="Career Matches"
+            desc="Match your skills with Zambian job opportunities"
+          />
         </div>
       </div>
     </div>
