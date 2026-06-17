@@ -25,37 +25,27 @@ export default function Dashboard() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {engines.map((engine) => {
+      <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-200 mt-6">
+        {engines.map((engine, index) => {
           const { id, title, description, icon: Icon, bg } = engine;
+          const isLast = index === engines.length - 1;
+          
           return (
             <Link
               key={id}
               to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`}
-              className="group relative bg-white overflow-hidden rounded-[2rem] p-6 md:p-8 flex items-center justify-between border border-gray-200 transition-all duration-300 hover:border-gray-300 hover:shadow-md"
+              className={`group flex items-center justify-between p-5 md:p-6 transition-colors hover:bg-gray-50 ${isLast ? '' : 'border-b border-gray-100'}`}
             >
-              <div className="relative z-10 flex items-center gap-6">
-                <div className="relative">
-                  {/* Subtle static backdrop */}
-                  <div className={`absolute inset-0 blur-xl opacity-20 rounded-full ${bg}`} />
-                  {/* Actual icon box */}
-                  <div className={`relative w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-lg border border-white/20 ${bg}`}>
-                    <Icon className="w-8 h-8 text-white drop-shadow-md" />
-                  </div>
+              <div className="flex items-center gap-5">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border border-white/20 ${bg}`}>
+                  <Icon className="w-6 h-6 text-white drop-shadow-sm" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-extrabold text-gray-900 mb-1 tracking-tight group-hover:text-primary transition-colors">{title}</h2>
-                  <p className="text-gray-500 text-sm md:text-base max-w-xl font-medium leading-relaxed">{description}</p>
+                  <h2 className="text-xl font-bold text-gray-800 mb-0.5 tracking-tight group-hover:text-primary transition-colors">{title}</h2>
+                  <p className="text-gray-500 text-sm md:text-base max-w-xl leading-relaxed">{description}</p>
                 </div>
               </div>
-              <div className="relative z-10 w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-gray-100 group-hover:bg-primary group-hover:text-white transition-colors duration-300 text-gray-400">
-                <ChevronRight className="w-6 h-6" />
-              </div>
-              
-              {/* Decorative background icon */}
-              <div className="absolute -right-10 -bottom-10 w-64 h-64 text-gray-50 pointer-events-none">
-                <Icon className="w-full h-full" />
-              </div>
+              <ChevronRight className="w-5 h-5 text-gray-400 shrink-0 ml-4 group-hover:text-gray-600 transition-colors" />
             </Link>
           );
         })}
