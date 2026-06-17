@@ -30,6 +30,7 @@ import CareerMatches from './pages/CareerMatches';
 import DataPrivacy from './pages/DataPrivacy';
 import ComplianceTracker from './pages/ComplianceTracker';
 import PlaceholderPage from './pages/PlaceholderPage';
+import EngineView from './pages/EngineView';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
@@ -65,6 +66,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/engine/:engineId" element={<EngineView />} />
           <Route path="/idea-validator" element={<IdeaValidator />} />
           <Route path="/registration-guide" element={<RegistrationGuide />} />
           <Route path="/business-plan" element={<BusinessPlanBuilder />} />
