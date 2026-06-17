@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2, Lightbulb, Sparkles, ArrowRight, Trash2, Target, FileText, Presentation, Share2, Calculator, Building2, FolderOpen, X } from 'lucide-react';
+import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2, Lightbulb, Sparkles, ArrowRight, Trash2, Target, FileText, Presentation, Share2, Calculator, Building2, FolderOpen, X, Handshake, DollarSign } from 'lucide-react';
 import { ENGINE_MODULES } from '../data/engineModules';
 import useAuthStore from '../store/authStore';
 import { useAuth } from '../hooks/useAuth';
@@ -544,6 +544,8 @@ export default function BusinessHubView() {
             {businessEngine.modules.map(mod => (
               <ModuleCard key={mod.path} {...mod} />
             ))}
+            <ModuleCard path="/market-directory" icon={Handshake} name="Marketplace" desc="Trade and connect in the verified directory" bg="bg-blue-50" text="text-blue-600" border="border-l-blue-400" />
+            <ModuleCard path="/funding-finder" icon={DollarSign} name="Funding Connect" desc="Institutional Gateway for Grants & Loans" bg="bg-green-50" text="text-green-600" border="border-l-green-400" />
           </div>
         </div>
       )}

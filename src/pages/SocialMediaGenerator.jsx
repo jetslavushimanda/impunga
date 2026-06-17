@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Share2, Copy, Check, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Share2, Copy, Check, RefreshCw, ArrowLeft, Facebook, MessageCircle, Music, Instagram } from 'lucide-react';
 import { callAI } from '../lib/gemini';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
@@ -9,10 +9,10 @@ import { Toast, useToast } from '../components/shared/SuccessToast';
 import useAuthStore from '../store/authStore';
 
 const PLATFORMS = [
-  { id: 'facebook', label: 'Facebook', icon: '📘', char: 500 },
-  { id: 'whatsapp', label: 'WhatsApp Status', icon: '💬', char: 700 },
-  { id: 'tiktok', label: 'TikTok', icon: '🎵', char: 150 },
-  { id: 'instagram', label: 'Instagram', icon: '📸', char: 300 },
+  { id: 'facebook', label: 'Facebook', icon: <Facebook className="w-5 h-5 text-blue-600" />, char: 500 },
+  { id: 'whatsapp', label: 'WhatsApp Status', icon: <MessageCircle className="w-5 h-5 text-green-500" />, char: 700 },
+  { id: 'tiktok', label: 'TikTok', icon: <Music className="w-5 h-5 text-black" />, char: 150 },
+  { id: 'instagram', label: 'Instagram', icon: <Instagram className="w-5 h-5 text-pink-600" />, char: 300 },
 ];
 
 const GOALS = [
@@ -63,7 +63,7 @@ Platforms needed: ${platformList}
 For each platform, write one caption that:
 - Uses simple Zambian English
 - Is relevant to the Zambian market
-- Includes relevant emojis
+- Do NOT use any emojis
 - Ends with a call to action
 - Uses hashtags relevant to Zambia
 - Stays within character limits
@@ -133,7 +133,7 @@ Return ONLY valid JSON:
               {PLATFORMS.map(p => (
                 <button key={p.id} onClick={() => togglePlatform(p.id)}
                   className={`px-4 py-2.5 rounded-xl border text-sm font-bold transition-all shadow-sm flex items-center gap-2 ${selectedPlatforms.includes(p.id) ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent scale-105' : 'bg-white/60 border-gray-200 text-gray-600 hover:border-pink-300'}`}>
-                  <span className="text-lg">{p.icon}</span> {p.label}
+                  <span className="flex items-center justify-center">{p.icon}</span> {p.label}
                 </button>
               ))}
             </div>
@@ -160,7 +160,7 @@ Return ONLY valid JSON:
               <div key={id} className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-sm rounded-3xl p-6 relative overflow-hidden transition-all hover:shadow-md">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
                   <h3 className="font-extrabold text-gray-800 flex items-center gap-2 text-lg">
-                    <span className="text-2xl drop-shadow-sm">{platform.icon}</span> {platform.label}
+                    <span className="flex items-center justify-center drop-shadow-sm">{platform.icon}</span> {platform.label}
                     <span className="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full">{captions[id].length} chars</span>
                   </h3>
                   <div className="flex gap-2">

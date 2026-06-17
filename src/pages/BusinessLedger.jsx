@@ -12,6 +12,7 @@ import useAuthStore from '../store/authStore';
 import { formatKwacha } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import jsPDF from 'jspdf';
+import * as XLSX from 'xlsx';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 const EXPENSE_CATEGORIES = [
@@ -164,7 +165,7 @@ function DebtorCard({ debtor, type, onMarkPaid, onReminder }) {
 }
 
 export default function BusinessLedger() {
-  const [activeTab, setActiveTab] = useState('sales');
+  const [activeTab, setActiveTab] = useState('menu');
   const { addDocument, updateDocument, deleteDocument, getUserDocuments } = useFirestore();
   const { user, userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
@@ -624,50 +625,107 @@ export default function BusinessLedger() {
     show('PDF downloaded!');
   }
 
+  function downloadExcel(data, filename) {
+    if (!data.length) return show('No data to export', 'error');
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    XLSX.writeFile(wb, `${filename}.xlsx`);
+  }
+
+  function exportSalesExcel() {
+    const data = sales.map(s => ({
+      Date: getDateKey(s.createdAt),
+      Item: s.item,
+      Quantity: s.quantity,
+      Price: s.pricePerUnit,
+      Total: s.total,
+      Method: s.paymentMethod,
+      Customer: s.customerName || '',
+      Note: s.note || ''
+    }));
+    downloadExcel(data, 'Sales_Book');
+  }
+
+  function exportExpensesExcel() {
+    const data = expenses.map(e => ({
+      Date: e.date || getDateKey(e.createdAt),
+      Category: e.category,
+      Description: e.description,
+      Amount: e.amount,
+      Note: e.note || ''
+    }));
+    downloadExcel(data, 'Expense_Book');
+  }
+
+  function exportDebtorsExcel() {
+    const data = debtors.map(d => ({
+      Customer: d.customerName,
+      Description: d.description,
+      Amount: d.amount,
+      Credited: d.dateCredited,
+      Due: d.dueDate || '',
+      Status: d.status,
+      Note: d.note || ''
+    }));
+    downloadExcel(data, 'Debtors_Book');
+  }
+
   const inp = 'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white';
   const lbl = 'block text-xs font-semibold text-gray-500 mb-1.5';
 
   const TABS = [
-    { id: 'sales', label: 'Sales Book', Icon: ShoppingBag },
-    { id: 'expenses', label: 'Expense Book', Icon: TrendingDown },
-    { id: 'pl', label: 'Profit & Loss', Icon: TrendingUp },
-    { id: 'debtors', label: 'Debtors', Icon: Users },
-    { id: 'credit', label: 'Credit Score', Icon: Award },
+    { id: 'sales', label: 'Sales Book', Icon: ShoppingBag, desc: 'Record daily sales and revenue', bg: 'bg-green-100', text: 'text-green-600' },
+    { id: 'expenses', label: 'Expense Book', Icon: TrendingDown, desc: 'Track all business costs', bg: 'bg-red-100', text: 'text-red-600' },
+    { id: 'pl', label: 'Profit & Loss', Icon: TrendingUp, desc: 'View financial performance', bg: 'bg-blue-100', text: 'text-blue-600' },
+    { id: 'debtors', label: 'Debtors Book', Icon: Users, desc: 'Manage people who owe you money', bg: 'bg-orange-100', text: 'text-orange-600' },
+    { id: 'credit', label: 'Credit Score', Icon: Award, desc: 'Check your business credit health', bg: 'bg-purple-100', text: 'text-purple-600' },
   ];
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
+      <button onClick={() => activeTab === 'menu' ? navigate(-1) : setActiveTab('menu')} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> {activeTab === 'menu' ? 'Back' : 'Back to Ledger Menu'}
       </button>
 
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Business Ledger</h1>
-        <p className="text-gray-500 font-medium">Track sales, expenses and debtors</p>
-      </div>
+      {/* Menu Header */}
+      {activeTab === 'menu' && (
+        <div className="mb-8">
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Business Ledger</h1>
+          <p className="text-gray-500 font-medium">Manage your financial books and track business health</p>
+        </div>
+      )}
 
-      {/* Tabs */}
-      <div className="bg-white/70 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-2 flex gap-2 mb-8 overflow-x-auto relative z-10">
-        {TABS.map(({ id, label, Icon }) => (
-          <button
-            key={id}
-            onClick={() => setActiveTab(id)}
-            className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold whitespace-nowrap transition-all flex-1 justify-center ${
-              activeTab === id 
-                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md shadow-green-500/20 transform scale-[1.02]' 
-                : 'text-gray-500 hover:bg-white/50 hover:text-gray-700'
-            }`}
-          >
-            <Icon className="w-4 h-4 shrink-0" />
-            {label}
-          </button>
-        ))}
-      </div>
+      {/* Menu Grid */}
+      {activeTab === 'menu' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
+          {TABS.map(({ id, label, Icon, desc, bg, text }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 text-left hover:shadow-lg transition-all hover:-translate-y-1 group active:scale-95"
+            >
+              <div className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center ${bg} ${text}`}>
+                <Icon className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-800 mb-1 group-hover:text-blue-600 transition-colors">{label}</h3>
+              <p className="text-sm text-gray-500 font-medium leading-relaxed">{desc}</p>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* ─── TAB: SALES BOOK ─── */}
       {activeTab === 'sales' && (
         <div className="space-y-4">
+          <div className="flex items-center justify-between bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <h2 className="font-extrabold text-gray-800 text-lg flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5 text-green-600" /> Sales Book
+            </h2>
+            <button onClick={exportSalesExcel} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors">
+              <Download className="w-4 h-4" /> Excel
+            </button>
+          </div>
 
           {/* Add Sale Form */}
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
@@ -856,6 +914,14 @@ export default function BusinessLedger() {
       {/* ─── TAB: EXPENSE BOOK ─── */}
       {activeTab === 'expenses' && (
         <div className="space-y-4">
+          <div className="flex items-center justify-between bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <h2 className="font-extrabold text-gray-800 text-lg flex items-center gap-2">
+              <TrendingDown className="w-5 h-5 text-red-600" /> Expense Book
+            </h2>
+            <button onClick={exportExpensesExcel} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors">
+              <Download className="w-4 h-4" /> Excel
+            </button>
+          </div>
 
           {/* Add Expense Form */}
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
@@ -1148,6 +1214,14 @@ export default function BusinessLedger() {
       {/* ─── TAB: DEBTORS ─── */}
       {activeTab === 'debtors' && (
         <div className="space-y-4">
+          <div className="flex items-center justify-between bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <h2 className="font-extrabold text-gray-800 text-lg flex items-center gap-2">
+              <Users className="w-5 h-5 text-orange-600" /> Debtors Book
+            </h2>
+            <button onClick={exportDebtorsExcel} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors">
+              <Download className="w-4 h-4" /> Excel
+            </button>
+          </div>
 
           {/* Summary */}
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
