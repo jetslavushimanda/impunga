@@ -6,11 +6,7 @@ import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
-
-const PROVINCES = [
-  'Central', 'Copperbelt', 'Eastern', 'Luapula', 'Lusaka',
-  'Muchinga', 'Northern', 'North-Western', 'Southern', 'Western'
-];
+import { getProvinces, getDistricts } from '../data/provinces';
 
 const EDUCATION_LEVELS = [
   'Primary School Certificate',
@@ -112,7 +108,13 @@ export default function SkillProfileBuilder() {
   }, [userProfile]);
 
   function handleFieldChange(field, val) {
-    setFormData(prev => ({ ...prev, [field]: val }));
+    setFormData(prev => {
+      const next = { ...prev, [field]: val };
+      if (field === 'province') {
+        next.district = '';
+      }
+      return next;
+    });
     setValidationError('');
   }
 
@@ -292,20 +294,22 @@ export default function SkillProfileBuilder() {
                   onChange={e => handleFieldChange('province', e.target.value)}
                 >
                   <option value="">Select Province</option>
-                  {PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
+                  {getProvinces().map(p => <option key={p} value={p}>{p}</option>)}
                 </select>
               </div>
             </div>
 
             <div>
               <label className="label">District *</label>
-              <input
-                type="text"
-                className="input-field"
-                placeholder="e.g. Lusaka, Kitwe, Kabwe"
+              <select
+                className="select-field"
                 value={formData.district}
                 onChange={e => handleFieldChange('district', e.target.value)}
-              />
+                disabled={!formData.province}
+              >
+                <option value="">Select District</option>
+                {getDistricts(formData.province).map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
             </div>
 
             <div>
