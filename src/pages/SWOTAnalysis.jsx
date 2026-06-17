@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Target, Download, Save, RefreshCw, Zap, AlertTriangle, TrendingUp, Shield, ArrowLeft } from 'lucide-react';
+import { Target, Download, Save, RefreshCw, Zap, AlertTriangle, TrendingUp, Shield, ArrowLeft, Sparkles } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
@@ -27,10 +27,52 @@ export default function SWOTAnalysis() {
   const [swot, setSwot] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [pipelineBanner, setPipelineBanner] = useState('');
   const { addDocument } = useFirestore();
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const raw = localStorage.getItem('impunga_idea_pipeline');
+    if (raw) {
+      try {
+        const pipeline = JSON.parse(raw);
+        const wd = pipeline.savedWizardData || {};
+        
+        let desc = '';
+        if (wd.problem && wd.solution) {
+          desc = `Problem: ${wd.problem}\nSolution: ${wd.solution}`;
+        } else if (pipeline.ideaText) {
+          desc = pipeline.ideaText;
+        }
+
+        if (desc) {
+          setDescription(desc);
+        }
+
+        const typeMap = {
+          agriculture: 'Agriculture',
+          retail: 'Retail',
+          food: 'Food and Beverage',
+          services: 'Services',
+          tech: 'Technology',
+          manufacturing: 'Manufacturing',
+          transport: 'Transport',
+          other: 'Other'
+        };
+
+        const type = wd.businessType || pipeline.businessType;
+        if (type && typeMap[type]) {
+          setSector(typeMap[type]);
+        }
+
+        setPipelineBanner('Pre-filled from your saved Startup Blueprint — review and edit as needed.');
+      } catch (err) {
+        console.error('Error pre-filling SWOT from pipeline:', err);
+      }
+    }
+  }, []);
 
   async function handleGenerate() {
     if (description.length < 20) return;
@@ -139,6 +181,16 @@ Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobi
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl pointer-events-none" />
         
+        {pipelineBanner && (
+          <div className="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-xl mb-6 flex items-center justify-between text-sm animate-fade-in relative z-10">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-blue-600 shrink-0 animate-pulse" />
+              <span>{pipelineBanner}</span>
+            </div>
+            <button onClick={() => setPipelineBanner('')} className="text-blue-500 hover:text-blue-700 font-bold ml-2">Close</button>
+          </div>
+        )}
+
         <div className="space-y-6 relative z-10">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Business Name (optional)</label>

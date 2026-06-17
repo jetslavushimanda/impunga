@@ -70,7 +70,7 @@ export default function BusinessPlanBuilder() {
           }));
           setPipelineBanner(`Pre-filled from your Idea Validator (Viability Score: ${pipeline.viabilityScore}/10) — please review and edit all fields.`);
         }
-        localStorage.removeItem('impunga_idea_pipeline');
+        // Keep the pipeline data alive so other modules can also read and pre-fill from it.
       } catch {}
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
