@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2, Lightbulb, Sparkles, ArrowRight, Trash2, Target, FileText, Presentation, Share2, Calculator, Building2 } from 'lucide-react';
+import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2, Lightbulb, Sparkles, ArrowRight, Trash2, Target, FileText, Presentation, Share2, Calculator, Building2, FolderOpen, X } from 'lucide-react';
 import { ENGINE_MODULES } from '../data/engineModules';
 import useAuthStore from '../store/authStore';
 import { useAuth } from '../hooks/useAuth';
@@ -73,12 +73,9 @@ const STARTUP_TOOLS = [
   }
 ];
 
-function StartupModuleCard({ path, icon: Icon, name, desc, bg, text, badge }) {
-  return (
-    <Link
-      to={path}
-      className="group relative bg-white/70 backdrop-blur-md overflow-hidden rounded-2xl p-4 flex items-center gap-4 border border-white/80 shadow-[0_4px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(99,102,241,0.08)] hover:border-indigo-100 hover:-translate-y-1 transition-all duration-300"
-    >
+function StartupModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, badge }) {
+  const content = (
+    <>
       {/* Decorative gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-indigo-50/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       
@@ -90,13 +87,13 @@ function StartupModuleCard({ path, icon: Icon, name, desc, bg, text, badge }) {
         </div>
       </div>
 
-      <div className="flex-1 min-w-0 relative z-10">
+      <div className="flex-1 min-w-0 relative z-10 text-left">
         <div className="flex items-center justify-between mb-1 gap-2">
           <h4 className="font-bold text-gray-900 text-sm group-hover:text-indigo-600 transition-colors truncate">
             {name}
           </h4>
           {badge && (
-            <span className="text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-indigo-50/80 text-indigo-600 border border-indigo-100/40 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-transparent transition-all duration-300 shrink-0">
+            <span className={`text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badge === 'Folder' ? 'bg-yellow-50/80 text-yellow-600 border-yellow-200/40 group-hover:bg-yellow-500 group-hover:text-white' : 'bg-indigo-50/80 text-indigo-600 border-indigo-100/40 group-hover:bg-indigo-600 group-hover:text-white'}`}>
               {badge}
             </span>
           )}
@@ -108,6 +105,22 @@ function StartupModuleCard({ path, icon: Icon, name, desc, bg, text, badge }) {
       <div className="absolute -right-2 -bottom-2 w-16 h-16 opacity-[0.03] pointer-events-none group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 text-gray-900">
         <Icon className="w-full h-full" />
       </div>
+    </>
+  );
+
+  const className = "group relative bg-white/70 backdrop-blur-md overflow-hidden rounded-2xl p-4 flex items-center gap-4 border border-white/80 shadow-[0_4px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(99,102,241,0.08)] hover:border-indigo-100 hover:-translate-y-1 transition-all duration-300 w-full";
+
+  if (onClick) {
+    return (
+      <button onClick={onClick} className={className}>
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Link to={path} className={className}>
+      {content}
     </Link>
   );
 }
@@ -123,6 +136,7 @@ export default function BusinessHubView() {
   
   const [savedIdeas, setSavedIdeas] = useState([]);
   const [loadingIdeas, setLoadingIdeas] = useState(false);
+  const [showSavedBlueprints, setShowSavedBlueprints] = useState(false);
 
   useEffect(() => {
     if (view === 'ideation') {
@@ -299,123 +313,132 @@ export default function BusinessHubView() {
       )}
 
       {view === 'ideation' && (
-        <div className="animate-fade-in">
+        <div className="animate-fade-in relative z-0">
           <div className="mb-8">
             <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight mb-2">Start a Business</h1>
             <p className="text-gray-500 text-base max-w-2xl leading-relaxed font-medium">
-              Validate your startup ideas and review your saved economic blueprints.
+              Everything you need to validate your idea, structure a plan, and prepare for launch.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left Panel - Validate New Idea */}
-            <div 
-              onClick={() => {
-                localStorage.removeItem('impunga_idea_pipeline');
-                navigate('/idea-validator');
-              }}
-              className="lg:col-span-5 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white rounded-3xl p-8 shadow-xl shadow-indigo-600/10 flex flex-col justify-between relative overflow-hidden group min-h-[350px] cursor-pointer hover:shadow-2xl hover:shadow-indigo-500/20 hover:-translate-y-1 transition-all duration-500"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
-              <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-              
-              <div className="relative z-10">
-                <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-lg group-hover:shadow-yellow-500/20 transition-all duration-350">
-                  <Lightbulb className="w-7 h-7 text-yellow-300" />
-                </div>
-                <h2 className="text-2xl font-black mb-3">Validate New Idea</h2>
-                <p className="text-indigo-100 text-sm font-medium leading-relaxed mb-6">
-                  Run your idea through our interactive 4-step wizard. Get a viability score, target unit economics, competitor analysis, risk assessment, and context-aware operational modules tailored to Zambia.
-                </p>
-              </div>
-
-              <div className="relative z-10 w-full bg-white text-indigo-700 font-bold py-4 rounded-2xl shadow-lg hover:bg-indigo-50 hover:shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2">
-                Validate an Idea <ArrowRight className="w-5 h-5 text-indigo-700" />
-              </div>
-            </div>
-
-            {/* Right Panel - Saved Ideas list */}
-            <div className="lg:col-span-7 bg-white/80 backdrop-blur-sm border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col min-h-[350px]">
-              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-indigo-500" /> Saved Blueprints
-              </h3>
-
-              {loadingIdeas ? (
-                <div className="flex-1 flex items-center justify-center text-gray-400">
-                  Loading saved ideas...
-                </div>
-              ) : savedIdeas.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
-                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 text-gray-400">
-                    <Lightbulb className="w-8 h-8" />
-                  </div>
-                  <p className="text-gray-500 font-semibold mb-1">No blueprints found</p>
-                  <p className="text-xs text-gray-400 max-w-[280px]">Your validated startup ideas and blueprints will show up here.</p>
-                </div>
-              ) : (
-                <div className="flex-1 overflow-y-auto space-y-3 pr-1 max-h-[350px]">
-                  {savedIdeas.map((idea) => (
-                    <div
-                      key={idea.id}
-                      onClick={() => handleReopenIdea(idea)}
-                      className="group cursor-pointer p-4 bg-gray-50/70 hover:bg-indigo-50/30 border border-gray-100 hover:border-indigo-100/50 rounded-2xl transition-all duration-300 flex items-center justify-between gap-4"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-bold text-sm text-gray-800 uppercase tracking-wide truncate max-w-[150px]">
-                            {idea.wizardData?.businessType || 'General Idea'}
-                          </span>
-                          <span className="text-xs text-gray-400 font-semibold">
-                            {new Date(idea.timestamp || Date.now()).toLocaleDateString('en-GB')}
-                          </span>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ml-auto shrink-0 ${idea.verdict === 'PROCEED' ? 'bg-green-100 text-green-700' : idea.verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
-                            {idea.verdict || 'NEW'}
-                          </span>
-                          <span className="text-xs font-black text-indigo-700 bg-indigo-50/80 border border-indigo-100/40 px-2.5 py-1 rounded-full shrink-0">
-                            {idea.score}/10
-                          </span>
-                        </div>
-                        <p className="text-xs text-gray-500 font-medium truncate">
-                          {idea.wizardData?.solution || 'No description provided'}
-                        </p>
-                      </div>
-                      
-                      <div className="flex items-center gap-2 shrink-0">
-                        <button
-                          onClick={(e) => handleDeleteIdea(idea.id, e)}
-                          className="p-2 hover:bg-red-50 hover:text-red-500 text-gray-400 rounded-xl transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                        <div className="w-8 h-8 bg-white border border-gray-100 rounded-full flex items-center justify-center text-gray-400 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-transparent transition-all shadow-sm">
-                          <ChevronRight className="w-4 h-4" />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
           {/* Startup Planning Modules Grid */}
-          <div className="mt-16 animate-slide-up">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
-                <Rocket className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-black text-gray-900 tracking-tight">Startup Planning Studio</h3>
-                <p className="text-sm text-gray-400 font-medium mt-0.5">Use these interactive modules to design, structure, and formalise your idea.</p>
-              </div>
-            </div>
-            
+          <div className="animate-slide-up">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Validate New Idea */}
+              <StartupModuleCard 
+                onClick={() => {
+                  localStorage.removeItem('impunga_idea_pipeline');
+                  navigate('/idea-validator');
+                }}
+                icon={Lightbulb}
+                name="Validate Idea"
+                desc="Run your idea through our AI wizard for a viability score."
+                bg="bg-indigo-50"
+                text="text-indigo-600"
+                badge="AI Wizard"
+              />
+
+              {/* Saved Blueprints Folder */}
+              <StartupModuleCard 
+                onClick={() => setShowSavedBlueprints(true)}
+                icon={FolderOpen}
+                name="Saved Blueprints"
+                desc="Access and review your previously validated business ideas."
+                bg="bg-yellow-50"
+                text="text-yellow-600"
+                badge="Folder"
+              />
+
+              {/* Other Tools */}
               {STARTUP_TOOLS.map((tool) => (
                 <StartupModuleCard key={tool.path} {...tool} />
               ))}
             </div>
           </div>
+
+          {/* Saved Blueprints Modal */}
+          {showSavedBlueprints && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              {/* Backdrop */}
+              <div 
+                className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+                onClick={() => setShowSavedBlueprints(false)}
+              />
+              
+              {/* Modal Content */}
+              <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-slide-up border border-white/20">
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 shrink-0">
+                  <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <FolderOpen className="w-6 h-6 text-yellow-500" /> Saved Blueprints Folder
+                  </h3>
+                  <button 
+                    onClick={() => setShowSavedBlueprints(false)}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                
+                <div className="p-6 overflow-y-auto bg-gray-50/50 flex-1">
+                  {loadingIdeas ? (
+                    <div className="flex-1 flex items-center justify-center text-gray-400 py-12">
+                      Loading saved ideas...
+                    </div>
+                  ) : savedIdeas.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 text-gray-300 shadow-sm">
+                        <FolderOpen className="w-8 h-8" />
+                      </div>
+                      <p className="text-gray-500 font-semibold mb-1">Folder is empty</p>
+                      <p className="text-sm text-gray-400 max-w-[280px]">Your validated startup ideas and blueprints will show up here.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {savedIdeas.map((idea) => (
+                        <div
+                          key={idea.id}
+                          onClick={() => handleReopenIdea(idea)}
+                          className="group cursor-pointer p-4 bg-white hover:bg-indigo-50/50 border border-gray-100 hover:border-indigo-100/80 rounded-2xl transition-all duration-300 flex items-center justify-between gap-4 shadow-sm hover:shadow-md"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span className="font-bold text-sm text-gray-900 uppercase tracking-wide truncate max-w-[200px]">
+                                {idea.wizardData?.businessType || 'General Idea'}
+                              </span>
+                              <span className="text-xs text-gray-400 font-semibold">
+                                {new Date(idea.timestamp || Date.now()).toLocaleDateString('en-GB')}
+                              </span>
+                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ml-auto shrink-0 ${idea.verdict === 'PROCEED' ? 'bg-green-100 text-green-700 border border-green-200' : idea.verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' : 'bg-red-100 text-red-700 border border-red-200'}`}>
+                                {idea.verdict || 'NEW'}
+                              </span>
+                              <span className="text-xs font-black text-indigo-700 bg-indigo-50/80 border border-indigo-100/40 px-2.5 py-1 rounded-full shrink-0">
+                                {idea.score}/10
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-500 font-medium truncate">
+                              {idea.wizardData?.solution || 'No description provided'}
+                            </p>
+                          </div>
+                          
+                          <div className="flex items-center gap-3 shrink-0 pl-2">
+                            <button
+                              onClick={(e) => handleDeleteIdea(idea.id, e)}
+                              className="p-2 hover:bg-red-50 hover:text-red-500 text-gray-300 rounded-xl transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <div className="w-8 h-8 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center text-gray-400 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-transparent transition-all shadow-sm">
+                              <ChevronRight className="w-4 h-4" />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
