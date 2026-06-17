@@ -65,7 +65,7 @@ export default function Register() {
     try {
       const { email, password, confirmPassword, ...profile } = data;
       await registerUser(email, password, profile);
-      navigate('/dashboard');
+      navigate('/choose-path');
     } catch (err) {
       setAuthError(err.code === 'auth/email-already-in-use'
         ? 'This email is already registered. Try logging in.'

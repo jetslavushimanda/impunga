@@ -28,9 +28,10 @@ import BusinessQuiz from './pages/BusinessQuiz';
 import BusinessLedger from './pages/BusinessLedger';
 import SkillProfileBuilder from './pages/SkillProfileBuilder';
 import CareerMatches from './pages/CareerMatches';
+import ChoosePath from './pages/ChoosePath';
 
 export default function App() {
-  const { setUser, setUserProfile, clearUser } = useAuthStore();
+  const { setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -38,13 +39,20 @@ export default function App() {
         setUser(firebaseUser);
         try {
           const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
-          if (snap.exists()) setUserProfile(snap.data());
+          if (snap.exists()) {
+            const data = snap.data();
+            setUserProfile(data);
+            if (data.selectedPath) {
+              setSelectedPath(data.selectedPath);
+            }
+          }
         } catch {}
       } else {
         clearUser();
       }
     });
     return unsubscribe;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -54,6 +62,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/choose-path" element={<ChoosePath />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/idea-validator" element={<IdeaValidator />} />

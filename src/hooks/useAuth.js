@@ -12,7 +12,7 @@ import { auth, googleProvider, db } from '../lib/firebase';
 import useAuthStore from '../store/authStore';
 
 export function useAuth() {
-  const { user, userProfile, loading, setUser, setUserProfile, clearUser, setLoading } = useAuthStore();
+  const { user, userProfile, loading, setUser, setUserProfile, clearUser, setLoading, setSelectedPath } = useAuthStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -24,6 +24,7 @@ export function useAuth() {
       }
     });
     return unsubscribe;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadUserProfile(uid) {
@@ -31,7 +32,11 @@ export function useAuth() {
       const docRef = doc(db, 'users', uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setUserProfile(docSnap.data());
+        const data = docSnap.data();
+        setUserProfile(data);
+        if (data.selectedPath) {
+          setSelectedPath(data.selectedPath);
+        }
         await updateDoc(docRef, { lastActive: serverTimestamp() });
       }
     } catch {
@@ -59,7 +64,11 @@ export function useAuth() {
       await setDoc(docRef, profile);
       setUserProfile(profile);
     } else {
-      setUserProfile(docSnap.data());
+      const data = docSnap.data();
+      setUserProfile(data);
+      if (data.selectedPath) {
+        setSelectedPath(data.selectedPath);
+      }
     }
     return user;
   }

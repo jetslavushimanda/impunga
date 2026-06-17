@@ -13,12 +13,16 @@ export default function Landing() {
           <Sprout className="w-10 h-10 text-accent-gold" />
         </div>
 
-        <p className="text-xl md:text-2xl font-semibold text-primary-light mb-2">
+        <p className="text-xl md:text-2xl font-semibold text-primary-light mb-1">
           Start. Match. Build Zambia.
         </p>
 
+        <p className="text-sm md:text-base text-blue-200 italic mb-6">
+          Plant Your Idea. Grow Your Business. Feed Zambia.
+        </p>
+
         <p className="text-blue-300 text-sm md:text-base mb-12">
-          Zambia's Economic Intelligence Platform
+          Economic Intelligence Platform
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4">
@@ -37,7 +41,7 @@ export default function Landing() {
       {/* STATS STRIP */}
       <div className="bg-primary-dark py-4 px-6">
         <p className="text-center text-blue-300 text-sm font-medium tracking-wide">
-          Multiple Modules &nbsp;·&nbsp; AI Powered &nbsp;·&nbsp; 25+ Funders &nbsp;·&nbsp; 116 Districts &nbsp;·&nbsp; K0 Cost
+          12 Modules &nbsp;·&nbsp; 2 Engines &nbsp;·&nbsp; AI Powered &nbsp;·&nbsp; 25+ Funders &nbsp;·&nbsp; 116 Districts &nbsp;·&nbsp; K0 Cost
         </p>
       </div>
 

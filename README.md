@@ -1,8 +1,8 @@
 # IMPUNGA
 
-**Plant Your Idea. Grow Your Business. Feed Zambia.**
+**Start. Match. Build Zambia.**
 
-IMPUNGA is Zambia's first AI-powered entrepreneurship platform built for the JETS National Innovation Challenge 2026. It gives every Zambian with a business idea access to professional tools, AI mentorship, funding information, and step-by-step business guidance — completely free.
+IMPUNGA is Zambia's first Economic Intelligence Platform built for the JETS National Innovation Challenge 2026. It gives every Zambian with a business idea access to professional tools, AI mentorship, funding information, and step-by-step business guidance — completely free.
 
 The name IMPUNGA comes from the Bemba word meaning **the seed that grows**.
 
@@ -30,7 +30,7 @@ IMPUNGA breaks all five walls down — permanently, and for free.
 
 ## Modules
 
-IMPUNGA has 14 fully functional modules:
+IMPUNGA has 12 fully functional modules:
 
 ### Get Started
 | Module | Description |
@@ -266,4 +266,4 @@ Built for the JETS National Innovation Challenge 2026 — Republic of Zambia.
 
 ---
 
-*IMPUNGA · Plant Your Idea. Grow Your Business. Feed Zambia.*
+*IMPUNGA · Start. Match. Build Zambia.*

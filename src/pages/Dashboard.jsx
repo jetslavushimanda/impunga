@@ -12,6 +12,7 @@ import { useFirestore } from '../hooks/useFirestore';
 import { getGreeting, getFirstName, getDaysSince } from '../lib/utils';
 import { getDailyTip } from '../data/dailyTips';
 import { PageLoader } from '../components/shared/LoadingSpinner';
+import { useAuth } from '../hooks/useAuth';
 
 const SECTION_1_MODULES = [
   { path: '/idea-validator', icon: Lightbulb, name: 'Idea Validator', desc: 'Test if your idea works in Zambia', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
@@ -91,7 +92,8 @@ function ComingSoonCard({ icon: Icon, name, desc }) {
 }
 
 export default function Dashboard() {
-  const { user, userProfile, loading } = useAuthStore();
+  const { user, userProfile, loading, selectedPath, setSelectedPath } = useAuthStore();
+  const { updateProfile } = useAuth();
   const { getUserDocumentCount } = useFirestore();
   const [counts, setCounts] = useState({ ideas: 0, plans: 0, calcs: 0, funding: 0 });
   const [tipIndex, setTipIndex] = useState(0);
@@ -109,12 +111,23 @@ export default function Dashboard() {
       setCounts({ ideas, plans, calcs, funding });
     }
     loadCounts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  async function handleUnlock() {
+    try {
+      await updateProfile({ selectedPath: 'both' });
+      setSelectedPath('both');
+    } catch (err) {
+      console.error('Failed to unlock path:', err);
+    }
+  }
 
   if (loading) return <PageLoader />;
 
   const firstName = getFirstName(userProfile?.fullName || '');
   const daysSince = getDaysSince(userProfile?.createdAt);
+  const currentPath = selectedPath || userProfile?.selectedPath || 'both';
 
   return (
     <div className="max-w-2xl mx-auto pb-24 animate-fade-in">
@@ -124,6 +137,7 @@ export default function Dashboard() {
         <div className="relative z-10">
           <p className="text-blue-200 text-sm font-medium">{getGreeting()}</p>
           <h1 className="text-2xl font-bold text-white mt-0.5">{userProfile?.fullName || 'Entrepreneur'}</h1>
+          <p className="text-blue-100 text-xs font-medium mt-0.5">Zambia's Economic Intelligence Platform</p>
           <p className="text-blue-200 text-sm mt-1">Start. Match. Build Zambia.</p>
           <div className="flex items-center gap-2 mt-3">
             <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full font-medium">Day {daysSince + 1} on IMPUNGA</span>
@@ -168,43 +182,78 @@ export default function Dashboard() {
       </div>
 
       {/* Engine 1 — Start Your Business */}
-      <div className="mb-6">
-        <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
-          Engine 1 — Start Your Business
-        </h2>
-        <div className="grid grid-cols-2 gap-3">
-          {SECTION_1_MODULES.map(mod => (
-            <ModuleCard key={mod.path} {...mod} />
-          ))}
+      {(currentPath === 'engine1' || currentPath === 'both') && (
+        <div className="mb-6">
+          <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
+            Engine 1 — Start Your Business
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            {SECTION_1_MODULES.map(mod => (
+              <ModuleCard key={mod.path} {...mod} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Engine 2 — Match Your Skills */}
-      <div className="mb-6">
-        <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
-          Engine 2 — Match Your Skills
-        </h2>
-        <div className="grid grid-cols-2 gap-3">
-          <ModuleCard
-            path="/skill-profile-builder"
-            icon={User}
-            name="Skill Profile Builder"
-            desc="Build your professional skill portfolio"
-            bg="bg-blue-50"
-            text="text-blue-600"
-            border="border-l-blue-400"
-          />
-          <ModuleCard
-            path="/career-matches"
-            icon={Briefcase}
-            name="Career Matches"
-            desc="Match your skills with Zambian job opportunities"
-            bg="bg-purple-50"
-            text="text-purple-600"
-            border="border-l-purple-400"
-          />
+      {(currentPath === 'engine2' || currentPath === 'both') && (
+        <div className="mb-6">
+          <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
+            Engine 2 — Match Your Skills
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            <ModuleCard
+              path="/skill-profile-builder"
+              icon={User}
+              name="Skill Profile Builder"
+              desc="Build your professional skill portfolio"
+              bg="bg-blue-50"
+              text="text-blue-600"
+              border="border-l-blue-400"
+            />
+            <ModuleCard
+              path="/career-matches"
+              icon={Briefcase}
+              name="Career Matches"
+              desc="Match your skills with Zambian job opportunities"
+              bg="bg-purple-50"
+              text="text-purple-600"
+              border="border-l-purple-400"
+            />
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Unlock banners */}
+      {currentPath === 'engine1' && (
+        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 animate-slide-up">
+          <div>
+            <p className="font-bold text-gray-800 text-sm">Want to match your skills too?</p>
+            <p className="text-gray-500 text-xs mt-0.5">Switch to full access to unlock career matching tools.</p>
+          </div>
+          <button
+            onClick={handleUnlock}
+            className="btn-primary text-xs py-2 px-4 whitespace-nowrap min-h-[36px]"
+          >
+            Unlock Engine 2
+          </button>
+        </div>
+      )}
+
+      {currentPath === 'engine2' && (
+        <div className="mt-8 bg-green-50 border border-green-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 animate-slide-up">
+          <div>
+            <p className="font-bold text-gray-800 text-sm">Want to start a business too?</p>
+            <p className="text-gray-500 text-xs mt-0.5">Switch to full access to unlock entrepreneurship tools.</p>
+          </div>
+          <button
+            onClick={handleUnlock}
+            className="btn-green text-xs py-2 px-4 whitespace-nowrap min-h-[36px]"
+          >
+            Unlock Engine 1
+          </button>
+        </div>
+      )}
     </div>
   );
 }
