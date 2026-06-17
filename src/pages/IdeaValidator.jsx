@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target } from 'lucide-react';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
@@ -329,6 +329,22 @@ export default function IdeaValidator() {
                     <div><h4 className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">4. Formalise Setup</h4><p className="text-xs text-gray-500">PACRA & ZRA Guide</p></div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 transition-colors" />
+                </Link>
+
+                <Link to="/pitch-deck" className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-fuchsia-200 hover:shadow-md transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-fuchsia-50 text-fuchsia-600 rounded-xl flex items-center justify-center"><Presentation className="w-5 h-5" /></div>
+                    <div><h4 className="font-bold text-gray-900 group-hover:text-fuchsia-600 transition-colors">5. Pitch Deck</h4><p className="text-xs text-gray-500">For investors</p></div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-fuchsia-600 transition-colors" />
+                </Link>
+                
+                <Link to="/funding-matchmaker" className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-teal-200 hover:shadow-md transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center"><Banknote className="w-5 h-5" /></div>
+                    <div><h4 className="font-bold text-gray-900 group-hover:text-teal-600 transition-colors">6. Funding Matches</h4><p className="text-xs text-gray-500">Grants & Loans</p></div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-teal-600 transition-colors" />
                 </Link>
               </div>
             </div>

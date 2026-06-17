@@ -14,6 +14,8 @@ import Dashboard from './pages/Dashboard';
 import IdeaValidator from './pages/IdeaValidator';
 import RegistrationGuide from './pages/RegistrationGuide';
 import BusinessPlanBuilder from './pages/BusinessPlanBuilder';
+import PitchDeckGenerator from './pages/PitchDeckGenerator';
+import FundingMatchmaker from './pages/FundingMatchmaker';
 import PricingCalculator from './pages/PricingCalculator';
 import FundingFinder from './pages/FundingFinder';
 import AIAdvisor from './pages/AIAdvisor';
@@ -70,6 +72,8 @@ export default function App() {
           <Route path="/idea-validator" element={<IdeaValidator />} />
           <Route path="/registration-guide" element={<RegistrationGuide />} />
           <Route path="/business-plan" element={<BusinessPlanBuilder />} />
+          <Route path="/pitch-deck" element={<PitchDeckGenerator />} />
+          <Route path="/funding-matchmaker" element={<FundingMatchmaker />} />
           <Route path="/pricing-calculator" element={<PricingCalculator />} />
           <Route path="/funding-finder" element={<FundingFinder />} />
           <Route path="/ai-advisor" element={<AIAdvisor />} />

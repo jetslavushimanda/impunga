@@ -121,6 +121,70 @@ IMPORTANT: Every response MUST cite at least one specific official Zambian regul
     }
   }
 
+  async function generatePitchDeck(ideaData) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `Convert this validated Zambian business idea into a 10-slide Pitch Deck structure:
+      
+Idea: ${ideaData.ideaText}
+AI Validation: ${ideaData.aiAnalysis}
+Location: ${ideaData.location}
+Budget: ${ideaData.budget}
+
+Provide exactly 10 slides. For each slide, write the Slide Title, and 3-4 bullet points of what to say/show. 
+The slides must be:
+1. Title & Vision
+2. The Problem in Zambia
+3. Our Solution
+4. Market Size & Opportunity
+5. Business Model (How we make money)
+6. Go-to-Market Strategy
+7. Competitive Advantage
+8. The Team
+9. Financial Projections
+10. The Ask (Funding required)
+
+Keep it very professional, persuasive, and tailored to Zambian investors.`;
+
+      const response = await callGemini(prompt, IDEA_VALIDATOR_SYSTEM);
+      return response;
+    } catch (err) {
+      setError(getFriendlyError(err));
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function matchFundingSources(ideaData) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `Analyze this Zambian business idea and recommend the best funding sources:
+      
+Idea: ${ideaData.ideaText}
+Budget Required: ${ideaData.budget}
+Location: ${ideaData.location}
+
+Provide a structured list of realistic Zambian funding sources for this specific business. Consider:
+1. Government Grants (e.g., CEEC, CDF)
+2. Private Grants (e.g., Prospero Zambia, PEPZ, USADF)
+3. Commercial Bank SME Loans (e.g., Zanaco, Stanbic, Absa)
+4. Angel Investors/VCs (e.g., Victoria Falls Investments)
+
+For each recommended source, explain WHY it fits this business, and WHAT the typical requirements are. Use plain English and be realistic about their chances.`;
+
+      const response = await callGemini(prompt, IDEA_VALIDATOR_SYSTEM);
+      return response;
+    } catch (err) {
+      setError(getFriendlyError(err));
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function generateBusinessNames(description, sector, style, province) {
     setLoading(true);
     setError(null);
@@ -517,6 +581,5 @@ Return ONLY valid JSON.`;
     return `Error: ${err.message}. Check internet and try again.`;
   }
 
-  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast, critiqueBusinessPlan, generatePredictiveRoadmap, analyzePricingTrend };
+  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generatePitchDeck, matchFundingSources, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast, critiqueBusinessPlan, generatePredictiveRoadmap, analyzePricingTrend };
 }
-
