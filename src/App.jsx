@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -40,14 +40,16 @@ import CoverLetterGenerator from './pages/CoverLetterGenerator';
 import InterviewPrep from './pages/InterviewPrep';
 import SkillGapCloser from './pages/SkillGapCloser';
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 export default function App() {
   const { setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
-  const location = useLocation();
-
-  useEffect(() => {
-    // Scroll to top on route change
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -74,6 +76,7 @@ export default function App() {
   return (
     <LanguageProvider>
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
