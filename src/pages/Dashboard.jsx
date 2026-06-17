@@ -32,23 +32,28 @@ export default function Dashboard() {
             <Link
               key={id}
               to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`}
-              className="group relative bg-white overflow-hidden rounded-3xl p-6 md:p-8 flex items-center justify-between shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+              className="group relative bg-white overflow-hidden rounded-[2rem] p-6 md:p-8 flex items-center justify-between border border-gray-200 transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1"
             >
               <div className="relative z-10 flex items-center gap-6">
-                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-md border border-white/20 ${bg}`}>
-                  <Icon className="w-8 h-8 text-white drop-shadow-sm" />
+                <div className="relative">
+                  {/* Glowing backdrop */}
+                  <div className={`absolute inset-0 blur-xl opacity-40 group-hover:opacity-70 transition-opacity duration-500 rounded-full ${bg}`} />
+                  {/* Actual icon box */}
+                  <div className={`relative w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-lg border border-white/20 ${bg}`}>
+                    <Icon className="w-8 h-8 text-white drop-shadow-md" />
+                  </div>
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-1 tracking-tight">{title}</h2>
-                  <p className="text-gray-500 text-sm md:text-base max-w-xl leading-relaxed">{description}</p>
+                  <h2 className="text-2xl font-extrabold text-gray-900 mb-1 tracking-tight group-hover:text-primary transition-colors">{title}</h2>
+                  <p className="text-gray-500 text-sm md:text-base max-w-xl font-medium leading-relaxed">{description}</p>
                 </div>
               </div>
-              <div className="relative z-10 w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors border border-gray-100 text-gray-400">
-                <ChevronRight className="w-5 h-5" />
+              <div className="relative z-10 w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-gray-100 group-hover:bg-primary group-hover:text-white transition-all duration-300 text-gray-400 group-hover:scale-110 group-hover:shadow-md">
+                <ChevronRight className="w-6 h-6" />
               </div>
               
               {/* Decorative background icon */}
-              <div className="absolute -right-6 -bottom-6 w-48 h-48 text-gray-50/80 pointer-events-none group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700">
+              <div className="absolute -right-10 -bottom-10 w-64 h-64 text-gray-50 group-hover:text-gray-100/80 pointer-events-none group-hover:scale-[1.15] group-hover:-rotate-6 transition-all duration-700">
                 <Icon className="w-full h-full" />
               </div>
             </Link>
