@@ -40,13 +40,13 @@ export default function Sidebar({ isOpen, onClose }) {
               className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
             >
               <LayoutDashboard className="w-5 h-5 shrink-0" />
-              <span>Dashboard</span>
+              <span>Home</span>
             </NavLink>
           </div>
 
           <div className="mt-6">
             <p className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-              Platform Engines
+              Platform Modules
             </p>
             <div className="space-y-1">
               {engines.map(({ id, title, icon: Icon }) => (
