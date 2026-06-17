@@ -52,18 +52,27 @@ export default function BusinessHubView() {
   }
 
   function handleReopenIdea(idea) {
-    const compiledIdeaText = "Business Type: " + idea.wizardData.businessType + "\nProblem: " + idea.wizardData.problem + "\nSolution: " + idea.wizardData.solution + "\nBudget: " + idea.wizardData.budget + "\nLocation: " + idea.wizardData.location + (idea.wizardData.extraInfo ? "\nExtra: " + idea.wizardData.extraInfo : "");
+    const wd = idea.wizardData || {
+      businessType: 'other',
+      problem: idea.ideaText || '',
+      solution: '',
+      budget: 'Under K5,000',
+      location: 'Lusaka',
+      extraInfo: ''
+    };
+
+    const compiledIdeaText = "Business Type: " + wd.businessType + "\nProblem: " + wd.problem + "\nSolution: " + wd.solution + "\nBudget: " + wd.budget + "\nLocation: " + wd.location + (wd.extraInfo ? "\nExtra: " + wd.extraInfo : "");
 
     localStorage.setItem('impunga_idea_pipeline', JSON.stringify({
       ideaText: compiledIdeaText,
-      aiAnalysis: JSON.stringify(idea.result, null, 2),
-      viabilityScore: idea.score,
-      location: idea.wizardData.location,
-      budget: idea.wizardData.budget,
-      businessType: idea.wizardData.businessType,
+      aiAnalysis: JSON.stringify(idea.result || {}, null, 2),
+      viabilityScore: idea.score || 0,
+      location: wd.location,
+      budget: wd.budget,
+      businessType: wd.businessType,
       timestamp: Date.now(),
-      savedResult: idea.result,
-      savedWizardData: idea.wizardData
+      savedResult: idea.result || {},
+      savedWizardData: wd
     }));
     navigate('/idea-validator');
   }
@@ -195,7 +204,13 @@ export default function BusinessHubView() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Left Panel - Validate New Idea */}
-            <div className="lg:col-span-5 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 text-white rounded-3xl p-8 shadow-xl shadow-indigo-600/10 flex flex-col justify-between relative overflow-hidden group min-h-[350px]">
+            <div 
+              onClick={() => {
+                localStorage.removeItem('impunga_idea_pipeline');
+                navigate('/idea-validator');
+              }}
+              className="lg:col-span-5 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 text-white rounded-3xl p-8 shadow-xl shadow-indigo-600/10 flex flex-col justify-between relative overflow-hidden group min-h-[350px] cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
               <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
               
@@ -209,15 +224,9 @@ export default function BusinessHubView() {
                 </p>
               </div>
 
-              <button
-                onClick={() => {
-                  localStorage.removeItem('impunga_idea_pipeline');
-                  navigate('/idea-validator');
-                }}
-                className="relative z-10 w-full bg-white text-indigo-700 font-bold py-4 rounded-2xl shadow-lg hover:bg-indigo-50 hover:shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-              >
+              <div className="relative z-10 w-full bg-white text-indigo-700 font-bold py-4 rounded-2xl shadow-lg hover:bg-indigo-50 hover:shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2">
                 Validate an Idea <ArrowRight className="w-5 h-5 text-indigo-700" />
-              </button>
+              </div>
             </div>
 
             {/* Right Panel - Saved Ideas list */}
