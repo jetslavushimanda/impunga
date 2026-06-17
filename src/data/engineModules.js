@@ -39,11 +39,13 @@ export const ENGINE_MODULES = {
   finance: {
     id: 'finance',
     title: 'Finance & Funding',
-    description: 'Universal Utility. Secure funding, grants, and investment for your ventures.',
+    description: 'Universal Utility. Secure grants, loans, and investment for your ventures.',
     icon: DollarSign,
     bg: 'bg-gradient-to-br from-emerald-500 to-teal-700',
     modules: [
-      { path: '/funding-finder', icon: DollarSign, name: 'Funding Finder', desc: 'Institutional Gateway for Grants & Loans', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+      { path: '/grants-portal', icon: Globe, name: 'Grants & Subsidies', desc: 'Find non-dilutive funding and grants', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+      { path: '/loans-portal', icon: Calculator, name: 'Loans & Credit', desc: 'Zambian debt capacity and commercial loans', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
+      { path: '/investment-matchmaker', icon: Target, name: 'Investment Matchmaker', desc: 'AI VC matching and data room prep', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
     ]
   },
   connect: {
