@@ -3,12 +3,14 @@ import {
   BookOpen, TrendingUp, TrendingDown, Users,
   Plus, Trash2, ChevronDown, ChevronUp, Download,
   AlertCircle, Clock, CheckCircle2, Copy, ShoppingBag,
+  Award,
 } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 import { formatKwacha } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import jsPDF from 'jspdf';
+import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 const EXPENSE_CATEGORIES = [
   'Stock/Inventory', 'Transport', 'Rent', 'Airtime/Data',
@@ -162,8 +164,11 @@ function DebtorCard({ debtor, type, onMarkPaid, onReminder }) {
 export default function BusinessLedger() {
   const [activeTab, setActiveTab] = useState('sales');
   const { addDocument, updateDocument, deleteDocument, getUserDocuments } = useFirestore();
-  const { user } = useAuthStore();
+  const { user, userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
+  
+  const [loadingCredit, setLoadingCredit] = useState(false);
+  const [creditResult, setCreditResult] = useState(null);
 
   const [sales, setSales] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -190,6 +195,115 @@ export default function BusinessLedger() {
   const [customEnd, setCustomEnd] = useState('');
 
   useEffect(() => { loadData(); }, []);
+
+  useEffect(() => {
+    if (activeTab !== 'credit' || !user) return;
+
+    async function calculateScore() {
+      setLoadingCredit(true);
+      try {
+        const [plans, pricings, s, e, d] = await Promise.all([
+          getUserDocuments('businessPlans', 'createdAt', 100),
+          getUserDocuments('pricingCalculations', 'createdAt', 100),
+          getUserDocuments('sales', 'createdAt', 300),
+          getUserDocuments('expenses', 'createdAt', 300),
+          getUserDocuments('debtors', 'createdAt', 300),
+        ]);
+
+        // 1. Business Plan Completed (20 points)
+        const hasPlan = plans.length > 0;
+        const score1 = hasPlan ? 20 : 0;
+
+        // 2. Pricing Above 20 Percent Margin (15 points)
+        const hasHighMargin = pricings.some(p => (p.profitMargin || 0) > 20);
+        const score2 = hasHighMargin ? 15 : 0;
+
+        // 3. Consistent Sales Recording (20 points)
+        const uniqueMonths = new Set();
+        s.forEach(sale => {
+          if (!sale.createdAt) return;
+          const date = sale.createdAt.toDate ? sale.createdAt.toDate() : new Date(sale.createdAt);
+          if (isNaN(date.getTime())) return;
+          const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+          uniqueMonths.add(yearMonth);
+        });
+        const salesMonths = uniqueMonths.size;
+        let score3 = 0;
+        if (salesMonths >= 3) score3 = 20;
+        else if (salesMonths === 2) score3 = 13;
+        else if (salesMonths === 1) score3 = 7;
+
+        // 4. Expenses Below 70 Percent of Revenue (15 points)
+        const totalRev = s.reduce((sum, item) => sum + (item.total || 0), 0);
+        const totalExp = e.reduce((sum, item) => sum + (item.amount || 0), 0);
+        const score4 = (totalRev > 0 && totalExp < 0.7 * totalRev) ? 15 : 0;
+
+        // 5. Debtors Paying on Time (15 points)
+        let score5 = 8;
+        if (d.length > 0) {
+          const activeDebtors = d.filter(item => item.status !== 'paid');
+          const now = new Date();
+          const hasOverdue = activeDebtors.some(item => item.dueDate && new Date(item.dueDate) < now);
+          score5 = hasOverdue ? 0 : 15;
+        }
+
+        // 6. Business Formally Registered (15 points)
+        const isRegistered = !!userProfile?.businessRegistered;
+        const score6 = isRegistered ? 15 : 0;
+
+        const totalScore = score1 + score2 + score3 + score4 + score5 + score6;
+
+        setCreditResult({
+          totalScore,
+          breakdown: [
+            {
+              name: 'Business Plan Completed',
+              earned: score1,
+              max: 20,
+              tip: score1 === 20 ? 'Great! You have completed your business plan.' : 'Go to the Business Plan Builder to write and complete your business plan.'
+            },
+            {
+              name: 'Pricing Above 20% Margin',
+              earned: score2,
+              max: 15,
+              tip: score2 === 15 ? 'Excellent! Your products/services are priced profitably.' : 'Use the Pricing Calculator to price your products/services with a profit margin above 20%.'
+            },
+            {
+              name: 'Consistent Sales Recording',
+              earned: score3,
+              max: 20,
+              tip: score3 === 20 ? 'Fantastic! You have consistent sales records.' : 'Record at least one sale per month for 3 consecutive months to demonstrate business consistency.'
+            },
+            {
+              name: 'Expenses Below 70% of Revenue',
+              earned: score4,
+              max: 15,
+              tip: score4 === 15 ? 'Great! Your expenses are kept well below revenue.' : 'Optimize your operations to reduce total expenses below 70% of your total revenue.'
+            },
+            {
+              name: 'Debtors Paying on Time',
+              earned: score5,
+              max: 15,
+              tip: score5 === 15 ? 'Perfect! No overdue debtors exist.' : score5 === 8 ? 'Record credit transactions in the Debtors Book and collect payments on time to build history.' : 'Collect payments from outstanding overdue debtors to restore your credit standing.'
+            },
+            {
+              name: 'Business Formally Registered',
+              earned: score6,
+              max: 15,
+              tip: score6 === 15 ? 'Awesome! Your business is registered.' : 'Register your business formally with PACRA and ZRA to unlock legal and financial benefits.'
+            }
+          ]
+        });
+      } catch (err) {
+        console.error('Failed to calculate credit score:', err);
+      } finally {
+        setLoadingCredit(false);
+      }
+    }
+
+    calculateScore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, user, userProfile]);
 
   async function loadData() {
     const [s, e, d] = await Promise.all([
@@ -480,6 +594,7 @@ export default function BusinessLedger() {
     { id: 'expenses', label: 'Expense Book', Icon: TrendingDown },
     { id: 'pl', label: 'Profit & Loss', Icon: TrendingUp },
     { id: 'debtors', label: 'Debtors', Icon: Users },
+    { id: 'credit', label: 'Credit Score', Icon: Award },
   ];
 
   return (
@@ -1092,6 +1207,135 @@ export default function BusinessLedger() {
           {activeDebtors.length === 0 && (
             <p className="text-center py-8 text-gray-400 text-sm">No active debtors. Great job!</p>
           )}
+        </div>
+      )}
+
+      {/* ─── TAB: CREDIT SCORE ─── */}
+      {activeTab === 'credit' && (
+        <div className="space-y-4">
+          {loadingCredit ? (
+            <div className="py-12 bg-white rounded-2xl border border-gray-100 shadow-sm flex items-center justify-center">
+              <LoadingSpinner text="Calculating Business Credit Score..." />
+            </div>
+          ) : creditResult ? (
+            (() => {
+              const radius = 70;
+              const strokeWidth = 14;
+              const circumference = 2 * Math.PI * radius;
+              const strokeDashoffset = circumference - (creditResult.totalScore / 100) * circumference;
+
+              const getTierInfo = (score) => {
+                if (score < 40) {
+                  return {
+                    color: '#EF4444',
+                    textClass: 'text-red-600',
+                    bgClass: 'bg-red-50',
+                    borderClass: 'border-red-200',
+                    label: 'Needs Attention',
+                    message: 'Start recording your sales and completing your business plan to build your score.'
+                  };
+                }
+                if (score < 60) {
+                  return {
+                    color: '#F97316',
+                    textClass: 'text-orange-600',
+                    bgClass: 'bg-orange-50',
+                    borderClass: 'border-orange-200',
+                    label: 'Developing',
+                    message: 'You are building momentum. Consistent record keeping will grow your score quickly.'
+                  };
+                }
+                if (score < 80) {
+                  return {
+                    color: '#2563EB',
+                    textClass: 'text-blue-600',
+                    bgClass: 'bg-blue-50',
+                    borderClass: 'border-blue-200',
+                    label: 'Good Standing',
+                    message: 'Good standing. Focus on expense management and debt collection to reach the top tier.'
+                  };
+                }
+                return {
+                  color: '#16A34A',
+                  textClass: 'text-green-600',
+                  bgClass: 'bg-green-50',
+                  borderClass: 'border-green-200',
+                  label: 'Excellent',
+                  message: 'Excellent. Your business health is strong. Share this score with funders and financial institutions.'
+                };
+              };
+
+              const tier = getTierInfo(creditResult.totalScore);
+
+              return (
+                <>
+                  {/* Circular Gauge */}
+                  <div className="flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-gray-100 shadow-sm mb-4">
+                    <div className="relative flex items-center justify-center">
+                      <svg className="w-44 h-44 transform -rotate-90">
+                        <circle
+                          cx="88"
+                          cy="88"
+                          r={radius}
+                          className="stroke-gray-100"
+                          strokeWidth={strokeWidth}
+                          fill="none"
+                        />
+                        <circle
+                          cx="88"
+                          cy="88"
+                          r={radius}
+                          stroke={tier.color}
+                          strokeWidth={strokeWidth}
+                          fill="none"
+                          strokeDasharray={circumference}
+                          strokeDashoffset={strokeDashoffset}
+                          strokeLinecap="round"
+                          className="transition-all duration-500 ease-out"
+                        />
+                      </svg>
+                      <div className="absolute text-center">
+                        <span className="text-4xl font-extrabold text-gray-800">{creditResult.totalScore}</span>
+                        <span className="text-gray-400 text-sm font-semibold block">/ 100</span>
+                      </div>
+                    </div>
+                    <p className={`mt-4 text-lg font-bold ${tier.textClass}`}>{tier.label}</p>
+                  </div>
+
+                  {/* Breakdown Cards */}
+                  <div className="space-y-3 mb-4">
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Dimension Breakdown</h3>
+                    {creditResult.breakdown.map((item, idx) => {
+                      const isMax = item.earned === item.max;
+                      return (
+                        <div key={idx} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-gray-800 text-sm">{item.name}</p>
+                            <p className="text-xs text-gray-500 mt-1 leading-relaxed">{item.tip}</p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className={`text-base font-extrabold ${isMax ? 'text-green-600' : 'text-gray-700'}`}>
+                              {item.earned}
+                            </span>
+                            <span className="text-xs text-gray-400 font-semibold"> / {item.max}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Motivational Message */}
+                  <div className={`rounded-2xl p-4 border ${tier.bgClass} ${tier.borderClass} flex items-start gap-3`}>
+                    <AlertCircle className={`w-5 h-5 ${tier.textClass} shrink-0 mt-0.5`} />
+                    <div>
+                      <p className={`font-bold text-sm ${tier.textClass}`}>Your Business Standing</p>
+                      <p className="text-sm text-gray-700 mt-1 leading-relaxed">{tier.message}</p>
+                    </div>
+                  </div>
+                </>
+              );
+            })()
+          ) : null}
         </div>
       )}
 
