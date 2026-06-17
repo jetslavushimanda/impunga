@@ -17,8 +17,9 @@ export const ENGINE_MODULES = {
       ideation: [
         { path: '/idea-validator', icon: Lightbulb, name: 'Idea Validator', desc: 'Test if your idea works in Zambia', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
         { path: '/name-generator', icon: Sparkles, name: 'Name Generator', desc: 'AI generates Zambian business names', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
-        { path: '/business-plan', icon: FileText, name: 'Plan Builder', desc: 'Build and download your plan as PDF', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
-        { path: '/swot-analysis', icon: Target, name: 'SWOT Analysis', desc: 'Analyse strengths and opportunities', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
+        { path: '/business-plan', icon: FileText, name: 'Plan Builder', desc: 'Build and download your plan as PDF', bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-l-indigo-400' },
+        { path: '/swot-analysis', icon: Target, name: 'SWOT Analysis', desc: 'Analyse strengths and opportunities', bg: 'bg-cyan-50', text: 'text-cyan-600', border: 'border-l-cyan-400' },
+        { path: '/registration-guide', icon: Building2, name: 'PACRA/ZRA Guide', desc: 'Step-by-step registration instructions', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-l-emerald-400' },
       ],
       operations: [
         { path: '/business-ledger', icon: BookOpen, name: 'Business Ledger', desc: 'Track sales, expenses and debtors', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },

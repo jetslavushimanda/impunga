@@ -138,7 +138,7 @@ export default function BusinessHubView() {
       )}
 
       {view === 'registration' && (
-        <div className="max-w-xl mx-auto bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[2rem] p-8 sm:p-10 relative overflow-hidden animate-slide-up mt-8">
+        <div className="max-w-xl mx-auto bg-white/85 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[2rem] p-8 sm:p-10 relative overflow-hidden animate-slide-up mt-8">
           <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-300/20 rounded-full blur-3xl pointer-events-none" />
           <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20 relative z-10">
             <Briefcase className="w-10 h-10 text-white" />
