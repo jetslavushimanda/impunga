@@ -108,14 +108,9 @@ Return ONLY valid JSON:
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/20">
-          <Share2 className="w-7 h-7 text-white" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Social Media Generator</h1>
-          <p className="text-gray-500 font-medium">AI writes marketing posts for Facebook, WhatsApp, TikTok and Instagram</p>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Social Media Generator</h1>
+        <p className="text-gray-500 font-medium">AI writes marketing posts for Facebook, WhatsApp, TikTok and Instagram</p>
       </div>
 
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">

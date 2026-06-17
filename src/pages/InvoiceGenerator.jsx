@@ -160,14 +160,9 @@ export default function InvoiceGenerator() {
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/20">
-          <Receipt className="w-7 h-7 text-white" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Invoice Generator</h1>
-          <p className="text-gray-500 font-medium">Create professional invoices in Kwacha and download as PDF</p>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Invoice Generator</h1>
+        <p className="text-gray-500 font-medium">Create professional invoices in Kwacha and download as PDF</p>
       </div>
 
       {/* Invoice details */}
