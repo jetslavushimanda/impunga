@@ -5,8 +5,7 @@ import { ENGINE_MODULES } from '../data/engineModules';
 import useAuthStore from '../store/authStore';
 import { useAuth } from '../hooks/useAuth';
 import { useFirestore } from '../hooks/useFirestore';
-import { ModuleCard } from './EngineView';
-import { SectionHeader } from '../components/shared/SectionHeader';
+import { ModuleCard } from './EngineView'; 
 
 const STARTUP_TOOLS = [
   {
@@ -54,6 +53,7 @@ const STARTUP_TOOLS = [
     text: 'text-fuchsia-600',
     badge: 'Investor Ready'
   },
+
   {
     path: '/pricing-calculator',
     icon: Calculator,
@@ -65,124 +65,91 @@ const STARTUP_TOOLS = [
   }
 ];
 
-// Dark system startup module card
 function StartupModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, badge }) {
-  // Map bg/text classes to dark colour tokens
-  const colourMap = {
-    'text-blue-600':    ['var(--c-business)',   'rgba(79,142,247,0.15)'],
-    'text-indigo-600':  ['#818CF8',             'rgba(99,102,241,0.15)'],
-    'text-cyan-600':    ['var(--c-ai)',          'rgba(34,211,238,0.15)'],
-    'text-emerald-600': ['var(--success)',       'rgba(16,185,129,0.15)'],
-    'text-amber-600':   ['var(--c-market)',      'rgba(245,158,11,0.15)'],
-    'text-fuchsia-600': ['#E879F9',             'rgba(232,121,249,0.15)'],
-    'text-yellow-600':  ['var(--gold-bright)',   'var(--gold-glow)'],
-    'text-purple-600':  ['var(--c-skills)',      'rgba(155,114,245,0.15)'],
-  };
-
-  const [iconColour, iconBg] = colourMap[text] || ['var(--text-secondary)', 'var(--bg-overlay)'];
-  const isFolderBadge = badge === 'Folder';
-
-  const cardStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    background: 'var(--bg-surface)',
-    border: '1px solid var(--border-subtle)',
-    borderRadius: '14px',
-    padding: '16px',
-    cursor: 'pointer',
-    transition: 'background 0.15s ease, border-color 0.15s ease',
-    textDecoration: 'none',
-    textAlign: 'left',
-    width: '100%',
-    height: '100%',
-    fontFamily: "'Inter', sans-serif",
-  };
-
   const content = (
     <>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-        <div style={{
-          width: '44px', height: '44px',
-          borderRadius: '12px',
-          background: iconBg,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0,
-        }}>
-          <Icon style={{ width: '22px', height: '22px', color: iconColour }} />
+      {/* Decorative gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-indigo-50/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      
+      <div className="relative shrink-0 z-10">
+        {/* Glowing background */}
+        <div className={`absolute inset-0 opacity-20 blur-md rounded-full ${bg} group-hover:opacity-35 transition-opacity duration-300`} />
+        <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center shadow-md border border-white/50 group-hover:scale-105 transition-transform duration-300 ${bg}`}>
+          <Icon className={`w-6 h-6 ${text || 'text-gray-700'} drop-shadow-sm`} />
         </div>
+      </div>
 
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '3px' }}>
-            <h2 style={{
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 600, fontSize: '15px',
-              color: 'var(--text-primary)', margin: 0,
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            }}>{name}</h2>
-            {badge && (
-              <span style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '10px', fontWeight: 700,
-                letterSpacing: '0.05em', textTransform: 'uppercase',
-                padding: '3px 8px', borderRadius: '6px', flexShrink: 0,
-                background: isFolderBadge ? 'var(--gold-glow)' : iconBg,
-                border: `1px solid ${isFolderBadge ? 'var(--gold-border)' : iconColour + '44'}`,
-                color: isFolderBadge ? 'var(--gold-bright)' : iconColour,
-              }}>{badge}</span>
-            )}
-          </div>
-          <p style={{
-            fontFamily: "'Inter', sans-serif",
-            fontSize: '13px', color: 'var(--text-secondary)',
-            margin: 0, lineHeight: 1.4,
-            overflow: 'hidden', display: '-webkit-box',
-            WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
-          }}>{desc}</p>
+      <div className="flex-1 min-w-0 relative z-10 text-left">
+        <div className="flex items-center justify-between mb-1 gap-2">
+          <h4 className="font-bold text-gray-900 text-sm group-hover:text-indigo-600 transition-colors truncate">
+            {name}
+          </h4>
+          {badge && (
+            <span className={`text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badge === 'Folder' ? 'bg-yellow-50/80 text-yellow-600 border-yellow-200/40 group-hover:bg-yellow-500 group-hover:text-white' : 'bg-indigo-50/80 text-indigo-600 border-indigo-100/40 group-hover:bg-indigo-600 group-hover:text-white'}`}>
+              {badge}
+            </span>
+          )}
         </div>
-
-        <div style={{
-          width: '28px', height: '28px', borderRadius: '50%',
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-subtle)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-        }}>
-          <ChevronRight style={{ width: '14px', height: '14px', color: 'var(--text-muted)' }} />
-        </div>
+        <p className="text-gray-500 text-xs font-medium line-clamp-2 leading-relaxed">{desc}</p>
+      </div>
+      
+      {/* Subtle background icon */}
+      <div className="absolute -right-2 -bottom-2 w-16 h-16 opacity-[0.03] pointer-events-none group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 text-gray-900">
+        <Icon className="w-full h-full" />
       </div>
     </>
   );
 
-  const handleHoverIn = (e) => {
-    e.currentTarget.style.background = 'var(--bg-elevated)';
-    e.currentTarget.style.borderColor = 'var(--border-default)';
-  };
-  const handleHoverOut = (e) => {
-    e.currentTarget.style.background = 'var(--bg-surface)';
-    e.currentTarget.style.borderColor = 'var(--border-subtle)';
-  };
+  const className = "group relative bg-white/70 backdrop-blur-md overflow-hidden rounded-2xl p-4 flex items-center gap-4 border border-white/80 shadow-[0_4px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(99,102,241,0.08)] hover:border-indigo-100 hover:-translate-y-1 transition-all duration-300 w-full";
 
   if (onClick) {
     return (
-      <button
-        onClick={onClick}
-        style={cardStyle}
-        onMouseEnter={handleHoverIn}
-        onMouseLeave={handleHoverOut}
-      >
+      <button onClick={onClick} className={className}>
         {content}
       </button>
     );
   }
 
   return (
-    <Link
-      to={path}
-      style={cardStyle}
-      onMouseEnter={handleHoverIn}
-      onMouseLeave={handleHoverOut}
-    >
+    <Link to={path} className={className}>
       {content}
     </Link>
+  );
+}
+
+function SectionHeader({ title, description, icon: Icon, badge, gradient = "from-indigo-500 to-purple-600", rightAction }) {
+  return (
+    <div className="relative pb-6 mb-8 border-b border-gray-200/60 flex flex-col md:flex-row md:items-end justify-between gap-4 z-10">
+      {/* Very subtle ambient background glow */}
+      <div className={`absolute -left-10 -top-10 w-48 h-48 bg-gradient-to-br ${gradient} opacity-[0.03] blur-3xl rounded-full pointer-events-none`} />
+      
+      <div className="relative z-10">
+        {badge && (
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 text-gray-600 text-[10px] font-bold uppercase tracking-wider rounded-full mb-3">
+            {badge}
+          </div>
+        )}
+        <div className="flex items-center gap-3">
+          {Icon && (
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-sm shadow-indigo-500/10`}>
+              <Icon className="w-5 h-5 text-white drop-shadow-sm" />
+            </div>
+          )}
+          <h1 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-gray-900 via-gray-800 to-gray-600 tracking-tight pb-0.5">
+            {title}
+          </h1>
+        </div>
+        <p className="text-gray-500 font-medium text-sm mt-2 max-w-2xl leading-relaxed">
+          {description}
+        </p>
+      </div>
+      
+      {rightAction && (
+        <div className="relative z-10 shrink-0 w-full md:w-auto mt-2 md:mt-0">
+          {rightAction}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -191,10 +158,10 @@ export default function BusinessHubView() {
   const { updateProfile } = useAuth();
   const { getUserDocuments, deleteDocument } = useFirestore();
   const navigate = useNavigate();
-
+  
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get('view') || 'paths';
-
+  
   const [savedIdeas, setSavedIdeas] = useState([]);
   const [loadingIdeas, setLoadingIdeas] = useState(false);
   const [showSavedBlueprints, setShowSavedBlueprints] = useState(false);
@@ -209,6 +176,7 @@ export default function BusinessHubView() {
     setLoadingIdeas(true);
     try {
       const ideas = await getUserDocuments('businessIdeas');
+      // Sort by newest
       setSavedIdeas(ideas.sort((a, b) => b.timestamp - a.timestamp));
     } catch (err) {
       console.error('Failed to load saved ideas:', err);
@@ -263,9 +231,9 @@ export default function BusinessHubView() {
       setSearchParams({ view: v });
     }
   };
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
+  // Registration form state
   const [formData, setFormData] = useState({
     businessName: '',
     sector: '',
@@ -295,340 +263,194 @@ export default function BusinessHubView() {
     }
   }
 
-  const backLinkStyle = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '6px',
-    fontFamily: "'Inter', sans-serif",
-    fontSize: '14px',
-    fontWeight: 500,
-    color: 'var(--text-secondary)',
-    textDecoration: 'none',
-    marginBottom: '20px',
-    transition: 'color 0.15s ease',
-  };
-
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto', paddingBottom: '96px' }}>
-      <Link
-        to="/dashboard"
-        onClick={(e) => {
-          if (view !== 'paths') {
-            e.preventDefault();
-            setView('paths');
-          }
-        }}
-        style={backLinkStyle}
-        onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
-        onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
-      >
-        <ArrowLeft style={{ width: '16px', height: '16px', color: 'var(--text-muted)' }} />
-        {view === 'paths' ? 'Back to Home' : 'Back to Business Hub'}
-      </Link>
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
+      <div className="mb-8">
+        <Link 
+          to="/dashboard" 
+          onClick={(e) => {
+            if (view !== 'paths') {
+              e.preventDefault();
+              setView('paths');
+            }
+          }}
+          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {view === 'paths' ? 'Back to Home' : 'Back to Business Hub'}
+        </Link>
+      </div>
 
-      {/* ─── PATH SELECTION ─── */}
       {view === 'paths' && (
-        <div>
-          <SectionHeader
-            title="Business Hub"
+        <div className="animate-slide-up">
+          <SectionHeader 
+            title="Business Hub" 
             description="Choose your path. Whether you are just starting out with an idea or managing an existing operation, we have the tools for you."
             icon={Building2}
-            colour="var(--c-business)"
+            gradient="from-blue-600 to-indigo-600"
           />
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '12px' }}>
-            {/* Path A — Start a Business */}
-            <button
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl">
+            {/* Path A */}
+            <button 
               onClick={() => setView('ideation')}
-              style={{
-                textAlign: 'left',
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border-default)',
-                borderLeft: '3px solid var(--c-business)',
-                borderRadius: '16px',
-                padding: '24px',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s ease',
-                fontFamily: "'Inter', sans-serif",
-              }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(79,142,247,0.5)'}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderTopColor = 'var(--border-default)';
-                e.currentTarget.style.borderRightColor = 'var(--border-default)';
-                e.currentTarget.style.borderBottomColor = 'var(--border-default)';
-                e.currentTarget.style.borderLeftColor = 'var(--c-business)';
-              }}
+              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-md transition-all duration-200 flex flex-col"
             >
-              <div style={{
-                width: '48px', height: '48px', borderRadius: '14px',
-                background: 'rgba(79,142,247,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginBottom: '14px',
-              }}>
-                <Rocket style={{ width: '24px', height: '24px', color: 'var(--c-business)' }} />
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                  <Rocket className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900 mb-1">Start a Business</h2>
+                  <p className="text-gray-500 text-sm font-medium leading-relaxed">I have an idea or need guidance on how to start a business in Zambia.</p>
+                </div>
               </div>
-              <h2 style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 600, fontSize: '18px',
-                color: 'var(--text-primary)', margin: '0 0 6px 0',
-              }}>Start a Business</h2>
-              <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 16px 0' }}>
-                I have an idea or need guidance on how to start a business in Zambia.
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--c-business)' }}>
-                <span style={{ fontWeight: 600, fontSize: '13px' }}>EXPLORE TOOLS</span>
-                <ArrowRight style={{ width: '16px', height: '16px' }} />
+              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
+                <span className="text-blue-600 font-bold text-xs uppercase tracking-wide">Explore Tools</span>
+                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
               </div>
             </button>
 
-            {/* Path B — Manage my Business */}
-            <button
+            {/* Path B */}
+            <button 
               onClick={handlePathBClick}
-              style={{
-                textAlign: 'left',
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border-default)',
-                borderLeft: '3px solid var(--c-finance)',
-                borderRadius: '16px',
-                padding: '24px',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s ease',
-                fontFamily: "'Inter', sans-serif",
-              }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(45,212,191,0.5)'}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderTopColor = 'var(--border-default)';
-                e.currentTarget.style.borderRightColor = 'var(--border-default)';
-                e.currentTarget.style.borderBottomColor = 'var(--border-default)';
-                e.currentTarget.style.borderLeftColor = 'var(--c-finance)';
-              }}
+              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/30 hover:shadow-md transition-all duration-200 flex flex-col"
             >
-              <div style={{
-                width: '48px', height: '48px', borderRadius: '14px',
-                background: 'rgba(45,212,191,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginBottom: '14px',
-              }}>
-                <Briefcase style={{ width: '24px', height: '24px', color: 'var(--c-finance)' }} />
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center shrink-0">
+                  <Briefcase className="w-6 h-6 text-indigo-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900 mb-1">Manage my Business</h2>
+                  <p className="text-gray-500 text-sm font-medium leading-relaxed">I already have a business and need operational tools to run it.</p>
+                </div>
               </div>
-              <h2 style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 600, fontSize: '18px',
-                color: 'var(--text-primary)', margin: '0 0 6px 0',
-              }}>Manage my Business</h2>
-              <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 16px 0' }}>
-                I already have a business and need operational tools to run it.
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--c-finance)' }}>
-                <span style={{ fontWeight: 600, fontSize: '13px' }}>ENTER WORKSPACE</span>
-                <ArrowRight style={{ width: '16px', height: '16px' }} />
+              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
+                <span className="text-indigo-600 font-bold text-xs uppercase tracking-wide">Enter Workspace</span>
+                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
               </div>
             </button>
           </div>
         </div>
       )}
 
-      {/* ─── IDEATION VIEW ─── */}
       {view === 'ideation' && (
-        <div>
-          <SectionHeader
-            title="Start a Business"
+        <div className="animate-fade-in relative z-0">
+          <SectionHeader 
+            title="Start a Business" 
             description="Everything you need to validate your idea, structure a plan, and prepare for launch."
             icon={Rocket}
-            colour="var(--c-business)"
+            gradient="from-blue-500 to-cyan-500"
           />
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-            gap: '8px',
-          }}>
-            <StartupModuleCard
-              onClick={() => {
-                localStorage.removeItem('impunga_idea_pipeline');
-                navigate('/idea-validator');
-              }}
-              icon={Lightbulb}
-              name="Validate Idea"
-              desc="Run your idea through our AI wizard for a viability score."
-              bg="bg-indigo-50"
-              text="text-indigo-600"
-              badge="AI Wizard"
-            />
+          {/* Startup Planning Modules Grid */}
+          <div className="animate-slide-up">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Validate New Idea */}
+              <StartupModuleCard 
+                onClick={() => {
+                  localStorage.removeItem('impunga_idea_pipeline');
+                  navigate('/idea-validator');
+                }}
+                icon={Lightbulb}
+                name="Validate Idea"
+                desc="Run your idea through our AI wizard for a viability score."
+                bg="bg-indigo-50"
+                text="text-indigo-600"
+                badge="AI Wizard"
+              />
 
-            <StartupModuleCard
-              onClick={() => setShowSavedBlueprints(true)}
-              icon={FolderOpen}
-              name="Saved Blueprints"
-              desc="Access and review your previously validated business ideas."
-              bg="bg-yellow-50"
-              text="text-yellow-600"
-              badge="Folder"
-            />
+              {/* Saved Blueprints Folder */}
+              <StartupModuleCard 
+                onClick={() => setShowSavedBlueprints(true)}
+                icon={FolderOpen}
+                name="Saved Blueprints"
+                desc="Access and review your previously validated business ideas."
+                bg="bg-yellow-50"
+                text="text-yellow-600"
+                badge="Folder"
+              />
 
-            {STARTUP_TOOLS.map((tool) => (
-              <StartupModuleCard key={tool.path} {...tool} />
-            ))}
+              {/* Other Tools */}
+              {STARTUP_TOOLS.map((tool) => (
+                <StartupModuleCard key={tool.path} {...tool} />
+              ))}
+            </div>
           </div>
 
           {/* Saved Blueprints Modal */}
           {showSavedBlueprints && (
-            <div style={{
-              position: 'fixed', inset: 0, zIndex: 50,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px',
-            }}>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
               {/* Backdrop */}
-              <div
-                style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
+              <div 
+                className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
                 onClick={() => setShowSavedBlueprints(false)}
               />
-
-              {/* Modal */}
-              <div style={{
-                position: 'relative',
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border-default)',
-                borderRadius: '20px',
-                width: '100%', maxWidth: '640px', maxHeight: '85vh',
-                display: 'flex', flexDirection: 'column', overflow: 'hidden',
-              }}>
-                {/* Modal Header */}
-                <div style={{
-                  padding: '20px 24px',
-                  borderBottom: '1px solid var(--border-subtle)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  flexShrink: 0,
-                }}>
-                  <h3 style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    fontWeight: 600, fontSize: '18px',
-                    color: 'var(--text-primary)',
-                    margin: 0,
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                  }}>
-                    <FolderOpen style={{ width: '22px', height: '22px', color: 'var(--gold-bright)' }} />
-                    Saved Blueprints
+              
+              {/* Modal Content */}
+              <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-slide-up border border-white/20">
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 shrink-0">
+                  <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <FolderOpen className="w-6 h-6 text-yellow-500" /> Saved Blueprints Folder
                   </h3>
-                  <button
+                  <button 
                     onClick={() => setShowSavedBlueprints(false)}
-                    style={{
-                      width: '36px', height: '36px', borderRadius: '50%',
-                      background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)',
-                      color: 'var(--text-muted)', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
                   >
-                    <X style={{ width: '18px', height: '18px' }} />
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
-
-                {/* Modal Body */}
-                <div style={{ padding: '16px 24px', overflowY: 'auto', flex: 1, background: 'var(--bg-base)' }}>
+                
+                <div className="p-6 overflow-y-auto bg-gray-50/50 flex-1">
                   {loadingIdeas ? (
-                    <div style={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      padding: '48px 0', color: 'var(--text-muted)',
-                      fontFamily: "'Inter', sans-serif", fontSize: '14px',
-                    }}>
+                    <div className="flex-1 flex items-center justify-center text-gray-400 py-12">
                       Loading saved ideas...
                     </div>
                   ) : savedIdeas.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '64px 0' }}>
-                      <div style={{
-                        width: '64px', height: '64px', borderRadius: '50%',
-                        background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        margin: '0 auto 16px',
-                      }}>
-                        <FolderOpen style={{ width: '32px', height: '32px', color: 'var(--text-muted)' }} />
+                    <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 text-gray-300 shadow-sm">
+                        <FolderOpen className="w-8 h-8" />
                       </div>
-                      <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', margin: '0 0 6px' }}>
-                        Folder is empty
-                      </p>
-                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'var(--text-muted)', maxWidth: '240px', margin: '0 auto' }}>
-                        Your validated startup ideas and blueprints will show up here.
-                      </p>
+                      <p className="text-gray-500 font-semibold mb-1">Folder is empty</p>
+                      <p className="text-sm text-gray-400 max-w-[280px]">Your validated startup ideas and blueprints will show up here.</p>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="space-y-3">
                       {savedIdeas.map((idea) => (
                         <div
                           key={idea.id}
                           onClick={() => handleReopenIdea(idea)}
-                          style={{
-                            cursor: 'pointer',
-                            padding: '14px 16px',
-                            background: 'var(--bg-surface)',
-                            border: '1px solid var(--border-subtle)',
-                            borderRadius: '12px',
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
-                            transition: 'background 0.15s ease, border-color 0.15s ease',
-                          }}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.style.borderColor = 'var(--border-default)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; }}
+                          className="group cursor-pointer p-4 bg-white hover:bg-indigo-50/50 border border-gray-100 hover:border-indigo-100/80 rounded-2xl transition-all duration-300 flex items-center justify-between gap-4 shadow-sm hover:shadow-md"
                         >
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                              <span style={{
-                                fontFamily: "'Inter', sans-serif",
-                                fontWeight: 700, fontSize: '13px',
-                                color: 'var(--text-primary)',
-                                textTransform: 'uppercase', letterSpacing: '0.05em',
-                                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '160px',
-                              }}>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span className="font-bold text-sm text-gray-900 uppercase tracking-wide truncate max-w-[200px]">
                                 {idea.wizardData?.businessType || 'General Idea'}
                               </span>
-                              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'var(--text-muted)' }}>
+                              <span className="text-xs text-gray-400 font-semibold">
                                 {new Date(idea.timestamp || Date.now()).toLocaleDateString('en-GB')}
                               </span>
-                              <span style={{
-                                fontFamily: "'Inter', sans-serif",
-                                fontSize: '10px', fontWeight: 700,
-                                padding: '2px 8px', borderRadius: '20px', textTransform: 'uppercase',
-                                marginLeft: 'auto',
-                                background: idea.verdict === 'PROCEED' ? 'rgba(16,185,129,0.15)' : idea.verdict === 'REFINE' ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.15)',
-                                border: `1px solid ${idea.verdict === 'PROCEED' ? 'rgba(16,185,129,0.3)' : idea.verdict === 'REFINE' ? 'rgba(245,158,11,0.3)' : 'rgba(239,68,68,0.3)'}`,
-                                color: idea.verdict === 'PROCEED' ? 'var(--success)' : idea.verdict === 'REFINE' ? 'var(--warning)' : 'var(--danger)',
-                              }}>
+                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ml-auto shrink-0 ${idea.verdict === 'PROCEED' ? 'bg-green-100 text-green-700 border border-green-200' : idea.verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' : 'bg-red-100 text-red-700 border border-red-200'}`}>
                                 {idea.verdict || 'NEW'}
                               </span>
-                              <span style={{
-                                fontFamily: "'Space Grotesk', sans-serif",
-                                fontSize: '12px', fontWeight: 700,
-                                color: 'var(--c-business)',
-                                background: 'rgba(79,142,247,0.12)',
-                                border: '1px solid rgba(79,142,247,0.25)',
-                                padding: '2px 8px', borderRadius: '20px',
-                              }}>
+                              <span className="text-xs font-black text-indigo-700 bg-indigo-50/80 border border-indigo-100/40 px-2.5 py-1 rounded-full shrink-0">
                                 {idea.score}/10
                               </span>
                             </div>
-                            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'var(--text-secondary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <p className="text-sm text-gray-500 font-medium truncate">
                               {idea.wizardData?.solution || 'No description provided'}
                             </p>
                           </div>
-
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                          
+                          <div className="flex items-center gap-3 shrink-0 pl-2">
                             <button
                               onClick={(e) => handleDeleteIdea(idea.id, e)}
-                              style={{
-                                width: '32px', height: '32px', borderRadius: '8px',
-                                background: 'transparent', border: 'none',
-                                color: 'var(--text-muted)', cursor: 'pointer',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                transition: 'background 0.15s ease, color 0.15s ease',
-                              }}
-                              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = 'var(--danger)'; }}
-                              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+                              className="p-2 hover:bg-red-50 hover:text-red-500 text-gray-300 rounded-xl transition-colors"
                             >
-                              <Trash2 style={{ width: '16px', height: '16px' }} />
+                              <Trash2 className="w-4 h-4" />
                             </button>
-                            <div style={{
-                              width: '28px', height: '28px', borderRadius: '50%',
-                              background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                              <ChevronRight style={{ width: '14px', height: '14px', color: 'var(--text-muted)' }} />
+                            <div className="w-8 h-8 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center text-gray-400 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-transparent transition-all shadow-sm">
+                              <ChevronRight className="w-4 h-4" />
                             </div>
                           </div>
                         </div>
@@ -642,194 +464,118 @@ export default function BusinessHubView() {
         </div>
       )}
 
-      {/* ─── REGISTRATION VIEW ─── */}
       {view === 'registration' && (
-        <div style={{ maxWidth: '480px', margin: '0 auto', marginTop: '32px' }}>
-          <div style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-default)',
-            borderRadius: '20px',
-            padding: '40px 32px',
-            position: 'relative',
-            overflow: 'hidden',
-          }}>
-            {/* Icon */}
-            <div style={{
-              width: '72px', height: '72px', borderRadius: '20px',
-              background: 'rgba(45,212,191,0.15)',
-              border: '1px solid rgba(45,212,191,0.25)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 20px',
-            }}>
-              <Briefcase style={{ width: '36px', height: '36px', color: 'var(--c-finance)' }} />
+        <div className="max-w-xl mx-auto bg-white/95 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[2rem] p-8 sm:p-10 relative overflow-hidden animate-slide-up mt-8">
+          <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-100 rounded-full pointer-events-none" />
+          <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20 relative z-10">
+            <Briefcase className="w-10 h-10 text-white" />
+          </div>
+          <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-3 relative z-10">Register your Workspace</h2>
+          <p className="text-center text-gray-500 font-medium mb-10 relative z-10">
+            Before accessing the operational tools, please register your business profile on the IMPUNGA platform.
+          </p>
+
+          <form onSubmit={handleRegister} className="space-y-6 relative z-10">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Business or Project Name</label>
+              <input 
+                required
+                type="text"
+                value={formData.businessName}
+                onChange={e => setFormData({...formData, businessName: e.target.value})}
+                className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm"
+                placeholder="e.g. Kalulu Farms"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Primary Sector</label>
+              <select 
+                required
+                value={formData.sector}
+                onChange={e => setFormData({...formData, sector: e.target.value})}
+                className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm appearance-none cursor-pointer"
+              >
+                <option value="" disabled>Select a sector...</option>
+                <option value="agriculture">Agriculture & Farming</option>
+                <option value="retail">Retail & Trade</option>
+                <option value="services">Professional Services</option>
+                <option value="manufacturing">Manufacturing</option>
+                <option value="tech">Technology</option>
+                <option value="other">Other</option>
+              </select>
             </div>
 
-            <h2 style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700, fontSize: '24px',
-              color: 'var(--text-primary)',
-              textAlign: 'center', margin: '0 0 8px 0',
-            }}>Register your Workspace</h2>
-            <p style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '14px', color: 'var(--text-secondary)',
-              textAlign: 'center', margin: '0 0 32px 0', lineHeight: 1.5,
-            }}>
-              Before accessing the operational tools, please register your business profile.
-            </p>
-
-            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div>
-                <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                  Business or Project Name
+            <div className="pt-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">Is it registered with PACRA?</label>
+              <div className="flex gap-4">
+                <label className="flex-1 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="registered" 
+                    value="yes"
+                    checked={formData.isRegistered === 'yes'}
+                    onChange={e => setFormData({...formData, isRegistered: e.target.value})}
+                    className="sr-only peer"
+                  />
+                  <div className="text-center py-4 border border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-indigo-500 peer-checked:to-purple-500 peer-checked:text-white font-bold text-gray-600 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-indigo-500/30">
+                    Yes, Registered
+                  </div>
                 </label>
-                <input
-                  required
-                  type="text"
-                  value={formData.businessName}
-                  onChange={e => setFormData({ ...formData, businessName: e.target.value })}
-                  style={{
-                    width: '100%', background: 'var(--bg-elevated)',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: '10px', padding: '12px 14px',
-                    fontFamily: "'Inter', sans-serif", fontSize: '14px',
-                    color: 'var(--text-primary)', outline: 'none', boxSizing: 'border-box',
-                  }}
-                  placeholder="e.g. Kalulu Farms"
-                  onFocus={e => { e.target.style.borderColor = 'var(--gold-mid)'; e.target.style.boxShadow = '0 0 0 3px var(--gold-glow)'; }}
-                  onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; e.target.style.boxShadow = 'none'; }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                  Primary Sector
+                <label className="flex-1 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="registered" 
+                    value="no"
+                    checked={formData.isRegistered === 'no'}
+                    onChange={e => setFormData({...formData, isRegistered: e.target.value})}
+                    className="sr-only peer"
+                  />
+                  <div className="text-center py-4 border border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-gray-600 peer-checked:to-gray-800 peer-checked:text-white font-bold text-gray-600 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-gray-900/30">
+                    Not Yet
+                  </div>
                 </label>
-                <select
-                  required
-                  value={formData.sector}
-                  onChange={e => setFormData({ ...formData, sector: e.target.value })}
-                  style={{
-                    width: '100%', background: 'var(--bg-elevated)',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: '10px', padding: '12px 14px',
-                    fontFamily: "'Inter', sans-serif", fontSize: '14px',
-                    color: 'var(--text-primary)', outline: 'none',
-                    appearance: 'none', cursor: 'pointer', boxSizing: 'border-box',
-                  }}
-                  onFocus={e => { e.target.style.borderColor = 'var(--gold-mid)'; e.target.style.boxShadow = '0 0 0 3px var(--gold-glow)'; }}
-                  onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; e.target.style.boxShadow = 'none'; }}
-                >
-                  <option value="" disabled style={{ background: 'var(--bg-elevated)' }}>Select a sector...</option>
-                  <option value="agriculture" style={{ background: 'var(--bg-elevated)' }}>Agriculture &amp; Farming</option>
-                  <option value="retail" style={{ background: 'var(--bg-elevated)' }}>Retail &amp; Trade</option>
-                  <option value="services" style={{ background: 'var(--bg-elevated)' }}>Professional Services</option>
-                  <option value="manufacturing" style={{ background: 'var(--bg-elevated)' }}>Manufacturing</option>
-                  <option value="tech" style={{ background: 'var(--bg-elevated)' }}>Technology</option>
-                  <option value="other" style={{ background: 'var(--bg-elevated)' }}>Other</option>
-                </select>
               </div>
+            </div>
 
-              <div>
-                <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '12px' }}>
-                  Is it registered with PACRA?
-                </label>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  {[['yes', 'Yes, Registered'], ['no', 'Not Yet']].map(([val, label]) => (
-                    <label key={val} style={{ flex: 1, cursor: 'pointer' }}>
-                      <input
-                        type="radio" name="registered" value={val}
-                        checked={formData.isRegistered === val}
-                        onChange={e => setFormData({ ...formData, isRegistered: e.target.value })}
-                        style={{ display: 'none' }}
-                      />
-                      <div style={{
-                        textAlign: 'center',
-                        padding: '12px',
-                        borderRadius: '10px',
-                        fontFamily: "'Inter', sans-serif",
-                        fontWeight: 600, fontSize: '14px',
-                        border: formData.isRegistered === val ? '1px solid var(--c-business)' : '1px solid var(--border-default)',
-                        background: formData.isRegistered === val ? 'rgba(79,142,247,0.15)' : 'var(--bg-elevated)',
-                        color: formData.isRegistered === val ? 'var(--c-business)' : 'var(--text-secondary)',
-                        transition: 'all 0.15s ease',
-                      }}>
-                        {label}
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting || !formData.businessName || !formData.sector}
-                style={{
-                  width: '100%',
-                  background: 'var(--gold-bright)',
-                  color: 'var(--text-inverse)',
-                  fontFamily: "'Inter', sans-serif",
-                  fontWeight: 700, fontSize: '15px',
-                  padding: '14px',
-                  borderRadius: '10px',
-                  border: 'none', cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  opacity: (isSubmitting || !formData.businessName || !formData.sector) ? 0.5 : 1,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                  marginTop: '8px',
-                  transition: 'background 0.15s ease',
-                }}
-                onMouseEnter={e => { if (!isSubmitting) e.currentTarget.style.background = 'var(--gold-mid)'; }}
-                onMouseLeave={e => e.currentTarget.style.background = 'var(--gold-bright)'}
-              >
-                {isSubmitting ? 'Registering...' : 'Complete Registration'}
-                <CheckCircle2 style={{ width: '20px', height: '20px' }} />
-              </button>
-            </form>
-          </div>
+            <button 
+              type="submit"
+              disabled={isSubmitting || !formData.businessName || !formData.sector}
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-2xl disabled:opacity-50 transition-all mt-6 shadow-lg shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
+            >
+              {isSubmitting ? 'Registering...' : 'Complete Registration'} <CheckCircle2 className="w-6 h-6" />
+            </button>
+          </form>
         </div>
       )}
 
-      {/* ─── OPERATIONS VIEW ─── */}
       {view === 'operations' && (
-        <div>
-          <SectionHeader
+        <div className="animate-fade-in">
+          <SectionHeader 
             title={userProfile?.businessProfile?.businessName || 'Business Workspace'}
             description="Your operational tools for running and scaling your business."
             icon={Briefcase}
-            colour="var(--c-finance)"
+            gradient="from-indigo-600 to-purple-600"
+            badge={
+              <span className="flex items-center gap-1.5 text-green-700">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Platform Verified
+              </span>
+            }
             rightAction={
-              <button
+              <button 
                 onClick={() => setView('registration')}
-                style={{
-                  background: 'var(--bg-elevated)',
-                  border: '1px solid var(--border-default)',
-                  borderRadius: '10px',
-                  padding: '10px 20px',
-                  fontFamily: "'Inter', sans-serif",
-                  fontWeight: 500, fontSize: '14px',
-                  color: 'var(--text-secondary)',
-                  cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: '6px',
-                  transition: 'border-color 0.15s ease, color 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-default)'; }}
+                className="w-full lg:w-auto bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center"
               >
-                <CheckCircle2 style={{ width: '14px', height: '14px', color: 'var(--success)' }} /> Platform Verified · Edit
+                Edit Profile
               </button>
             }
           />
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-            gap: '8px',
-          }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {businessEngine.modules.map(mod => (
               <ModuleCard key={mod.path} {...mod} />
             ))}
             <ModuleCard path="/market-directory" icon={Handshake} name="Marketplace" desc="Trade and connect in the verified directory" bg="bg-blue-50" text="text-blue-600" border="border-l-blue-400" />
-            <ModuleCard path="/funding-finder" icon={DollarSign} name="Funding Connect" desc="Institutional Gateway for Grants &amp; Loans" bg="bg-green-50" text="text-green-600" border="border-l-green-400" />
+            <ModuleCard path="/funding-finder" icon={DollarSign} name="Funding Connect" desc="Institutional Gateway for Grants & Loans" bg="bg-green-50" text="text-green-600" border="border-l-green-400" />
           </div>
         </div>
       )}
