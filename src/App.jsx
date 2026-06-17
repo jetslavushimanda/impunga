@@ -27,7 +27,6 @@ import SocialMediaGenerator from './pages/SocialMediaGenerator';
 import BusinessLedger from './pages/BusinessLedger';
 import SkillProfileBuilder from './pages/SkillProfileBuilder';
 import CareerMatches from './pages/CareerMatches';
-import ChoosePath from './pages/ChoosePath';
 import DataPrivacy from './pages/DataPrivacy';
 import ComplianceTracker from './pages/ComplianceTracker';
 import PlaceholderPage from './pages/PlaceholderPage';
@@ -64,7 +63,6 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/choose-path" element={<ChoosePath />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/idea-validator" element={<IdeaValidator />} />

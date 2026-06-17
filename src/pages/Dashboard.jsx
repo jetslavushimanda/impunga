@@ -199,19 +199,14 @@ export default function Dashboard() {
   return (
     <div className="max-w-2xl mx-auto pb-24 animate-fade-in">
 
-      {/* Welcome Banner */}
-      <div className="rounded-2xl p-5 mb-5 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1B4F72 0%, #1E8449 100%)' }}>
-        <div className="relative z-10">
-          <p className="text-blue-200 text-sm font-medium">{getGreeting()}</p>
-          <h1 className="text-2xl font-bold text-white mt-0.5">{userProfile?.fullName || 'Entrepreneur'}</h1>
-          <p className="text-blue-100 text-xs font-medium mt-0.5">Zambia's Economic Intelligence Platform</p>
-          <p className="text-blue-200 text-sm mt-1">Start. Match. Build Zambia.</p>
-          <div className="flex items-center gap-2 mt-3">
-            <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full font-medium">Day {daysSince + 1} on IMPUNGA</span>
-            {userProfile?.province && <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full">{userProfile.province}</span>}
-          </div>
-        </div>
-        <Sprout className="absolute right-4 top-4 w-16 h-16 text-white/10" />
+      {/* Welcome Message */}
+      <div className="mb-6 px-1">
+        <h1 className="text-2xl font-bold text-gray-800">
+          {getGreeting()}, {firstName}!
+        </h1>
+        <p className="text-gray-500 text-sm mt-1">
+          Welcome to Zambia's Economic Intelligence Platform.
+        </p>
       </div>
 
       {/* Dynamic Summary Cards */}
