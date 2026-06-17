@@ -34,6 +34,11 @@ import DataPrivacy from './pages/DataPrivacy';
 import ComplianceTracker from './pages/ComplianceTracker';
 import PlaceholderPage from './pages/PlaceholderPage';
 import EngineView from './pages/EngineView';
+import FreelanceCalculator from './pages/FreelanceCalculator';
+import CVGenerator from './pages/CVGenerator';
+import CoverLetterGenerator from './pages/CoverLetterGenerator';
+import InterviewPrep from './pages/InterviewPrep';
+import SkillGapCloser from './pages/SkillGapCloser';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
@@ -91,6 +96,11 @@ export default function App() {
           <Route path="/career-matches" element={<CareerMatches />} />
           <Route path="/data-privacy" element={<DataPrivacy />} />
           <Route path="/compliance-tracker" element={<ComplianceTracker />} />
+          <Route path="/cv-generator" element={<CVGenerator />} />
+          <Route path="/cover-letter-generator" element={<CoverLetterGenerator />} />
+          <Route path="/interview-prep" element={<InterviewPrep />} />
+          <Route path="/freelance-calculator" element={<FreelanceCalculator />} />
+          <Route path="/skill-gap-closer" element={<SkillGapCloser />} />
           <Route path="/portfolio-showcase" element={<PlaceholderPage title="Portfolio Showcase" />} />
           <Route path="/verified-directory" element={<PlaceholderPage title="Verified Service Directory" />} />
           <Route path="/learning-insights" element={<PlaceholderPage title="Learning Insight Cards" />} />

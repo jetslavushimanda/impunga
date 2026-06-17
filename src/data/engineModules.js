@@ -3,7 +3,7 @@ import {
   Calculator, Receipt, ShoppingCart, BookOpen,
   DollarSign, Share2, MessageCircle,
   Bot, GraduationCap, User, Briefcase, ShieldCheck,
-  Globe, TrendingUp, Handshake, Shield
+  Globe, TrendingUp, Handshake, Shield, PenTool, Compass
 } from 'lucide-react';
 
 export const ENGINE_MODULES = {
@@ -29,6 +29,11 @@ export const ENGINE_MODULES = {
     modules: [
       { path: '/skill-profile-builder', icon: User, name: 'Skill Profile Builder', desc: 'Build your professional skill portfolio', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400' },
       { path: '/career-matches', icon: Briefcase, name: 'Career Matches', desc: 'Match your skills with Zambian jobs', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
+      { path: '/cv-generator', icon: FileText, name: 'CV Generator', desc: 'Instantly build your professional CV', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+      { path: '/cover-letter-generator', icon: PenTool, name: 'Cover Letter AI', desc: 'Generate tailored cover letters', bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-l-indigo-400' },
+      { path: '/interview-prep', icon: MessageCircle, name: 'Interview Prep Wizard', desc: 'AI mock interviews for local jobs', bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-l-rose-400' },
+      { path: '/freelance-calculator', icon: Calculator, name: 'Freelance Rate Calculator', desc: 'Determine profitable project rates', bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-l-orange-400' },
+      { path: '/skill-gap-closer', icon: Target, name: 'Skill Gap Closer', desc: 'AI learning paths for missing skills', bg: 'bg-cyan-50', text: 'text-cyan-600', border: 'border-l-cyan-400' },
     ]
   },
   finance: {

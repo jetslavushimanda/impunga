@@ -557,6 +557,144 @@ Return ONLY valid JSON.`;
     }
   }
 
+  async function generateCoverLetter(jobTitle, company, profileData) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are an expert Zambian career coach. Write a professional, compelling cover letter for the following job application:
+      
+Job Title: ${jobTitle}
+Company: ${company}
+Applicant Name: ${profileData.fullName}
+Location: ${profileData.district}, ${profileData.province}
+Applicant Skills: ${profileData.selectedSkills?.join(', ')}
+Education: ${profileData.educationLevel}
+
+Write a 3-4 paragraph cover letter. Keep it highly professional, tailored to the Zambian job market, and focused on how the applicant's specific skills make them a perfect fit for the role. Do not use placeholders like [Date] or [Address], just write the core letter content.`;
+
+      const response = await callGemini(prompt, 'You are a Zambian cover letter writing assistant.');
+      return response;
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function generateInterviewQuestions(careerName, province) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are a Zambian HR Manager interviewing a candidate for the role of ${careerName} in ${province || 'Zambia'}.
+      
+Generate exactly 4 interview questions:
+1. A general introductory/behavioral question.
+2. A role-specific technical/skill question.
+3. A situational question specific to working in Zambia (e.g., dealing with power cuts, local supply chain issues, or Zambian customer service).
+4. A question about their career goals or teamwork.
+
+Return ONLY a JSON array of strings. Example:
+[
+  "Question 1...",
+  "Question 2...",
+  "Question 3...",
+  "Question 4..."
+]`;
+
+      const response = await callGemini(prompt, 'You are an HR Manager in Zambia. Return only a valid JSON array of strings.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function evaluateInterviewAnswers(careerName, questions, answers) {
+    setLoading(true);
+    setError(null);
+    try {
+      const qaPairs = questions.map((q, i) => `Q: ${q}\nA: ${answers[i] || 'No answer provided'}`).join('\n\n');
+      
+      const prompt = `You are a Zambian HR Manager evaluating a candidate for the role of ${careerName}.
+      
+Here are the questions and the candidate's answers:
+${qaPairs}
+
+Evaluate their performance. Return EXACTLY this JSON structure:
+{
+  "score": <number 0-100>,
+  "feedback": "2-3 sentences of overall constructive feedback",
+  "strengths": ["Strength 1", "Strength 2"],
+  "areasToImprove": ["Area 1", "Area 2"]
+}
+Return ONLY valid JSON.`;
+
+      const response = await callGemini(prompt, 'You are a constructive Zambian HR Evaluator. Return only valid JSON.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function generateSkillGapPlan(missingSkill, province) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are an expert Zambian Technical Training Advisor. A user needs to learn the skill: "${missingSkill}". They live in ${province || 'Zambia'}.
+      
+Create a practical, 4-week self-study learning plan to acquire basic proficiency in this skill.
+Return EXACTLY this JSON structure:
+{
+  "summary": "1 sentence encouraging summary",
+  "weeks": [
+    {
+      "weekNumber": 1,
+      "focus": "Core focus of week 1",
+      "activities": ["Activity 1", "Activity 2"]
+    },
+    {
+      "weekNumber": 2,
+      "focus": "Core focus of week 2",
+      "activities": ["Activity 1", "Activity 2"]
+    },
+    {
+      "weekNumber": 3,
+      "focus": "Core focus of week 3",
+      "activities": ["Activity 1", "Activity 2"]
+    },
+    {
+      "weekNumber": 4,
+      "focus": "Core focus of week 4",
+      "activities": ["Activity 1", "Activity 2"]
+    }
+  ],
+  "localResources": ["Name of a local Zambian institution, TEVETA center, or accessible online platform (like YouTube/Coursera) to help them learn"]
+}
+Return ONLY valid JSON.`;
+
+      const response = await callGemini(prompt, 'You are a Zambian Educational Advisor. Return only valid JSON.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function getFriendlyError(err) {
     if (err.message === 'GEMINI_API_KEY_MISSING') {
       return 'AI features need a Gemini API key. Add your key to the .env file.';
@@ -571,5 +709,5 @@ Return ONLY valid JSON.`;
     return `Error: ${err.message}. Check internet and try again.`;
   }
 
-  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generatePitchDeck, matchFundingSources, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast, critiqueBusinessPlan, generatePredictiveRoadmap, analyzePricingTrend };
+  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generatePitchDeck, matchFundingSources, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast, critiqueBusinessPlan, generatePredictiveRoadmap, analyzePricingTrend, generateCoverLetter, generateInterviewQuestions, evaluateInterviewAnswers, generateSkillGapPlan };
 }
