@@ -76,7 +76,10 @@ Provide a structured analysis with these exact sections:
 - Opportunity 2
 - Opportunity 3
 
-**7. RECOMMENDED NEXT STEPS**
+**7. SIMILAR / PIVOT IDEAS**
+[2-3 brief alternative variations of this idea that might work better in Zambia or have higher margins]
+
+**8. RECOMMENDED NEXT STEPS**
 [3-5 specific, practical action steps (e.g., finding suppliers, testing demand). Do NOT mention business registration here; focus on business mechanics.]
 
 Be highly specific to Zambia. Use Kwacha for money references. Be brutally honest - if the idea needs major work, say so constructively and score it low.`;
