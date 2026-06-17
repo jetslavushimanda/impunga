@@ -53,15 +53,7 @@ const STARTUP_TOOLS = [
     text: 'text-fuchsia-600',
     badge: 'Investor Ready'
   },
-  {
-    path: '/social-media',
-    icon: Share2,
-    name: 'Social Media Strategy',
-    desc: 'Build a local marketing plan and generate content calendars.',
-    bg: 'bg-pink-50',
-    text: 'text-pink-600',
-    badge: '30-Day Content'
-  },
+
   {
     path: '/pricing-calculator',
     icon: Calculator,
