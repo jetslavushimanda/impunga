@@ -44,42 +44,44 @@ export default function BusinessNameGenerator() {
     <div className="max-w-3xl mx-auto animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-          <Sparkles className="w-5 h-5 text-purple-500" />
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+          <Sparkles className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Business Name Generator</h1>
-          <p className="text-gray-500 text-sm">AI generates unique Zambian business names for your idea</p>
+          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Business Name Generator</h1>
+          <p className="text-gray-500 font-medium">AI generates unique Zambian business names for your idea</p>
         </div>
       </div>
 
-      <div className="card mb-4">
-        <div className="mb-4">
-          <label className="label">Describe your business *</label>
+      <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">
+        <div className="absolute -right-16 -top-16 w-64 h-64 bg-purple-200/20 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="mb-6 relative z-10">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Describe your business *</label>
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
-            className="textarea-field"
+            className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all min-h-[120px] shadow-sm resize-none"
             rows={3}
             placeholder="e.g. I sell homemade peanut butter in Lusaka. I want a name that sounds local and trustworthy."
           />
-          <p className={`text-xs mt-1 ${description.length < 10 ? 'text-red-400' : 'text-gray-400'}`}>
-            {description.length} characters {description.length < 10 ? '(minimum 10)' : '✓'}
+          <p className={`text-xs mt-2 font-medium ${description.length < 10 ? 'text-red-400' : 'text-green-500'}`}>
+            {description.length} characters {description.length < 10 ? '(minimum 10 required)' : '✓ Looks good!'}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8 relative z-10">
           <div>
-            <label className="label">Business Sector</label>
-            <select value={sector} onChange={e => setSector(e.target.value)} className="select-field">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Business Sector</label>
+            <select value={sector} onChange={e => setSector(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all appearance-none shadow-sm cursor-pointer">
               <option value="">Any sector</option>
               {BUSINESS_SECTORS.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="label">Name Style</label>
-            <select value={style} onChange={e => setStyle(e.target.value)} className="select-field">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Name Style</label>
+            <select value={style} onChange={e => setStyle(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all appearance-none shadow-sm cursor-pointer">
               <option value="professional">Professional & Formal</option>
               <option value="local">Local Zambian Language</option>
               <option value="modern">Modern & Catchy</option>
@@ -90,38 +92,44 @@ export default function BusinessNameGenerator() {
 
         {error && <ErrorMessage message={error} />}
 
-        <button onClick={handleGenerate} disabled={loading || description.length < 10} className="btn-primary w-full gap-2">
-          {loading ? <><LoadingSpinner size="sm" /> Generating names...</> : <><Sparkles className="w-4 h-4" /> Generate Business Names</>}
+        <button 
+          onClick={handleGenerate} 
+          disabled={loading || description.length < 10} 
+          className="relative z-10 w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-purple-500/30 disabled:opacity-50 disabled:shadow-none active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
+        >
+          {loading ? <><LoadingSpinner size="sm" /> Generating names...</> : <><Sparkles className="w-5 h-5" /> Generate Business Names</>}
         </button>
       </div>
 
       {names.length > 0 && (
-        <div className="space-y-3 animate-slide-up">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="font-bold text-gray-800">Generated Names</h2>
-            <button onClick={handleGenerate} className="btn-secondary text-sm gap-1">
+        <div className="space-y-4 animate-slide-up pb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-800 tracking-tight">Generated Names</h2>
+            <button onClick={handleGenerate} className="flex items-center gap-1.5 border border-gray-200 hover:bg-white text-gray-600 font-semibold text-sm px-4 py-2 rounded-xl transition-colors bg-white/50 backdrop-blur-sm shadow-sm active:scale-95">
               <RefreshCw className="w-4 h-4" /> Regenerate
             </button>
           </div>
-          {names.map((item, i) => (
-            <div key={i} className="card border-l-4 border-primary">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <h3 className="font-bold text-primary text-lg">{item.name}</h3>
-                  {item.meaning && <p className="text-xs text-accent-gold font-medium mb-1">Meaning: {item.meaning}</p>}
-                  <p className="text-gray-600 text-sm">{item.reason}</p>
-                </div>
-                <div className="flex gap-2 flex-shrink-0">
-                  <button onClick={() => handleCopy(item.name)} className="p-2 text-gray-400 hover:text-primary rounded-lg">
-                    {copied === item.name ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                  <button onClick={() => handleSave(item)} className="p-2 text-gray-400 hover:text-accent-gold rounded-lg">
-                    <Save className="w-4 h-4" />
-                  </button>
+          <div className="grid gap-4">
+            {names.map((item, i) => (
+              <div key={i} className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-sm rounded-2xl p-5 hover:shadow-md transition-all group">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <h3 className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-indigo-700 text-xl mb-1">{item.name}</h3>
+                    {item.meaning && <p className="text-sm text-yellow-600 font-semibold mb-2">Meaning: {item.meaning}</p>}
+                    <p className="text-gray-600 text-sm leading-relaxed">{item.reason}</p>
+                  </div>
+                  <div className="flex gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => handleCopy(item.name)} className="p-2.5 bg-gray-50 hover:bg-purple-50 text-gray-500 hover:text-purple-600 rounded-xl transition-colors shadow-sm border border-gray-100">
+                      {copied === item.name ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                    <button onClick={() => handleSave(item)} className="p-2.5 bg-gray-50 hover:bg-yellow-50 text-gray-500 hover:text-yellow-600 rounded-xl transition-colors shadow-sm border border-gray-100">
+                      <Save className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>

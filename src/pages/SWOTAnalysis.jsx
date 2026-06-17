@@ -11,10 +11,10 @@ import { callAI } from '../lib/gemini';
 import jsPDF from 'jspdf';
 
 const QUADRANTS = [
-  { key: 'strengths', label: 'Strengths', icon: Zap, border: 'border-green-400', bg: 'bg-green-50', header: 'bg-green-500', text: 'text-green-800', iconColor: 'text-green-600' },
-  { key: 'weaknesses', label: 'Weaknesses', icon: AlertTriangle, border: 'border-red-400', bg: 'bg-red-50', header: 'bg-red-500', text: 'text-red-800', iconColor: 'text-red-600' },
-  { key: 'opportunities', label: 'Opportunities', icon: TrendingUp, border: 'border-blue-400', bg: 'bg-blue-50', header: 'bg-blue-500', text: 'text-blue-800', iconColor: 'text-blue-600' },
-  { key: 'threats', label: 'Threats', icon: Shield, border: 'border-yellow-400', bg: 'bg-yellow-50', header: 'bg-yellow-500', text: 'text-yellow-800', iconColor: 'text-yellow-600' },
+  { key: 'strengths', label: 'Strengths', icon: Zap, border: 'border-green-200', bg: 'bg-green-50/80 backdrop-blur-sm', header: 'bg-gradient-to-r from-green-500 to-emerald-600', text: 'text-green-800', iconColor: 'text-green-600' },
+  { key: 'weaknesses', label: 'Weaknesses', icon: AlertTriangle, border: 'border-red-200', bg: 'bg-red-50/80 backdrop-blur-sm', header: 'bg-gradient-to-r from-red-500 to-rose-600', text: 'text-red-800', iconColor: 'text-red-600' },
+  { key: 'opportunities', label: 'Opportunities', icon: TrendingUp, border: 'border-blue-200', bg: 'bg-blue-50/80 backdrop-blur-sm', header: 'bg-gradient-to-r from-blue-500 to-indigo-600', text: 'text-blue-800', iconColor: 'text-blue-600' },
+  { key: 'threats', label: 'Threats', icon: Shield, border: 'border-amber-200', bg: 'bg-amber-50/80 backdrop-blur-sm', header: 'bg-gradient-to-r from-amber-500 to-yellow-600', text: 'text-amber-800', iconColor: 'text-amber-600' },
 ];
 
 export default function SWOTAnalysis() {
@@ -122,38 +122,40 @@ Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobi
     <div className="max-w-3xl mx-auto animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-          <Target className="w-5 h-5 text-blue-500" />
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <Target className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">SWOT Analysis Generator</h1>
-          <p className="text-gray-500 text-sm">AI generates a full SWOT for your business — specific to Zambia</p>
+          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">SWOT Analysis Generator</h1>
+          <p className="text-gray-500 font-medium">AI generates a full SWOT for your business — specific to Zambia</p>
         </div>
       </div>
 
-      <div className="card mb-4">
-        <div className="space-y-4">
+      <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">
+        <div className="absolute -right-16 -top-16 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="space-y-6 relative z-10">
           <div>
-            <label className="label">Business Name (optional)</label>
-            <input value={businessName} onChange={e => setBusinessName(e.target.value)} className="input-field" placeholder="e.g. Mama's Kitchen" />
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Business Name (optional)</label>
+            <input value={businessName} onChange={e => setBusinessName(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all shadow-sm" placeholder="e.g. Mama's Kitchen" />
           </div>
           <div>
-            <label className="label">Describe your business *</label>
-            <textarea value={description} onChange={e => setDescription(e.target.value)} className="textarea-field" rows={3} placeholder="What does your business do? Who are your customers? Where do you operate?" />
-            <p className={`text-xs mt-1 ${description.length < 20 ? 'text-red-400' : 'text-gray-400'}`}>{description.length} chars {description.length < 20 ? '(min 20)' : '✓'}</p>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Describe your business *</label>
+            <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all shadow-sm resize-none" rows={3} placeholder="What does your business do? Who are your customers? Where do you operate?" />
+            <p className={`text-xs mt-2 font-medium ${description.length < 20 ? 'text-red-400' : 'text-green-500'}`}>{description.length} chars {description.length < 20 ? '(min 20)' : '✓ Looks good!'}</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className="label">Sector</label>
-              <select value={sector} onChange={e => setSector(e.target.value)} className="select-field">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Sector</label>
+              <select value={sector} onChange={e => setSector(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all appearance-none shadow-sm cursor-pointer">
                 <option value="">Select sector</option>
                 {BUSINESS_SECTORS.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="label">Business Stage</label>
-              <select value={stage} onChange={e => setStage(e.target.value)} className="select-field">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Business Stage</label>
+              <select value={stage} onChange={e => setStage(e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all appearance-none shadow-sm cursor-pointer">
                 <option value="idea">Just an idea</option>
                 <option value="starting">Starting up</option>
                 <option value="operating">Already operating</option>
@@ -162,24 +164,28 @@ Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobi
             </div>
           </div>
         </div>
-        {error && <div className="mt-3"><ErrorMessage message={error} /></div>}
-        <button onClick={handleGenerate} disabled={loading || description.length < 20} className="btn-primary w-full mt-4 gap-2">
-          {loading ? <><LoadingSpinner size="sm" /> Generating SWOT...</> : <><Target className="w-4 h-4" /> Generate SWOT Analysis</>}
+        {error && <div className="mt-4 relative z-10"><ErrorMessage message={error} /></div>}
+        <button 
+          onClick={handleGenerate} 
+          disabled={loading || description.length < 20} 
+          className="relative z-10 w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2 mt-8 text-lg"
+        >
+          {loading ? <><LoadingSpinner size="sm" /> Generating SWOT...</> : <><Target className="w-5 h-5" /> Generate SWOT Analysis</>}
         </button>
       </div>
 
       {swot && (
-        <div className="animate-slide-up">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+        <div className="animate-slide-up pb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
             {QUADRANTS.map(({ key, label, icon: Icon, border, bg, header, iconColor }) => (
-              <div key={key} className={`rounded-xl border-2 overflow-hidden ${border} ${bg}`}>
-                <div className={`${header} text-white px-4 py-2.5 font-bold text-sm flex items-center gap-2`}>
-                  <Icon className="w-4 h-4" /> {label}
+              <div key={key} className={`rounded-2xl border border-white/60 shadow-sm overflow-hidden ${bg}`}>
+                <div className={`${header} text-white px-5 py-3.5 font-extrabold text-sm uppercase tracking-wider flex items-center gap-2 shadow-sm`}>
+                  <Icon className="w-5 h-5" /> {label}
                 </div>
-                <ul className="p-4 space-y-2">
+                <ul className="p-5 space-y-3">
                   {swot[key]?.map((point, i) => (
-                    <li key={i} className="text-sm text-gray-700 flex gap-2 leading-relaxed">
-                      <span className={`font-bold shrink-0 ${iconColor}`}>{i + 1}.</span>
+                    <li key={i} className="text-sm text-gray-700 flex gap-3 leading-relaxed font-medium">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${iconColor} bg-white shadow-sm text-xs font-bold`}>{i + 1}</div>
                       <span>{point}</span>
                     </li>
                   ))}
@@ -189,18 +195,20 @@ Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobi
           </div>
 
           {swot.summary && (
-            <div className="card border-l-4 border-primary mb-4">
-              <p className="font-bold text-gray-800 mb-1 flex items-center gap-2">
-                <Target className="w-4 h-4 text-primary" /> Summary & Recommendation
+            <div className="bg-gradient-to-r from-blue-50/80 to-indigo-50/80 backdrop-blur-sm border border-blue-100/50 rounded-2xl p-6 mb-8 shadow-sm">
+              <p className="font-extrabold text-blue-900 mb-3 flex items-center gap-2 text-lg">
+                <Target className="w-5 h-5 text-blue-600" /> Summary & Recommendation
               </p>
-              <AIResponse content={swot.summary} />
+              <div className="text-gray-800 font-medium leading-relaxed">
+                <AIResponse content={swot.summary} />
+              </div>
             </div>
           )}
 
           <div className="flex flex-wrap gap-3">
-            <button onClick={handleGenerate} className="btn-secondary gap-2"><RefreshCw className="w-4 h-4" /> Regenerate</button>
-            <button onClick={handleSave} className="btn-primary gap-2"><Save className="w-4 h-4" /> Save</button>
-            <button onClick={downloadPDF} className="btn-green gap-2"><Download className="w-4 h-4" /> Download PDF</button>
+            <button onClick={handleGenerate} className="flex items-center gap-2 border border-gray-200 hover:bg-white text-gray-600 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors bg-white/50 backdrop-blur-sm shadow-sm active:scale-95"><RefreshCw className="w-4 h-4" /> Regenerate</button>
+            <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors shadow-sm active:scale-95"><Save className="w-4 h-4" /> Save</button>
+            <button onClick={downloadPDF} className="flex items-center justify-between gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm px-6 py-2.5 rounded-xl hover:shadow-lg hover:shadow-blue-500/20 transition-all active:scale-95 ml-auto"><Download className="w-4 h-4" /> Download PDF</button>
           </div>
         </div>
       )}
