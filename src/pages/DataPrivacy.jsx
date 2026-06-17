@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Shield, Lock, Server, Eye, UserCheck, FileText, CheckCircle, Activity, BarChart2, Trash2, X } from 'lucide-react';
+import { Shield, Lock, Server, Eye, UserCheck, FileText, CheckCircle, Activity, BarChart2, Trash2, X, User, Lightbulb, BookOpen, Calculator, GraduationCap, DollarSign } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 
@@ -12,13 +12,13 @@ const PRIVACY_PILLARS = [
 ];
 
 const DATA_ITEMS = [
-  { label: 'Full Name', collection: null, stored: 'Firebase Auth + Firestore', icon: '👤' },
-  { label: 'Business Ideas', collection: 'businessIdeas', stored: 'Firestore (encrypted)', icon: '💡' },
-  { label: 'Business Plans', collection: 'businessPlans', stored: 'Firestore (encrypted)', icon: '📄' },
-  { label: 'Ledger Entries', collection: 'sales', stored: 'Firestore (encrypted)', icon: '📒' },
-  { label: 'Pricing Calculations', collection: 'pricingCalculations', stored: 'Firestore (encrypted)', icon: '🧮' },
-  { label: 'Skill Profile', collection: 'skillProfiles', stored: 'Firestore (encrypted)', icon: '🎓' },
-  { label: 'Bookmarked Funding', collection: 'bookmarkedFunding', stored: 'Firestore (encrypted)', icon: '💰' },
+  { label: 'Full Name', collection: null, stored: 'Firebase Auth + Firestore', icon: User },
+  { label: 'Business Ideas', collection: 'businessIdeas', stored: 'Firestore (encrypted)', icon: Lightbulb },
+  { label: 'Business Plans', collection: 'businessPlans', stored: 'Firestore (encrypted)', icon: FileText },
+  { label: 'Ledger Entries', collection: 'sales', stored: 'Firestore (encrypted)', icon: BookOpen },
+  { label: 'Pricing Calculations', collection: 'pricingCalculations', stored: 'Firestore (encrypted)', icon: Calculator },
+  { label: 'Skill Profile', collection: 'skillProfiles', stored: 'Firestore (encrypted)', icon: GraduationCap },
+  { label: 'Bookmarked Funding', collection: 'bookmarkedFunding', stored: 'Firestore (encrypted)', icon: DollarSign },
 ];
 
 const YOUR_RIGHTS = [
@@ -165,12 +165,14 @@ export default function DataPrivacy() {
           </div>
         </div>
         <div className="space-y-2">
-          {DATA_ITEMS.map(({ label, collection, stored, icon }) => {
+          {DATA_ITEMS.map(({ label, collection, stored, icon: Icon }) => {
             const count = collection ? (docCounts[collection] ?? '...') : 1;
             return (
               <div key={label} className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-lg">{icon}</span>
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
+                    <Icon className="w-4 h-4 text-gray-600" />
+                  </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">{label}</p>
                     <p className="text-xs text-gray-400">{stored}</p>
