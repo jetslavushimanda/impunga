@@ -28,46 +28,29 @@ IMPUNGA breaks all five walls down — permanently, and for free.
 
 ---
 
-## Modules
+## Engines & Modules
 
-IMPUNGA has 12 fully functional modules:
+IMPUNGA is divided into two engines, containing a total of 12 fully functional modules:
 
-### Get Started
+### Engine 1 — Start Your Business (10 Modules)
 | Module | Description |
 |--------|-------------|
 | Idea Validator | AI analyses your business idea for the Zambian market and gives a viability score out of 10 |
 | Registration Guide | Step-by-step PACRA, ZRA and bank account registration with official links and progress tracking |
-
-### Build Your Business
-| Module | Description |
-|--------|-------------|
 | Business Plan Builder | 8-section guided business plan builder with professional PDF download |
 | SWOT Analysis | AI generates a full Strengths, Weaknesses, Opportunities and Threats analysis |
 | Business Name Generator | AI generates 8 unique Zambian business names with meanings and reasoning |
-
-### Money and Finance
-| Module | Description |
-|--------|-------------|
 | Pricing Calculator | True cost calculator with profit margins, break-even analysis and monthly projections |
 | Invoice Generator | Create professional Kwacha invoices and download as PDF |
-| Market Prices | Current typical market prices for common goods across Zambian provinces |
-
-### Grow and Market
-| Module | Description |
-|--------|-------------|
+| Business Ledger | Track sales, expenses and debtors |
 | Funding Finder | 25+ real Zambian funding sources including CEEC, Tony Elumelu Foundation and more |
-| Social Media Generator | AI writes ready-to-post Facebook and WhatsApp marketing content |
-| WhatsApp Templates | Professional business message templates for quotes, follow-ups and payments |
-
-### AI Powered
-| Module | Description |
-|--------|-------------|
 | AI Business Advisor | Full conversational AI mentor available 24 hours with Zambia-specific advice |
 
-### Knowledge
+### Engine 2 — Match Your Skills (2 Modules)
 | Module | Description |
 |--------|-------------|
-| Business Quiz | 20 questions across 6 categories testing Zambian entrepreneurship knowledge |
+| Skill Profile Builder | Build your professional skill profile, selecting education level, province, district, and core skills |
+| Career Matches | Run matching algorithm against common Zambian occupations to evaluate job suitability and identify skill gaps |
 
 ---
 
@@ -184,9 +167,10 @@ src/
 │       └── OfflineBanner.jsx    # Offline status banner
 ├── pages/
 │   ├── Landing.jsx             # Minimal landing page
-│   ├── Login.jsx               # Email and Google sign in
-│   ├── Register.jsx            # 3-step registration
-│   ├── Dashboard.jsx           # Main hub with categorised modules
+│   ├── Login.jsx               # Email and Google sign in (modernized theme)
+│   ├── Register.jsx            # 3-step registration with dynamic location selectors
+│   ├── ChoosePath.jsx          # Onboarding path selection (Engine 1, Engine 2, or Both)
+│   ├── Dashboard.jsx           # Main hub with dynamic statistics based on selected path
 │   ├── IdeaValidator.jsx       # AI business idea analysis
 │   ├── RegistrationGuide.jsx   # PACRA/ZRA step-by-step guide
 │   ├── BusinessPlanBuilder.jsx # 8-section plan with PDF export
@@ -200,6 +184,9 @@ src/
 │   ├── SocialMediaGenerator.jsx # AI marketing content
 │   ├── WhatsAppTemplates.jsx   # Business message templates
 │   ├── BusinessQuiz.jsx        # 20-question knowledge test
+│   ├── BusinessLedger.jsx      # Sales, expenses, and debtor tracker
+│   ├── SkillProfileBuilder.jsx # User skill portfolio builder (dropdown selectors)
+│   ├── CareerMatches.jsx       # Skill-to-career matchmaker
 │   └── Profile.jsx             # User account management
 ├── hooks/
 │   ├── useAuth.js              # Firebase authentication hook
