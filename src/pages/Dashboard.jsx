@@ -194,10 +194,14 @@ export default function Dashboard() {
             text="text-blue-600"
             border="border-l-blue-400"
           />
-          <ComingSoonCard
+          <ModuleCard
+            path="/career-matches"
             icon={Briefcase}
             name="Career Matches"
             desc="Match your skills with Zambian job opportunities"
+            bg="bg-purple-50"
+            text="text-purple-600"
+            border="border-l-purple-400"
           />
         </div>
       </div>

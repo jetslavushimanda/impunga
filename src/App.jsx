@@ -27,6 +27,7 @@ import SocialMediaGenerator from './pages/SocialMediaGenerator';
 import BusinessQuiz from './pages/BusinessQuiz';
 import BusinessLedger from './pages/BusinessLedger';
 import SkillProfileBuilder from './pages/SkillProfileBuilder';
+import CareerMatches from './pages/CareerMatches';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser } = useAuthStore();
@@ -71,6 +72,7 @@ export default function App() {
           <Route path="/business-quiz" element={<BusinessQuiz />} />
           <Route path="/business-ledger" element={<BusinessLedger />} />
           <Route path="/skill-profile-builder" element={<SkillProfileBuilder />} />
+          <Route path="/career-matches" element={<CareerMatches />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

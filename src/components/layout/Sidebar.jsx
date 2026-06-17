@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Lightbulb, Building2, FileText,
   Calculator, DollarSign, Bot, User, X,
   Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2, GraduationCap,
-  BookOpen
+  BookOpen, Briefcase
 } from 'lucide-react';
 
 const ENGINE_1_ITEMS = [
@@ -25,6 +25,7 @@ const ENGINE_1_ITEMS = [
 
 const ENGINE_2_ITEMS = [
   { path: '/skill-profile-builder', icon: User, label: 'Skill Profile Builder' },
+  { path: '/career-matches', icon: Briefcase, label: 'Career Matches' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
