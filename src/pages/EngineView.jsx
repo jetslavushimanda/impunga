@@ -8,11 +8,11 @@ export function ModuleCard({ path, icon: Icon, name, desc, bg, text }) {
   return (
     <Link
       to={path}
-      className="group relative bg-white/85 backdrop-blur-xl overflow-hidden rounded-3xl p-6 flex flex-col border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300"
+      className="group relative bg-white overflow-hidden rounded-3xl p-6 flex flex-col border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300"
     >
       <div className="flex items-start justify-between relative z-10 mb-5">
         <div className="relative">
-          <div className={`absolute inset-0 blur-xl opacity-30 rounded-full ${bg}`} />
+          <div className={`absolute inset-0 opacity-10 rounded-full ${bg}`} />
           <div className={`relative w-12 h-12 rounded-[1rem] flex items-center justify-center shrink-0 shadow-md border border-white/40 ${bg}`}>
             <Icon className={`w-6 h-6 ${text || 'text-gray-700'} drop-shadow-sm`} />
           </div>
