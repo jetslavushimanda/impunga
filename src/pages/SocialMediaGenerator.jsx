@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Share2, Copy, Check, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Share2, Copy, Check, RefreshCw, ArrowLeft } from 'lucide-react';
 import { callAI } from '../lib/gemini';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
@@ -36,6 +37,7 @@ export default function SocialMediaGenerator() {
   const [copied, setCopied] = useState('');
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
+  const navigate = useNavigate();
 
   function togglePlatform(id) {
     setSelectedPlatforms(prev =>
@@ -100,6 +102,10 @@ Return ONLY valid JSON:
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
+
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="flex items-center gap-4 mb-8">

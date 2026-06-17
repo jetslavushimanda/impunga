@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { FileText, ChevronLeft, ChevronRight, Save, Download, Plus, Trash2, Sparkles, X, Bot, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { FileText, ChevronLeft, ChevronRight, Save, Download, Plus, Trash2, Sparkles, X, Bot, Loader2, ArrowLeft } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import { useGemini } from '../hooks/useGemini';
 import { useAuth } from '../hooks/useAuth';
@@ -49,6 +50,7 @@ export default function BusinessPlanBuilder() {
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
   const [critiqueResult, setCritiqueResult] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const raw = localStorage.getItem('impunga_idea_pipeline');
@@ -191,7 +193,11 @@ export default function BusinessPlanBuilder() {
   const districts = getDistricts(selectedProvince || data.province || '');
 
   return (
-    <div className="max-w-3xl mx-auto animate-fade-in">
+    <div className="max-w-4xl mx-auto animate-fade-in">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
+
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       {pipelineBanner && (

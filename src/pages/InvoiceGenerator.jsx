@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Receipt, Plus, Trash2, Download } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Receipt, Plus, Trash2, Download, ArrowLeft } from 'lucide-react';
 import { formatKwacha } from '../lib/utils';
 import useAuthStore from '../store/authStore';
 import { Toast, useToast } from '../components/shared/SuccessToast';
@@ -9,6 +10,7 @@ import autoTable from 'jspdf-autotable';
 export default function InvoiceGenerator() {
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
+  const navigate = useNavigate();
 
   const [invoice, setInvoice] = useState({
     invoiceNumber: `INV-${Date.now().toString().slice(-5)}`,
@@ -152,6 +154,10 @@ export default function InvoiceGenerator() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
+
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="flex items-center gap-4 mb-8">

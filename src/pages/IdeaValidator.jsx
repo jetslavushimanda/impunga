@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles } from 'lucide-react';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
@@ -88,6 +88,10 @@ export default function IdeaValidator() {
 
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
+      
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="flex items-center gap-4 mb-8">

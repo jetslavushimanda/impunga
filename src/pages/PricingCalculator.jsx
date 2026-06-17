@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Calculator, Plus, Trash2, Save, TrendingUp, Sparkles, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Calculator, Plus, Trash2, Save, TrendingUp, Sparkles, Loader2, ArrowLeft } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useFirestore } from '../hooks/useFirestore';
 import { useGemini } from '../hooks/useGemini';
@@ -31,6 +32,7 @@ export default function PricingCalculator() {
   const { analyzePricingTrend } = useGemini();
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
+  const navigate = useNavigate();
 
   function addCost() {
     setCosts([...costs, { name: '', amount: '', type: 'Raw Material' }]);
@@ -107,6 +109,10 @@ export default function PricingCalculator() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
+
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="flex items-center gap-4 mb-8">

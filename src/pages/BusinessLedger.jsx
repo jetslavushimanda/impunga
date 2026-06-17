@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   BookOpen, TrendingUp, TrendingDown, Users,
   Plus, Trash2, ChevronDown, ChevronUp, Download,
   AlertCircle, Clock, CheckCircle2, Copy, ShoppingBag,
-  Award, Bot, Loader2, Sparkles
+  Award, Bot, Loader2, Sparkles, ArrowLeft
 } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import { useGemini } from '../hooks/useGemini';
@@ -167,6 +168,7 @@ export default function BusinessLedger() {
   const { addDocument, updateDocument, deleteDocument, getUserDocuments } = useFirestore();
   const { user, userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
+  const navigate = useNavigate();
   
   const [loadingCredit, setLoadingCredit] = useState(false);
   const [creditResult, setCreditResult] = useState(null);
@@ -635,6 +637,9 @@ export default function BusinessLedger() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Target, Download, Save, RefreshCw, Zap, AlertTriangle, TrendingUp, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Target, Download, Save, RefreshCw, Zap, AlertTriangle, TrendingUp, Shield, ArrowLeft } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
@@ -28,6 +29,7 @@ export default function SWOTAnalysis() {
   const { addDocument } = useFirestore();
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
+  const navigate = useNavigate();
 
   async function handleGenerate() {
     if (description.length < 20) return;
@@ -119,7 +121,11 @@ Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobi
   }
 
   return (
-    <div className="max-w-3xl mx-auto animate-fade-in">
+    <div className="max-w-4xl mx-auto animate-fade-in">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
+
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="flex items-center gap-4 mb-8">

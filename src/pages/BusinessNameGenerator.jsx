@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Sparkles, Save, RefreshCw, Copy, Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Sparkles, Save, RefreshCw, Copy, Check, ArrowLeft } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
@@ -14,6 +15,7 @@ export default function BusinessNameGenerator() {
   const [style, setStyle] = useState('professional');
   const [names, setNames] = useState([]);
   const [copied, setCopied] = useState('');
+  const navigate = useNavigate();
   const { generateBusinessNames, loading, error } = useAI();
   const { addDocument } = useFirestore();
   const { userProfile } = useAuthStore();
@@ -42,6 +44,10 @@ export default function BusinessNameGenerator() {
 
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
+
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="flex items-center gap-4 mb-8">
