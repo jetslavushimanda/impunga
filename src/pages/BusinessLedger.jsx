@@ -330,30 +330,35 @@ export default function BusinessLedger() {
       show('Customer name is required for credit sales', 'error'); return;
     }
     const total = qty * price;
-    await addDocument('sales', {
-      item: saleForm.item.trim(),
-      quantity: qty,
-      pricePerUnit: price,
-      total,
-      paymentMethod: saleForm.paymentMethod,
-      customerName: saleForm.customerName.trim() || null,
-      dueDate: saleForm.dueDate || null,
-      note: saleForm.note.trim() || null,
-    });
-    if (saleForm.paymentMethod === 'Credit') {
-      await addDocument('debtors', {
-        customerName: saleForm.customerName.trim(),
-        description: saleForm.item.trim(),
-        amount: total,
-        dateCredited: todayStr(),
+    try {
+      await addDocument('sales', {
+        item: saleForm.item.trim(),
+        quantity: qty,
+        pricePerUnit: price,
+        total,
+        paymentMethod: saleForm.paymentMethod,
+        customerName: saleForm.customerName.trim() || null,
         dueDate: saleForm.dueDate || null,
-        status: 'current',
         note: saleForm.note.trim() || null,
       });
+      if (saleForm.paymentMethod === 'Credit') {
+        await addDocument('debtors', {
+          customerName: saleForm.customerName.trim(),
+          description: saleForm.item.trim(),
+          amount: total,
+          dateCredited: todayStr(),
+          dueDate: saleForm.dueDate || null,
+          status: 'current',
+          note: saleForm.note.trim() || null,
+        });
+      }
+      setSaleForm({ item: '', quantity: '', pricePerUnit: '', paymentMethod: 'Cash', customerName: '', dueDate: '', note: '' });
+      loadData();
+      show('Sale recorded!');
+    } catch (err) {
+      console.error(err);
+      show(err.message || 'Failed to save sale', 'error');
     }
-    setSaleForm({ item: '', quantity: '', pricePerUnit: '', paymentMethod: 'Cash', customerName: '', dueDate: '', note: '' });
-    loadData();
-    show('Sale recorded!');
   }
 
   async function handleDeleteSale(id) {
@@ -365,16 +370,21 @@ export default function BusinessLedger() {
     const amt = parseFloat(expenseForm.amount) || 0;
     if (!expenseForm.description.trim()) { show('Description is required', 'error'); return; }
     if (amt <= 0) { show('Amount must be greater than 0', 'error'); return; }
-    await addDocument('expenses', {
-      description: expenseForm.description.trim(),
-      amount: amt,
-      category: expenseForm.category,
-      date: expenseForm.date,
-      note: expenseForm.note.trim() || null,
-    });
-    setExpenseForm({ description: '', amount: '', category: 'Stock/Inventory', date: todayStr(), note: '' });
-    loadData();
-    show('Expense recorded!');
+    try {
+      await addDocument('expenses', {
+        description: expenseForm.description.trim(),
+        amount: amt,
+        category: expenseForm.category,
+        date: expenseForm.date,
+        note: expenseForm.note.trim() || null,
+      });
+      setExpenseForm({ description: '', amount: '', category: 'Stock/Inventory', date: todayStr(), note: '' });
+      loadData();
+      show('Expense recorded!');
+    } catch (err) {
+      console.error(err);
+      show(err.message || 'Failed to save expense', 'error');
+    }
   }
 
   async function handleDeleteExpense(id) {
@@ -386,19 +396,24 @@ export default function BusinessLedger() {
     const amt = parseFloat(debtorForm.amount) || 0;
     if (!debtorForm.customerName.trim()) { show('Customer name is required', 'error'); return; }
     if (amt <= 0) { show('Amount must be greater than 0', 'error'); return; }
-    await addDocument('debtors', {
-      customerName: debtorForm.customerName.trim(),
-      description: debtorForm.description.trim() || null,
-      amount: amt,
-      dateCredited: debtorForm.dateCredited,
-      dueDate: debtorForm.dueDate || null,
-      status: 'current',
-      note: debtorForm.note.trim() || null,
-    });
-    setDebtorForm({ customerName: '', description: '', amount: '', dateCredited: todayStr(), dueDate: '', note: '' });
-    setShowDebtorForm(false);
-    loadData();
-    show('Debtor added!');
+    try {
+      await addDocument('debtors', {
+        customerName: debtorForm.customerName.trim(),
+        description: debtorForm.description.trim() || null,
+        amount: amt,
+        dateCredited: debtorForm.dateCredited,
+        dueDate: debtorForm.dueDate || null,
+        status: 'current',
+        note: debtorForm.note.trim() || null,
+      });
+      setDebtorForm({ customerName: '', description: '', amount: '', dateCredited: todayStr(), dueDate: '', note: '' });
+      setShowDebtorForm(false);
+      loadData();
+      show('Debtor added!');
+    } catch (err) {
+      console.error(err);
+      show(err.message || 'Failed to save debtor', 'error');
+    }
   }
 
   async function handleMarkPaid(debtor) {
