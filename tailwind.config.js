@@ -29,9 +29,9 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       animation: {
-        'fade-in': 'fadeIn 0.3s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-        'bounce-once': 'bounce 0.6s ease-in-out',
+        'fade-in': 'none',
+        'slide-up': 'none',
+        'bounce-once': 'none',
       },
       keyframes: {
         fadeIn: {
