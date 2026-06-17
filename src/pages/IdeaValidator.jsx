@@ -286,15 +286,19 @@ export default function IdeaValidator() {
             </button>
           </div>
           
-          {score !== null && score >= 6 && (
+          {score !== null && (
             <div className="mt-10 pt-8 border-t-2 border-dashed border-gray-200 relative z-10">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center shrink-0">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${score >= 6 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}`}>
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">Your Idea is Viable! Next Steps:</h3>
-                  <p className="text-sm text-gray-500">Follow this pipeline to launch your business properly.</p>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {score >= 6 ? 'Your Idea is Viable! Next Steps:' : 'Your Idea Needs Refinement. To proceed, explore these tools:'}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {score >= 6 ? 'Follow this pipeline to launch your business properly.' : 'Use the feedback above to pivot, then build your roadmap here.'}
+                  </p>
                 </div>
               </div>
               
