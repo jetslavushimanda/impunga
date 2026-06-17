@@ -117,6 +117,37 @@ function StartupModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, ba
   );
 }
 
+function SectionHeader({ title, description, icon: Icon, badge, gradient = "from-indigo-500 to-purple-600", rightAction }) {
+  return (
+    <div className="relative overflow-hidden bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem] p-6 sm:p-8 mb-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <div className={`absolute -right-20 -top-20 w-64 h-64 bg-gradient-to-br ${gradient} opacity-10 blur-3xl rounded-full pointer-events-none`} />
+      
+      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+        {Icon && (
+          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20`}>
+            <Icon className="w-8 h-8 text-white drop-shadow-sm" />
+          </div>
+        )}
+        <div>
+          {badge && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 text-gray-800 text-xs font-bold uppercase tracking-wider rounded-full mb-3 shadow-sm border border-gray-100">
+              {badge}
+            </div>
+          )}
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">{title}</h1>
+          <p className="text-gray-500 font-medium text-base max-w-2xl leading-relaxed">{description}</p>
+        </div>
+      </div>
+      
+      {rightAction && (
+        <div className="relative z-10 shrink-0 w-full lg:w-auto">
+          {rightAction}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function BusinessHubView() {
   const { userProfile } = useAuthStore();
   const { updateProfile } = useAuth();
@@ -247,12 +278,12 @@ export default function BusinessHubView() {
 
       {view === 'paths' && (
         <div className="animate-slide-up">
-          <div className="mb-8">
-            <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight mb-2">Business Hub</h1>
-            <p className="text-gray-500 text-base max-w-2xl leading-relaxed">
-              Choose your path. Whether you are just starting out with an idea or managing an existing operation, we have the tools for you.
-            </p>
-          </div>
+          <SectionHeader 
+            title="Business Hub" 
+            description="Choose your path. Whether you are just starting out with an idea or managing an existing operation, we have the tools for you."
+            icon={Building2}
+            gradient="from-blue-600 to-indigo-600"
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
             {/* Path A */}
@@ -306,12 +337,12 @@ export default function BusinessHubView() {
 
       {view === 'ideation' && (
         <div className="animate-fade-in relative z-0">
-          <div className="mb-8">
-            <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight mb-2">Start a Business</h1>
-            <p className="text-gray-500 text-base max-w-2xl leading-relaxed font-medium">
-              Everything you need to validate your idea, structure a plan, and prepare for launch.
-            </p>
-          </div>
+          <SectionHeader 
+            title="Start a Business" 
+            description="Everything you need to validate your idea, structure a plan, and prepare for launch."
+            icon={Rocket}
+            gradient="from-blue-500 to-cyan-500"
+          />
 
           {/* Startup Planning Modules Grid */}
           <div className="animate-slide-up">
@@ -521,25 +552,25 @@ export default function BusinessHubView() {
 
       {view === 'operations' && (
         <div className="animate-fade-in">
-          <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wider rounded-full mb-3">
+          <SectionHeader 
+            title={userProfile?.businessProfile?.businessName || 'Business Workspace'}
+            description="Your operational tools for running and scaling your business."
+            icon={Briefcase}
+            gradient="from-indigo-600 to-purple-600"
+            badge={
+              <span className="flex items-center gap-1.5 text-green-700">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Platform Verified
-              </div>
-              <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight mb-2">
-                {userProfile?.businessProfile?.businessName || 'Business Workspace'}
-              </h1>
-              <p className="text-gray-500 text-base max-w-2xl leading-relaxed">
-                Your operational tools for running and scaling your business.
-              </p>
-            </div>
-            <button 
-              onClick={() => setView('registration')}
-              className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
-            >
-              Edit Profile
-            </button>
-          </div>
+              </span>
+            }
+            rightAction={
+              <button 
+                onClick={() => setView('registration')}
+                className="w-full lg:w-auto bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center"
+              >
+                Edit Profile
+              </button>
+            }
+          />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {businessEngine.modules.map(mod => (
               <ModuleCard key={mod.path} {...mod} />
