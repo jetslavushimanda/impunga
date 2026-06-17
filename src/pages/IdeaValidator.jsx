@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote } from 'lucide-react';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Volume2, Square } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
@@ -19,6 +19,7 @@ export default function IdeaValidator() {
   const [experience, setExperience] = useState('');
   const [result, setResult] = useState('');
   const [score, setScore] = useState(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [savedIdeas, setSavedIdeas] = useState([]);
   const [expandedIdea, setExpandedIdea] = useState(null);
   const { validateBusinessIdea, loading, error } = useAI();
@@ -29,6 +30,13 @@ export default function IdeaValidator() {
 
   useEffect(() => {
     loadSavedIdeas();
+  }, []);
+
+  // Cleanup speech synthesis on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
   }, []);
 
   async function loadSavedIdeas() {
@@ -72,12 +80,41 @@ export default function IdeaValidator() {
   }
 
   function handleReset() {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
     setIdeaText('');
     setBudget('');
     setLocation('');
     setExperience('');
     setResult('');
     setScore(null);
+  }
+
+  function toggleSpeech() {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    if (!result) return;
+
+    // Clean markdown before reading
+    const cleanText = result
+      .replace(/\\*\\*/g, '') // Remove bold
+      .replace(/\\*/g, '')    // Remove italics/bullets
+      .replace(/#/g, '')      // Remove headers
+      .replace(/\\[(.*?)\\]\\(.*?\\)/g, '$1'); // Clean links
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'en-GB'; // British English sounds a bit better for local context usually
+    utterance.rate = 1.0;
+    
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    
+    setIsSpeaking(true);
+    window.speechSynthesis.speak(utterance);
   }
 
   function handleDownloadPDF() {
@@ -275,6 +312,16 @@ export default function IdeaValidator() {
           </div>
 
           <div className="flex flex-wrap gap-3 pt-6 border-t border-gray-100 relative z-10">
+            <button 
+              onClick={toggleSpeech} 
+              className={`flex items-center gap-2 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95 ${
+                isSpeaking 
+                  ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200' 
+                  : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'
+              }`}
+            >
+              {isSpeaking ? <><Square className="w-4 h-4 fill-current" /> Stop Reading</> : <><Volume2 className="w-4 h-4" /> Read Aloud</>}
+            </button>
             <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
               <Save className="w-4 h-4" /> Save Analysis
             </button>

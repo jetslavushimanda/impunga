@@ -82,7 +82,10 @@ Provide a structured analysis with these exact sections:
 **8. RECOMMENDED NEXT STEPS**
 [3-5 specific, practical action steps (e.g., finding suppliers, testing demand). Do NOT mention business registration here; focus on business mechanics.]
 
-Be highly specific to Zambia. Use Kwacha for money references. Be honest but highly constructive - focus on giving the best advice to turn this into a profitable venture.`;
+**9. CONSULTANT'S VERDICT & PIVOT STRATEGY**
+[If the score is 5 or below, provide a highly specific, step-by-step strategy on exactly how to pivot this idea into a profitable one. Act as their personal business consultant.]
+
+Be highly specific to Zambia. Use Kwacha for money references. Act as a supportive but realistic Zambian Business Consultant. Focus on giving the best advice to turn this into a profitable venture.`;
 
       const response = await callGemini(prompt, IDEA_VALIDATOR_SYSTEM);
       return response;
