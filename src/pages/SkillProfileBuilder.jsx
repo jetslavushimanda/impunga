@@ -5,8 +5,9 @@ import { db } from '../lib/firebase';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
-import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, X, Plus } from 'lucide-react';
 import { getProvinces, getDistricts } from '../data/provinces';
+import { useAI } from '../hooks/useAI';
 
 const EDUCATION_LEVELS = [
   'Primary School Certificate',
@@ -74,12 +75,34 @@ const CURRENT_STATUS_OPTIONS = [
   'Not currently looking'
 ];
 
+const ALL_SKILLS = [
+  'Computer Programming', 'Web Development', 'Mobile App Development', 'Data Analysis',
+  'Graphic Design', 'Video Editing', 'Social Media Management', 'Accounting and Bookkeeping',
+  'Electrical Installation', 'Plumbing', 'Welding', 'Carpentry and Joinery',
+  'Motor Vehicle Mechanics', 'Air Conditioning and Refrigeration', 'Solar Panel Installation',
+  'Networking and IT Support',
+  'Tailoring and Dressmaking', 'Hairdressing and Beauty', 'Bricklaying and Plastering',
+  'Painting and Decorating', 'Catering and Cooking', 'Baking and Confectionery',
+  'Farming and Agriculture', 'Animal Husbandry', 'Fish Farming', 'Driving and Transport',
+  'Security Services', 'Cleaning Services', 'Childcare', 'Teaching and Tutoring',
+  'Nursing and Healthcare', 'Photography',
+  'Communication', 'Leadership', 'Teamwork', 'Problem Solving', 'Customer Service',
+  'Sales and Marketing', 'Project Management', 'Public Speaking', 'Negotiation',
+  'Financial Management', 'Research'
+];
+
 export default function SkillProfileBuilder() {
   const { user, userProfile } = useAuthStore();
+  const { extractSkillsFromDescription, loading: aiLoading } = useAI();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [validationError, setValidationError] = useState('');
+  const [experienceDescription, setExperienceDescription] = useState('');
+  const [aiExtractionDone, setAiExtractionDone] = useState(false);
+  const [aiSummary, setAiSummary] = useState('');
+  const [aiSuggestions, setAiSuggestions] = useState([]);
+  const [showAllSkills, setShowAllSkills] = useState(false);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -128,6 +151,25 @@ export default function SkillProfileBuilder() {
         return { ...prev, selectedSkills: [...current, skill] };
       }
     });
+  }
+
+  async function handleAIExtract() {
+    if (experienceDescription.trim().length < 30) {
+      setValidationError('Please describe your experience in at least 30 characters.');
+      return;
+    }
+    setValidationError('');
+    try {
+      const result = await extractSkillsFromDescription(experienceDescription);
+      if (result && result.extractedSkills) {
+        setFormData(prev => ({ ...prev, selectedSkills: result.extractedSkills }));
+        setAiSummary(result.summary || '');
+        setAiSuggestions(result.suggestions || []);
+        setAiExtractionDone(true);
+      }
+    } catch {
+      setValidationError('AI extraction failed. Please try again or select skills manually.');
+    }
   }
 
   function validateStep1() {
@@ -338,84 +380,110 @@ export default function SkillProfileBuilder() {
           </div>
         )}
 
-        {/* STEP 2: Skills Selection */}
+        {/* STEP 2: AI-Powered Skills Extraction */}
         {step === 2 && (
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-6">
             <div>
-              <h2 className="text-base font-bold text-gray-800">Step 2 — Skills Selection</h2>
-              <p className="text-xs text-gray-400 mt-1">Select at least 3 skills that you possess.</p>
+              <h2 className="text-base font-bold text-gray-800">Step 2 — Skills Extraction</h2>
+              <p className="text-xs text-gray-400 mt-1">Describe your experience and let AI identify your skills, or add them manually.</p>
             </div>
 
-            {/* Category 1 */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-1">
-                Category 1 — Technical and Digital Skills
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {CAT1_SKILLS.map(skill => (
-                  <label key={skill} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50 cursor-pointer text-sm text-gray-700">
-                    <input
-                      type="checkbox"
-                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
-                      checked={formData.selectedSkills.includes(skill)}
-                      onChange={() => handleSkillToggle(skill)}
-                    />
-                    <span>{skill}</span>
-                  </label>
-                ))}
+            {/* AI Experience Description */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100 space-y-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-bold text-blue-800">AI Skill Extractor</span>
+                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Powered by Gemini</span>
               </div>
+              <p className="text-xs text-blue-700">Describe your work experience, training, and what you can do — in your own words. The AI will identify your skills automatically.</p>
+              <textarea
+                className="input-field min-h-[100px] text-sm"
+                placeholder="e.g. I have been doing electrical wiring for 5 years. I can install solar panels and fix appliances. I also manage my own team of 3 workers and handle customer orders and payments..."
+                value={experienceDescription}
+                onChange={e => setExperienceDescription(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={handleAIExtract}
+                disabled={aiLoading || experienceDescription.trim().length < 30}
+                className="btn-primary gap-2 w-full"
+              >
+                {aiLoading ? (
+                  <><LoadingSpinner size="sm" /> Extracting Skills...</>
+                ) : (
+                  <><Sparkles className="w-4 h-4" /> Extract My Skills with AI</>
+                )}
+              </button>
             </div>
 
-            {/* Category 2 */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-1">
-                Category 2 — Vocational and Trade Skills
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {CAT2_SKILLS.map(skill => (
-                  <label key={skill} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50 cursor-pointer text-sm text-gray-700">
-                    <input
-                      type="checkbox"
-                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
-                      checked={formData.selectedSkills.includes(skill)}
-                      onChange={() => handleSkillToggle(skill)}
-                    />
-                    <span>{skill}</span>
-                  </label>
-                ))}
+            {/* AI Result Summary */}
+            {aiExtractionDone && aiSummary && (
+              <div className="bg-green-50 border border-green-100 rounded-xl p-3">
+                <p className="text-xs font-bold text-green-700 mb-1">AI Profile Summary</p>
+                <p className="text-sm text-green-800">{aiSummary}</p>
+                {aiSuggestions.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-xs text-green-600 font-semibold">You might also have: {aiSuggestions.join(', ')}</p>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
 
-            {/* Category 3 */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-1">
-                Category 3 — Business and Soft Skills
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {CAT3_SKILLS.map(skill => (
-                  <label key={skill} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50 cursor-pointer text-sm text-gray-700">
-                    <input
-                      type="checkbox"
-                      className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
-                      checked={formData.selectedSkills.includes(skill)}
-                      onChange={() => handleSkillToggle(skill)}
-                    />
-                    <span>{skill}</span>
-                  </label>
-                ))}
+            {/* Extracted / Selected Skills */}
+            {formData.selectedSkills.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-bold text-gray-700">Your Skills ({formData.selectedSkills.length})</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowAllSkills(s => !s)}
+                    className="text-xs text-primary font-semibold"
+                  >
+                    {showAllSkills ? 'Hide all skills' : '+ Add more skills'}
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {formData.selectedSkills.map(skill => (
+                    <span key={skill} className="flex items-center gap-1 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
+                      {skill}
+                      <button type="button" onClick={() => handleSkillToggle(skill)} className="ml-1 hover:text-red-500 transition-colors">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
               </div>
+            )}
 
-              {/* Languages specify */}
-              <div className="pt-2">
-                <label className="label">Languages — specify which you speak</label>
-                <input
-                  type="text"
-                  className="input-field"
-                  placeholder="e.g. English, Bemba, Nyanja, Tonga"
-                  value={formData.languages}
-                  onChange={e => handleFieldChange('languages', e.target.value)}
-                />
+            {/* Manual Add Skills */}
+            {showAllSkills && (
+              <div className="border border-gray-100 rounded-xl p-3 max-h-60 overflow-y-auto">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">All Available Skills — tap to add</p>
+                <div className="flex flex-wrap gap-2">
+                  {ALL_SKILLS.filter(s => !formData.selectedSkills.includes(s)).map(skill => (
+                    <button
+                      key={skill}
+                      type="button"
+                      onClick={() => handleSkillToggle(skill)}
+                      className="flex items-center gap-1 text-xs text-gray-600 border border-gray-200 px-2 py-1 rounded-full hover:border-primary hover:text-primary transition-colors"
+                    >
+                      <Plus className="w-3 h-3" /> {skill}
+                    </button>
+                  ))}
+                </div>
               </div>
+            )}
+
+            {/* Languages */}
+            <div>
+              <label className="label">Languages — specify which you speak</label>
+              <input
+                type="text"
+                className="input-field"
+                placeholder="e.g. English, Bemba, Nyanja, Tonga"
+                value={formData.languages}
+                onChange={e => handleFieldChange('languages', e.target.value)}
+              />
             </div>
 
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">

@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import { Calculator, Plus, Trash2, Save } from 'lucide-react';
+import { Calculator, Plus, Trash2, Save, TrendingUp, Sparkles } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useFirestore } from '../hooks/useFirestore';
+import { useAI } from '../hooks/useAI';
+import useAuthStore from '../store/authStore';
 import { formatKwacha, calculateRecommendedPrice } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
+import AIResponse from '../components/shared/AIResponse';
+import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 const MARGIN_PRESETS = [
   { label: 'Minimum 10%', value: 10, desc: 'Just covering costs, very tight' },
@@ -21,7 +25,11 @@ export default function PricingCalculator() {
   const [customMargin, setCustomMargin] = useState('');
   const [competitorPrice, setCompetitorPrice] = useState('');
   const [result, setResult] = useState(null);
+  const [marketTrends, setMarketTrends] = useState('');
+  const [trendsLoading, setTrendsLoading] = useState(false);
   const { addDocument } = useFirestore();
+  const { analyzeMarketTrends } = useAI();
+  const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
 
   function addCost() {
@@ -79,6 +87,31 @@ export default function PricingCalculator() {
       show('Calculation saved!');
     } catch {
       show('Save failed. Try again.', 'error');
+    }
+  }
+
+  async function handleAnalyzeMarketTrends() {
+    if (!result) return;
+    setTrendsLoading(true);
+    try {
+      // Build a ledger-style summary for the AI
+      const ledgerData = {
+        product: productName || 'Product',
+        costPerUnit: result.costPerUnit,
+        sellingPrice: result.recommendedPrice,
+        profitMargin: result.margin,
+        costs: costs.map(c => ({ category: c.type, amount: parseFloat(c.amount) || 0 })),
+        totalBatchCost,
+        breakEvenUnits: result.breakEvenUnits,
+      };
+      const sector = userProfile?.occupation || 'Retail';
+      const province = userProfile?.province || 'Lusaka';
+      const analysis = await analyzeMarketTrends(ledgerData, sector, province);
+      setMarketTrends(analysis);
+    } catch {
+      setMarketTrends('Failed to load market trends. Please try again.');
+    } finally {
+      setTrendsLoading(false);
     }
   }
 
@@ -214,6 +247,35 @@ export default function PricingCalculator() {
                 <Bar dataKey="profit" fill="#1E8449" name="Profit" />
               </BarChart>
             </ResponsiveContainer>
+          </div>
+
+          {/* Market Trends Analysis */}
+          <div className="card border-l-4 border-l-indigo-400">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="font-bold text-gray-800">Market Trends Analysis</h3>
+                <p className="text-xs text-gray-400 mt-0.5">AI compares your costs against Zambian sector averages</p>
+              </div>
+              <button
+                onClick={handleAnalyzeMarketTrends}
+                disabled={trendsLoading}
+                className="flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-indigo-700 transition-colors shrink-0"
+              >
+                {trendsLoading ? (
+                  <><LoadingSpinner size="sm" /> Analyzing...</>
+                ) : (
+                  <><TrendingUp className="w-4 h-4" /> Analyze Trends</>
+                )}
+              </button>
+            </div>
+            {marketTrends ? (
+              <AIResponse content={marketTrends} />
+            ) : (
+              <div className="bg-indigo-50 rounded-xl p-4 text-center">
+                <Sparkles className="w-8 h-8 text-indigo-300 mx-auto mb-2" />
+                <p className="text-sm text-indigo-600 font-medium">Click "Analyze Trends" to compare your costs against {userProfile?.province || 'Zambian'} sector averages</p>
+              </div>
+            )}
           </div>
 
           <button onClick={handleSave} className="btn-primary gap-2">

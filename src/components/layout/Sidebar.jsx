@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Lightbulb, Building2, FileText,
   Calculator, DollarSign, Bot, User, X,
   Sparkles, Receipt, ShoppingCart, MessageCircle, Target, Share2,
-  BookOpen, Briefcase
+  BookOpen, Briefcase, Shield
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
@@ -136,6 +136,14 @@ export default function Sidebar({ isOpen, onClose }) {
             >
               <User className="w-5 h-5 shrink-0" />
               <span>My Profile</span>
+            </NavLink>
+            <NavLink
+              to="/data-privacy"
+              onClick={onClose}
+              className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
+            >
+              <Shield className="w-5 h-5 shrink-0" />
+              <span>Data Privacy</span>
             </NavLink>
           </div>
         </nav>

@@ -28,6 +28,7 @@ import BusinessLedger from './pages/BusinessLedger';
 import SkillProfileBuilder from './pages/SkillProfileBuilder';
 import CareerMatches from './pages/CareerMatches';
 import ChoosePath from './pages/ChoosePath';
+import DataPrivacy from './pages/DataPrivacy';
 
 export default function App() {
   const { setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
@@ -80,6 +81,7 @@ export default function App() {
           <Route path="/business-ledger" element={<BusinessLedger />} />
           <Route path="/skill-profile-builder" element={<SkillProfileBuilder />} />
           <Route path="/career-matches" element={<CareerMatches />} />
+          <Route path="/data-privacy" element={<DataPrivacy />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { FileText, ChevronLeft, ChevronRight, Save, Download, Plus, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { FileText, ChevronLeft, ChevronRight, Save, Download, Plus, Trash2, Sparkles, X } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import { useAuth } from '../hooks/useAuth';
 import { getProvinces, getDistricts } from '../data/provinces';
@@ -42,9 +42,33 @@ export default function BusinessPlanBuilder() {
   });
   const [selectedProvince, setSelectedProvince] = useState('');
   const [savedId, setSavedId] = useState(null);
+  const [pipelineBanner, setPipelineBanner] = useState('');
   const { addDocument, updateDocument } = useFirestore();
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
+
+  useEffect(() => {
+    const raw = localStorage.getItem('impunga_idea_pipeline');
+    if (raw) {
+      try {
+        const pipeline = JSON.parse(raw);
+        // Only use if data is less than 30 minutes old
+        if (pipeline.timestamp && Date.now() - pipeline.timestamp < 30 * 60 * 1000) {
+          const ideaSnippet = pipeline.ideaText ? pipeline.ideaText.substring(0, 300) : '';
+          setData(prev => ({
+            ...prev,
+            whatBusiness: ideaSnippet,
+            problemSolved: pipeline.aiAnalysis
+              ? 'Auto-populated from AI analysis — edit as needed'
+              : '',
+          }));
+          setPipelineBanner(`Pre-filled from your Idea Validator (Viability Score: ${pipeline.viabilityScore}/10) — please review and edit all fields.`);
+        }
+        localStorage.removeItem('impunga_idea_pipeline');
+      } catch {}
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function update(field, value) {
     setData(prev => ({ ...prev, [field]: value }));
@@ -157,6 +181,18 @@ export default function BusinessPlanBuilder() {
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
+
+      {pipelineBanner && (
+        <div className="mb-4 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-2xl p-4 flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-green-600 shrink-0" />
+            <p className="text-sm text-green-800 font-medium">{pipelineBanner}</p>
+          </div>
+          <button onClick={() => setPipelineBanner('')} className="shrink-0 text-gray-400 hover:text-gray-600">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">

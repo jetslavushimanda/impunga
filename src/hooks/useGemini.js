@@ -3,7 +3,12 @@ import { callGemini, callGeminiWithHistory } from '../lib/gemini';
 
 const IDEA_VALIDATOR_SYSTEM = `You are an experienced Zambian business mentor and market analyst. You have deep knowledge of the Zambian economy, consumer behavior, PACRA business registration, ZRA taxation, and market conditions in all 10 provinces. Always respond specifically to the Zambian context. Reference specific Zambian institutions, use Zambian Kwacha for all monetary references, and consider the specific challenges and opportunities of the Zambian market. Use simple plain English at a Grade 10 reading level. Be honest and constructive.`;
 
-const BUSINESS_ADVISOR_SYSTEM = `You are IMPUNGA's AI Business Advisor — an experienced Zambian business mentor. You help Zambian entrepreneurs at all stages from idea to growing business. You have expert knowledge of PACRA registration, ZRA taxation, CEEC funding, Zambian labour law, mobile money systems (MTN, Airtel, Zamtel), Zambian banking, market prices in Kwacha, and business challenges specific to each Zambian province. Always respond in simple plain English. Always give practical actionable advice specific to Zambia. Reference real Zambian institutions. Use Kwacha. Be direct, honest and encouraging.`;
+const BUSINESS_ADVISOR_SYSTEM = `You are IMPUNGA's AI Business Advisor — an expert in Zambian business law, regulatory compliance, and entrepreneurship. You MUST cite official Zambian regulatory sources in every response. When giving advice:
+- Always reference the exact Act, Regulation, or official body (e.g. "According to the PACRA Act Cap 388, your business structure requires...", "Under ZRA Income Tax Act, Section X...", "As per CEEC guidelines...", "The Patents and Companies Registration Agency requires...", "Under the Zambia Revenue Authority VAT thresholds...").
+- Reference real Zambian institutions: PACRA, ZRA, CEEC, DBZ, NAPSA, NHIMA, Workers Compensation Fund, Ministry of Commerce, ZICB, Bank of Zambia, ZEMA, WARMA.
+- Use Kwacha for all monetary references.
+- Give practical, actionable advice tied directly to Zambian law and regulation.
+- Be direct, honest and encouraging.`;
 
 export function useGemini() {
   const [loading, setLoading] = useState(false);
@@ -81,7 +86,9 @@ Be specific to Zambia. Use Kwacha for money references. Be honest - if the idea 
     try {
       const systemWithContext = `${BUSINESS_ADVISOR_SYSTEM}
 
-Current user context: ${userContext || 'General Zambian entrepreneur'}`;
+Current user context: ${userContext || 'General Zambian entrepreneur'}
+
+IMPORTANT: Every response MUST cite at least one specific official Zambian regulatory source, Act, or government body. Format citations like: "According to [Source], ..."`;
 
       const messages = [
         ...conversationHistory.slice(-18),
@@ -142,6 +149,87 @@ Rules:
     }
   }
 
+  async function extractSkillsFromDescription(description) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are a career intelligence system for the Zambian job market. A person has described their work experience and background. Extract and identify their skills.
+
+Experience Description:
+"${description}"
+
+Available skill categories and skills:
+TECHNICAL: Computer Programming, Web Development, Mobile App Development, Data Analysis, Graphic Design, Video Editing, Social Media Management, Accounting and Bookkeeping, Electrical Installation, Plumbing, Welding, Carpentry and Joinery, Motor Vehicle Mechanics, Air Conditioning and Refrigeration, Solar Panel Installation, Networking and IT Support
+VOCATIONAL: Tailoring and Dressmaking, Hairdressing and Beauty, Bricklaying and Plastering, Painting and Decorating, Catering and Cooking, Baking and Confectionery, Farming and Agriculture, Animal Husbandry, Fish Farming, Driving and Transport, Security Services, Cleaning Services, Childcare, Teaching and Tutoring, Nursing and Healthcare, Photography
+SOFT SKILLS: Communication, Leadership, Teamwork, Problem Solving, Customer Service, Sales and Marketing, Project Management, Public Speaking, Negotiation, Financial Management, Research
+
+Return ONLY a JSON object in this exact format:
+{
+  "extractedSkills": ["Skill1", "Skill2", "Skill3"],
+  "summary": "One sentence summary of their professional profile",
+  "confidence": "high/medium/low",
+  "suggestions": ["Any additional skills they likely have but didn't explicitly mention"]
+}
+
+Only include skills from the lists above. Return ONLY valid JSON.`;
+
+      const response = await callGemini(prompt, 'You are a semantic skill extraction AI for the Zambian job market. Analyze text and identify professional skills. Return only valid JSON.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const parsed = JSON.parse(cleaned);
+      return parsed;
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function analyzeMarketTrends(ledgerData, sector, province) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are a Zambian market intelligence analyst. Analyze this business's financial data against sector averages for Zambia.
+
+Business Sector: ${sector || 'General Retail'}
+Province: ${province || 'Lusaka'}
+Business Financial Summary:
+${JSON.stringify(ledgerData, null, 2)}
+
+Provide a Market Trends Analysis with these sections:
+
+**MARKET TRENDS ANALYSIS**
+
+**1. COST BENCHMARK COMPARISON**
+Compare their key expense categories against typical Zambian ${sector} businesses. Flag any that are significantly above or below average.
+Use format: "Your [expense] cost is X% [higher/lower] than the typical [sector] business in [province]."
+
+**2. REVENUE PERFORMANCE**
+Compare their revenue to what similar ${sector} businesses typically earn in Zambia.
+
+**3. PROFIT MARGIN ASSESSMENT**
+Assess their profit margin against Zambian industry standards for ${sector}.
+
+**4. KEY INSIGHTS**
+3 specific, actionable insights based on their data compared to market averages.
+
+**5. RECOMMENDATIONS**
+3 specific steps to improve performance based on Zambian market conditions.
+
+Be specific, use Kwacha amounts, and reference real Zambian market conditions.`;
+
+      const response = await callGemini(prompt, 'You are a Zambian business market analyst with knowledge of sector-specific cost and revenue benchmarks for all 10 Zambian provinces. Give specific, data-driven analysis using Kwacha.');
+      return response;
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function getFriendlyError(err) {
     if (err.message === 'GEMINI_API_KEY_MISSING') {
       return 'AI features need a Gemini API key. Add your key to the .env file.';
@@ -156,5 +244,5 @@ Rules:
     return `Error: ${err.message}. Check internet and try again.`;
   }
 
-  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generateBusinessNames };
+  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends };
 }

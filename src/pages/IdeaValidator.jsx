@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
@@ -24,6 +24,7 @@ export default function IdeaValidator() {
   const { addDocument, getUserDocuments } = useFirestore();
   const { userProfile } = useAuthStore();
   const { toast, show, hide } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadSavedIdeas();
@@ -57,6 +58,20 @@ export default function IdeaValidator() {
     } catch {
       show('Failed to save. Please try again.', 'error');
     }
+  }
+
+  function handleBuildPlan() {
+    // Store idea data in localStorage for BusinessPlanBuilder to consume
+    const pipelineData = {
+      ideaText,
+      aiAnalysis: result,
+      viabilityScore: score,
+      location: location,
+      budget: budget,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem('impunga_idea_pipeline', JSON.stringify(pipelineData));
+    navigate('/business-plan');
   }
 
   function handleReset() {
@@ -208,9 +223,12 @@ export default function IdeaValidator() {
             <Link to="/registration-guide" className="btn-secondary gap-2">
               <Building2 className="w-4 h-4" /> Register Business
             </Link>
-            <Link to="/business-plan" className="btn-secondary gap-2">
-              <FileText className="w-4 h-4" /> Build Plan
-            </Link>
+            <button
+              onClick={handleBuildPlan}
+              className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-blue-600 text-white font-semibold text-sm px-4 py-2 rounded-xl hover:opacity-90 transition-opacity"
+            >
+              <FileText className="w-4 h-4" /> Build Business Plan <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       )}
