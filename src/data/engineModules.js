@@ -13,17 +13,12 @@ export const ENGINE_MODULES = {
     description: 'The Economic Journey. De-risk your startup phase and scale your operations.',
     icon: TrendingUp,
     bg: 'bg-gradient-to-br from-blue-600 to-indigo-800',
-    modules: {
-      ideation: [
-        { path: '/idea-validator', icon: Lightbulb, name: 'Startup Idea Pipeline', desc: 'Validate your idea and build a plan', bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-l-yellow-400' },
-      ],
-      operations: [
-        { path: '/business-ledger', icon: BookOpen, name: 'Business Ledger', desc: 'Track sales, expenses and debtors', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
-        { path: '/invoice-generator', icon: Receipt, name: 'Invoice Generator', desc: 'Create professional Kwacha invoices', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
-        { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Calculate true costs and profit margins', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
-        { path: '/social-media', icon: Share2, name: 'Marketing Tools', desc: 'AI-generated content and templates', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
-      ]
-    }
+    modules: [
+      { path: '/business-ledger', icon: BookOpen, name: 'Business Ledger', desc: 'Track sales, expenses and debtors', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+      { path: '/invoice-generator', icon: Receipt, name: 'Invoice Generator', desc: 'Create professional Kwacha invoices', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+      { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Calculate true costs and profit margins', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400' },
+      { path: '/social-media', icon: Share2, name: 'Marketing Tools', desc: 'AI-generated content and templates', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400' },
+    ]
   },
   skills: {
     id: 'skills',

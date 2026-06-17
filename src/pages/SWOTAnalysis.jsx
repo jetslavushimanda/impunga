@@ -9,6 +9,7 @@ import ErrorMessage from '../components/shared/ErrorMessage';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import { BUSINESS_SECTORS } from '../data/businessSectors';
 import { callAI } from '../lib/gemini';
+import { stripMarkdown } from '../lib/stripMarkdown';
 import jsPDF from 'jspdf';
 
 const QUADRANTS = [
@@ -100,7 +101,8 @@ Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobi
       doc.setFontSize(9); doc.setFont(undefined, 'normal');
       let lineY = y + 13;
       swot[key].forEach(point => {
-        const lines = doc.splitTextToSize(`• ${point}`, 85);
+        const cleanPoint = stripMarkdown(point);
+        const lines = doc.splitTextToSize(`• ${cleanPoint}`, 85);
         doc.text(lines, x + 2, lineY);
         lineY += lines.length * 5 + 2;
       });
@@ -110,7 +112,8 @@ Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobi
       doc.setFontSize(10); doc.setFont(undefined, 'bold');
       doc.text('Summary & Recommendation:', 10, 210);
       doc.setFont(undefined, 'normal'); doc.setFontSize(9);
-      const lines = doc.splitTextToSize(swot.summary, 190);
+      const cleanSummary = stripMarkdown(swot.summary);
+      const lines = doc.splitTextToSize(cleanSummary, 190);
       doc.text(lines, 10, 218);
     }
 

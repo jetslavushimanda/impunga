@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Presentation, Download, RefreshCw, Sparkles } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import { jsPDF } from 'jspdf';
+import { stripMarkdown } from '../lib/stripMarkdown';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import AIResponse from '../components/shared/AIResponse';
@@ -53,7 +54,8 @@ export default function PitchDeckGenerator() {
     doc.setFontSize(10);
     doc.setTextColor(0);
     
-    const lines = doc.splitTextToSize(deckContent.replace(/\\*\\*/g, ''), 170);
+    const cleanContent = stripMarkdown(deckContent);
+    const lines = doc.splitTextToSize(cleanContent, 170);
     for (let i = 0; i < lines.length; i++) {
       if (yPos > 280) {
         doc.addPage();

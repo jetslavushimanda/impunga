@@ -39,18 +39,19 @@ export function useGemini() {
     try {
       const prompt = `Critically analyze this startup idea for the Zambian market as an expert Business Consultant:
 
+**Business Type:** ${wizardData.businessType}
 **The Problem:** ${wizardData.problem}
 **The Solution:** ${wizardData.solution}
-**Target Market:** ${wizardData.targetMarket}
-**Unfair Advantage:** ${wizardData.unfairAdvantage}
-**Capital/Budget:** ${wizardData.budget}
+**Starting Budget:** ${wizardData.budget}
 **Location:** ${wizardData.location}
+**Extra Context:** ${wizardData.extraInfo || 'None'}
 
 CRITICAL INSTRUCTIONS:
 1. Be realistic but encouraging. Score 5-7 for average but viable ideas, 8-10 for excellent, high-margin ideas, and 1-4 for deeply flawed ideas. Do not be overly harsh, but do not default to 6.
 2. Analyze the UNIT ECONOMICS closely (costs vs price) based on the location and budget.
 3. Provide actionable competitor intel specific to Zambia.
 4. Output your response STRICTLY as a valid JSON object. Do not include markdown formatting like \`\`\`json. 
+5. Do NOT use any markdown formatting (like asterisks for bolding, e.g. **text**) anywhere inside the text values of the JSON object. Keep all text plain and clean for clean PDF generation.
 
 The JSON object MUST have exactly these keys:
 {

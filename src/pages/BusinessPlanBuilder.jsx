@@ -8,6 +8,7 @@ import { getProvinces, getDistricts } from '../data/provinces';
 import { BUSINESS_SECTORS } from '../data/businessSectors';
 import { formatKwacha } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
+import { stripMarkdown } from '../lib/stripMarkdown';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import useAuthStore from '../store/authStore';
@@ -157,7 +158,8 @@ export default function BusinessPlanBuilder() {
     };
     const line = (text) => {
       if (!text) return;
-      const lines = doc.splitTextToSize(text, 180);
+      const clean = stripMarkdown(text);
+      const lines = doc.splitTextToSize(clean, 180);
       doc.text(lines, 14, y); y += lines.length * 5 + 3;
     };
     section('BUSINESS DESCRIPTION');

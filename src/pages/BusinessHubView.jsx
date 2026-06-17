@@ -1,18 +1,73 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2, Lightbulb, Sparkles, ArrowRight, Trash2 } from 'lucide-react';
 import { ENGINE_MODULES } from '../data/engineModules';
 import useAuthStore from '../store/authStore';
 import { useAuth } from '../hooks/useAuth';
-import { ModuleCard } from './EngineView'; // We need to export ModuleCard from EngineView
+import { useFirestore } from '../hooks/useFirestore';
+import { ModuleCard } from './EngineView'; 
 
 export default function BusinessHubView() {
   const { userProfile } = useAuthStore();
   const { updateProfile } = useAuth();
+  const { getUserDocuments, deleteDocument } = useFirestore();
+  const navigate = useNavigate();
   
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get('view') || 'paths';
   
+  const [savedIdeas, setSavedIdeas] = useState([]);
+  const [loadingIdeas, setLoadingIdeas] = useState(false);
+
+  useEffect(() => {
+    if (view === 'ideation') {
+      loadSavedIdeas();
+    }
+  }, [view]);
+
+  async function loadSavedIdeas() {
+    setLoadingIdeas(true);
+    try {
+      const ideas = await getUserDocuments('businessIdeas');
+      // Sort by newest
+      setSavedIdeas(ideas.sort((a, b) => b.timestamp - a.timestamp));
+    } catch (err) {
+      console.error('Failed to load saved ideas:', err);
+    } finally {
+      setLoadingIdeas(false);
+    }
+  }
+
+  async function handleDeleteIdea(id, e) {
+    e.stopPropagation();
+    e.preventDefault();
+    if (confirm('Are you sure you want to delete this saved blueprint?')) {
+      try {
+        await deleteDocument('businessIdeas', id);
+        loadSavedIdeas();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+
+  function handleReopenIdea(idea) {
+    const compiledIdeaText = "Business Type: " + idea.wizardData.businessType + "\nProblem: " + idea.wizardData.problem + "\nSolution: " + idea.wizardData.solution + "\nBudget: " + idea.wizardData.budget + "\nLocation: " + idea.wizardData.location + (idea.wizardData.extraInfo ? "\nExtra: " + idea.wizardData.extraInfo : "");
+
+    localStorage.setItem('impunga_idea_pipeline', JSON.stringify({
+      ideaText: compiledIdeaText,
+      aiAnalysis: JSON.stringify(idea.result, null, 2),
+      viabilityScore: idea.score,
+      location: idea.wizardData.location,
+      budget: idea.wizardData.budget,
+      businessType: idea.wizardData.businessType,
+      timestamp: Date.now(),
+      savedResult: idea.result,
+      savedWizardData: idea.wizardData
+    }));
+    navigate('/idea-validator');
+  }
+
   const setView = (v) => {
     if (v === 'paths') {
       setSearchParams({});
@@ -132,15 +187,101 @@ export default function BusinessHubView() {
       {view === 'ideation' && (
         <div className="animate-fade-in">
           <div className="mb-8">
-            <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight mb-2">Ideation & Guidance</h1>
-            <p className="text-gray-500 text-base max-w-2xl leading-relaxed">
-              Tools to help you test ideas, find a name, and build a solid plan before you launch.
+            <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight mb-2">Start a Business</h1>
+            <p className="text-gray-500 text-base max-w-2xl leading-relaxed font-medium">
+              Validate your startup ideas and review your saved economic blueprints.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {businessEngine.modules.ideation.map(mod => (
-              <ModuleCard key={mod.path} {...mod} />
-            ))}
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left Panel - Validate New Idea */}
+            <div className="lg:col-span-5 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 text-white rounded-3xl p-8 shadow-xl shadow-indigo-600/10 flex flex-col justify-between relative overflow-hidden group min-h-[350px]">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+              <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="relative z-10">
+                <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20">
+                  <Lightbulb className="w-7 h-7 text-yellow-300" />
+                </div>
+                <h2 className="text-2xl font-black mb-3">Validate New Idea</h2>
+                <p className="text-indigo-100 text-sm font-medium leading-relaxed mb-6">
+                  Run your idea through our interactive 4-step wizard. Get a viability score, target unit economics, competitor analysis, risk assessment, and context-aware operational modules tailored to Zambia.
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  localStorage.removeItem('impunga_idea_pipeline');
+                  navigate('/idea-validator');
+                }}
+                className="relative z-10 w-full bg-white text-indigo-700 font-bold py-4 rounded-2xl shadow-lg hover:bg-indigo-50 hover:shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              >
+                Validate an Idea <ArrowRight className="w-5 h-5 text-indigo-700" />
+              </button>
+            </div>
+
+            {/* Right Panel - Saved Ideas list */}
+            <div className="lg:col-span-7 bg-white/80 backdrop-blur-sm border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col min-h-[350px]">
+              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-indigo-500" /> Saved Blueprints
+              </h3>
+
+              {loadingIdeas ? (
+                <div className="flex-1 flex items-center justify-center text-gray-400">
+                  Loading saved ideas...
+                </div>
+              ) : savedIdeas.length === 0 ? (
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
+                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 text-gray-400">
+                    <Lightbulb className="w-8 h-8" />
+                  </div>
+                  <p className="text-gray-500 font-semibold mb-1">No blueprints found</p>
+                  <p className="text-xs text-gray-400 max-w-[280px]">Your validated startup ideas and blueprints will show up here.</p>
+                </div>
+              ) : (
+                <div className="flex-1 overflow-y-auto space-y-3 pr-1 max-h-[350px]">
+                  {savedIdeas.map((idea) => (
+                    <div
+                      key={idea.id}
+                      onClick={() => handleReopenIdea(idea)}
+                      className="group cursor-pointer p-4 bg-gray-50 hover:bg-indigo-50/40 border border-gray-100 rounded-2xl transition-all flex items-center justify-between gap-4"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-bold text-sm text-gray-800 uppercase tracking-wide truncate max-w-[150px]">
+                            {idea.wizardData?.businessType || 'General Idea'}
+                          </span>
+                          <span className="text-xs text-gray-400 font-semibold">
+                            {new Date(idea.timestamp || Date.now()).toLocaleDateString('en-GB')}
+                          </span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ml-auto shrink-0 ${idea.verdict === 'PROCEED' ? 'bg-green-100 text-green-700' : idea.verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
+                            {idea.verdict || 'NEW'}
+                          </span>
+                          <span className="text-xs font-black text-gray-900 bg-white border border-gray-100 px-2 py-0.5 rounded-lg shrink-0">
+                            {idea.score}/10
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 font-medium truncate">
+                          {idea.wizardData?.solution || 'No description provided'}
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={(e) => handleDeleteIdea(idea.id, e)}
+                          className="p-2 hover:bg-red-50 hover:text-red-500 text-gray-400 rounded-xl transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <div className="w-8 h-8 bg-white border border-gray-100 rounded-full flex items-center justify-center text-gray-400 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-transparent transition-all shadow-sm">
+                          <ChevronRight className="w-4 h-4" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -252,7 +393,7 @@ export default function BusinessHubView() {
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {businessEngine.modules.operations.map(mod => (
+            {businessEngine.modules.map(mod => (
               <ModuleCard key={mod.path} {...mod} />
             ))}
           </div>

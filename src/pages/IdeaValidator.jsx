@@ -1,32 +1,64 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lightbulb, Save, RefreshCw, Building2, FileText, ChevronDown, ChevronUp, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Briefcase, Users, TrendingUp, AlertTriangle, Share2, Bot } from 'lucide-react';
+import { Lightbulb, Save, RefreshCw, Building2, FileText, ArrowRight, Sparkles, ArrowLeft, Download, Target, Presentation, Banknote, Briefcase, Users, TrendingUp, AlertTriangle, Share2, Bot, Calculator } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
-import { getScoreColor, getScoreLabel } from '../lib/utils';
+import { stripMarkdown } from '../lib/stripMarkdown';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
-import EmptyState from '../components/shared/EmptyState';
 import { Toast, useToast } from '../components/shared/SuccessToast';
+
+const BUSINESS_TYPES = [
+  { value: 'agriculture', label: 'Agriculture & Farming' },
+  { value: 'retail', label: 'Retail & Trade' },
+  { value: 'food', label: 'Food & Hospitality' },
+  { value: 'services', label: 'Professional Services' },
+  { value: 'tech', label: 'Technology' },
+  { value: 'manufacturing', label: 'Manufacturing' },
+  { value: 'transport', label: 'Transport & Logistics' },
+  { value: 'other', label: 'Other' },
+];
+
+const BUDGET_RANGES = [
+  { value: 'Under K5,000', label: 'Under K5,000' },
+  { value: 'K5,000 - K20,000', label: 'K5,000 – K20,000' },
+  { value: 'K20,000 - K50,000', label: 'K20,000 – K50,000' },
+  { value: 'K50,000+', label: 'K50,000+' },
+];
+
+const PROVINCES = [
+  'Lusaka', 'Copperbelt', 'Southern', 'Central', 'Eastern',
+  'Northern', 'Luapula', 'North-Western', 'Western', 'Muchinga', 'Online',
+];
+
+const PROBLEM_EXAMPLES = [
+  'People in my area travel far to buy fresh vegetables',
+  'Small businesses struggle to get affordable packaging',
+  'Students have no access to affordable tutoring services',
+];
+
+const SOLUTION_EXAMPLES = [
+  'I will set up a neighbourhood cold-storage farm stand',
+  'I will buy packaging in bulk and distribute locally',
+  'I will create an affordable online tutoring platform',
+];
 
 export default function IdeaValidator() {
   const [currentStep, setCurrentStep] = useState(1);
   const [wizardData, setWizardData] = useState({
+    businessType: '',
     problem: '',
     solution: '',
-    targetMarket: '',
-    unfairAdvantage: '',
     budget: '',
-    location: ''
+    location: '',
+    extraInfo: '',
   });
-  
+
   const [result, setResult] = useState(null);
-  
   const [savedIdeas, setSavedIdeas] = useState([]);
-  const [expandedIdea, setExpandedIdea] = useState(null);
-  
+
   const { validateBusinessIdea, loading, error } = useAI();
   const { addDocument, getUserDocuments } = useFirestore();
   const { userProfile } = useAuthStore();
@@ -35,9 +67,19 @@ export default function IdeaValidator() {
 
   useEffect(() => {
     loadSavedIdeas();
+    const stored = localStorage.getItem('impunga_idea_pipeline');
+    if (stored) {
+      try {
+        const data = JSON.parse(stored);
+        if (data.savedResult && data.savedWizardData) {
+          setResult(data.savedResult);
+          setWizardData(data.savedWizardData);
+        }
+      } catch (err) {
+        console.error('Error loading stored idea:', err);
+      }
+    }
   }, []);
-
-
 
   async function loadSavedIdeas() {
     const ideas = await getUserDocuments('businessIdeas');
@@ -45,7 +87,7 @@ export default function IdeaValidator() {
   }
 
   function handleNextStep() {
-    if (currentStep < 5) setCurrentStep(c => c + 1);
+    if (currentStep < 4) setCurrentStep(c => c + 1);
   }
 
   function handlePrevStep() {
@@ -56,16 +98,16 @@ export default function IdeaValidator() {
     try {
       const responseJson = await validateBusinessIdea(wizardData);
       setResult(responseJson);
-      
-      const compiledIdeaText = `Problem: ${wizardData.problem}\nSolution: ${wizardData.solution}\nTarget Market: ${wizardData.targetMarket}\nUnfair Advantage: ${wizardData.unfairAdvantage}`;
-      
-      // Save pipeline data globally for other tools
+
+      const compiledIdeaText = "Business Type: " + wizardData.businessType + "\nProblem: " + wizardData.problem + "\nSolution: " + wizardData.solution + "\nBudget: " + wizardData.budget + "\nLocation: " + wizardData.location + (wizardData.extraInfo ? "\nExtra: " + wizardData.extraInfo : "");
+
       localStorage.setItem('impunga_idea_pipeline', JSON.stringify({
         ideaText: compiledIdeaText,
         aiAnalysis: JSON.stringify(responseJson, null, 2),
         viabilityScore: responseJson.score,
         location: wizardData.location,
         budget: wizardData.budget,
+        businessType: wizardData.businessType,
         timestamp: Date.now(),
       }));
     } catch (err) {
@@ -91,21 +133,17 @@ export default function IdeaValidator() {
   }
 
   function handleReset() {
-
-
     setWizardData({
+      businessType: '',
       problem: '',
       solution: '',
-      targetMarket: '',
-      unfairAdvantage: '',
       budget: '',
-      location: ''
+      location: '',
+      extraInfo: '',
     });
     setResult(null);
     setCurrentStep(1);
   }
-
-
 
   function handleDownloadPDF() {
     if (!result) return;
@@ -113,31 +151,34 @@ export default function IdeaValidator() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(20);
     doc.text('Startup Blueprint & Analysis', 105, 20, { align: 'center' });
-    
+
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text('Generated by IMPUNGA Startup Studio', 105, 28, { align: 'center' });
-    
+
     doc.setDrawColor(200);
     doc.line(20, 35, 190, 35);
-    
+
     let yPos = 45;
     const addSection = (title, content) => {
       if (!content) return;
+      const clean = stripMarkdown(content);
       if (yPos > 270) { doc.addPage(); yPos = 20; }
       doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
       doc.setTextColor(0);
       doc.text(title, 20, yPos);
       yPos += 7;
       doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
       doc.setTextColor(50);
-      const lines = doc.splitTextToSize(content, 170);
+      const lines = doc.splitTextToSize(clean, 170);
       doc.text(lines, 20, yPos);
       yPos += (lines.length * 5) + 10;
     };
 
     addSection('Executive Summary', result.executiveSummary);
-    addSection('Viability Score', `${result.score}/10 - ${result.verdict}`);
+    addSection('Viability Score', result.score + '/10 - ' + result.verdict);
     addSection('Unit Economics', result.unitEconomics);
     addSection('Competitor Intelligence', result.competitorIntel);
     addSection('Capital Allocation', result.capitalAllocation);
@@ -145,107 +186,176 @@ export default function IdeaValidator() {
     if (result.consultantPivot) {
       addSection('Consultant Strategy', result.consultantPivot);
     }
-    
+
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.text('Generated by IMPUNGA \u2014 Start. Match. Build Zambia. \u2014 Page ' + i + '/' + pageCount, 105, 290, { align: 'center' });
+    }
+
     doc.save('Startup_Blueprint.pdf');
     show('Blueprint PDF downloaded successfully!');
   }
 
   const isStepValid = () => {
-    switch(currentStep) {
-      case 1: return wizardData.problem.length >= 10;
-      case 2: return wizardData.solution.length >= 20;
-      case 3: return wizardData.targetMarket.length >= 10;
-      case 4: return wizardData.unfairAdvantage.length >= 10;
-      case 5: return wizardData.budget.length >= 2 && wizardData.location.length >= 2;
+    switch (currentStep) {
+      case 1: return wizardData.businessType.length > 0;
+      case 2: return wizardData.problem.length >= 10 && wizardData.solution.length >= 10;
+      case 3: return wizardData.budget.length > 0 && wizardData.location.length > 0;
+      case 4: return true; // optional step
       default: return false;
     }
   };
 
+  // Determine which modules to show based on business type
+  const getRelevantModules = () => {
+    const bt = wizardData.businessType;
+    const budgetHigh = wizardData.budget === 'K20,000 - K50,000' || wizardData.budget === 'K50,000+';
+    const modules = [];
+
+    // Always show
+    modules.push({ path: '/name-generator', icon: Sparkles, name: 'Name Generator', desc: 'Get a brand name', bgColor: 'bg-blue-100', textColor: 'text-blue-600', hoverBorder: 'hover:border-blue-200' });
+    modules.push({ path: '/swot-analysis', icon: Target, name: 'SWOT Analysis', desc: 'Know your risks', bgColor: 'bg-cyan-100', textColor: 'text-cyan-600', hoverBorder: 'hover:border-cyan-200' });
+    modules.push({ path: '/business-plan', icon: FileText, name: 'Business Plan', desc: 'Build the roadmap', bgColor: 'bg-indigo-100', textColor: 'text-indigo-600', hoverBorder: 'hover:border-indigo-200' });
+
+    // Registration guide — depends on business type (formal businesses)
+    if (['retail', 'services', 'tech', 'manufacturing', 'food'].includes(bt)) {
+      modules.push({ path: '/registration-guide', icon: Building2, name: 'Formalise Setup', desc: 'PACRA & ZRA Guide', bgColor: 'bg-emerald-100', textColor: 'text-emerald-600', hoverBorder: 'hover:border-emerald-200' });
+    }
+
+    // Pitch Deck — for services, tech, manufacturing
+    if (['services', 'tech', 'manufacturing'].includes(bt)) {
+      modules.push({ path: '/pitch-deck', icon: Presentation, name: 'Pitch Deck', desc: 'For investors', bgColor: 'bg-fuchsia-100', textColor: 'text-fuchsia-600', hoverBorder: 'hover:border-fuchsia-200' });
+    }
+
+    // Funding — for higher budgets
+    if (budgetHigh) {
+      modules.push({ path: '/funding-matchmaker', icon: Banknote, name: 'Funding Matches', desc: 'Grants & Loans', bgColor: 'bg-teal-100', textColor: 'text-teal-600', hoverBorder: 'hover:border-teal-200' });
+    }
+
+    // Social Media — retail, food, agriculture, services
+    if (['retail', 'food', 'agriculture', 'services'].includes(bt)) {
+      modules.push({ path: '/social-media', icon: Share2, name: 'Social Media', desc: 'Marketing Strategy', bgColor: 'bg-pink-100', textColor: 'text-pink-600', hoverBorder: 'hover:border-pink-200' });
+    }
+
+    // Pricing Calculator — retail, food, agriculture
+    if (['retail', 'food', 'agriculture'].includes(bt)) {
+      modules.push({ path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Cost & margins', bgColor: 'bg-amber-100', textColor: 'text-amber-600', hoverBorder: 'hover:border-amber-200' });
+    }
+
+    return modules;
+  };
+
   const renderWizardStep = () => {
-    switch(currentStep) {
+    switch (currentStep) {
       case 1:
         return (
           <div className="animate-fade-in">
-            <h3 className="text-xl font-bold text-gray-800 mb-2">1. The Problem</h3>
-            <p className="text-sm text-gray-500 mb-4">What specific problem are you solving for Zambians?</p>
-            <textarea
-              value={wizardData.problem}
-              onChange={e => setWizardData({...wizardData, problem: e.target.value})}
-              placeholder="e.g., People in my area have to travel 10km to buy fresh vegetables..."
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-32 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
-            />
+            <h3 className="text-xl font-bold text-gray-800 mb-2">1. What type of business?</h3>
+            <p className="text-sm text-gray-500 mb-4">Select the category that best describes your business idea.</p>
+            <div className="grid grid-cols-2 gap-3">
+              {BUSINESS_TYPES.map(bt => (
+                <button
+                  key={bt.value}
+                  onClick={() => setWizardData({...wizardData, businessType: bt.value})}
+                  className={"p-4 rounded-2xl border-2 text-left font-semibold transition-all " + (wizardData.businessType === bt.value ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-md' : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-200')}
+                >
+                  {bt.label}
+                </button>
+              ))}
+            </div>
           </div>
         );
       case 2:
         return (
-          <div className="animate-fade-in">
-            <h3 className="text-xl font-bold text-gray-800 mb-2">2. The Solution</h3>
-            <p className="text-sm text-gray-500 mb-4">How does your business solve this problem? (The Idea)</p>
-            <textarea
-              value={wizardData.solution}
-              onChange={e => setWizardData({...wizardData, solution: e.target.value})}
-              placeholder="e.g., I will open a cold-storage farm stand in the neighbourhood center..."
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-32 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
-            />
+          <div className="animate-fade-in space-y-4">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">2. The Problem & Solution</h3>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">What problem are you solving?</label>
+              <textarea
+                value={wizardData.problem}
+                onChange={e => setWizardData({...wizardData, problem: e.target.value})}
+                placeholder="Describe the problem in one or two sentences..."
+                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-24 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+              />
+              <div className="flex flex-wrap gap-2 mt-2">
+                {PROBLEM_EXAMPLES.map((ex, i) => (
+                  <button key={i} onClick={() => setWizardData({...wizardData, problem: ex})} className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors">
+                    {ex}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">How will you solve it?</label>
+              <textarea
+                value={wizardData.solution}
+                onChange={e => setWizardData({...wizardData, solution: e.target.value})}
+                placeholder="Describe your business idea in one or two sentences..."
+                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-24 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+              />
+              <div className="flex flex-wrap gap-2 mt-2">
+                {SOLUTION_EXAMPLES.map((ex, i) => (
+                  <button key={i} onClick={() => setWizardData({...wizardData, solution: ex})} className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors">
+                    {ex}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         );
       case 3:
         return (
-          <div className="animate-fade-in">
-            <h3 className="text-xl font-bold text-gray-800 mb-2">3. Target Market</h3>
-            <p className="text-sm text-gray-500 mb-4">Who exactly will pay for this? Be specific about demographics.</p>
-            <textarea
-              value={wizardData.targetMarket}
-              onChange={e => setWizardData({...wizardData, targetMarket: e.target.value})}
-              placeholder="e.g., Working mothers aged 25-45 who value convenience and health..."
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-32 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
-            />
+          <div className="animate-fade-in space-y-4">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">3. Budget & Location</h3>
+            <p className="text-sm text-gray-500 mb-4">What resources are you starting with?</p>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Starting Budget</label>
+              <div className="grid grid-cols-2 gap-3">
+                {BUDGET_RANGES.map(br => (
+                  <button
+                    key={br.value}
+                    onClick={() => setWizardData({...wizardData, budget: br.value})}
+                    className={"p-3 rounded-xl border-2 text-center font-semibold text-sm transition-all " + (wizardData.budget === br.value ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-200')}
+                  >
+                    {br.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Primary Location</label>
+              <select
+                value={wizardData.location}
+                onChange={e => setWizardData({...wizardData, location: e.target.value})}
+                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
+              >
+                <option value="" disabled>Select province...</option>
+                {PROVINCES.map(p => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
           </div>
         );
       case 4:
         return (
           <div className="animate-fade-in">
-            <h3 className="text-xl font-bold text-gray-800 mb-2">4. Your Unfair Advantage</h3>
-            <p className="text-sm text-gray-500 mb-4">What experience, network, or resources do you have that others don't?</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">4. Tell Us More <span className="text-sm font-normal text-gray-400">(Optional)</span></h3>
+            <p className="text-sm text-gray-500 mb-4">Who are your target customers? Any experience or advantages you have? This helps the AI give better advice.</p>
             <textarea
-              value={wizardData.unfairAdvantage}
-              onChange={e => setWizardData({...wizardData, unfairAdvantage: e.target.value})}
-              placeholder="e.g., My uncle owns a farm so I can get stock at 30% discount..."
+              value={wizardData.extraInfo}
+              onChange={e => setWizardData({...wizardData, extraInfo: e.target.value})}
+              placeholder="e.g., My target customers are working mothers aged 25-45. My uncle owns a farm so I get stock at 30% discount..."
               className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-32 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
             />
           </div>
         );
-      case 5:
-        return (
-          <div className="animate-fade-in space-y-4">
-            <h3 className="text-xl font-bold text-gray-800 mb-2">5. The Capital & Location</h3>
-            <p className="text-sm text-gray-500 mb-4">What resources are you starting with?</p>
-            
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Starting Budget (ZMW)</label>
-              <input
-                type="text"
-                value={wizardData.budget}
-                onChange={e => setWizardData({...wizardData, budget: e.target.value})}
-                placeholder="e.g., K10,000"
-                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Primary Location</label>
-              <input
-                type="text"
-                value={wizardData.location}
-                onChange={e => setWizardData({...wizardData, location: e.target.value})}
-                placeholder="e.g., Lusaka CBD / Online / Rural Ndola"
-                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-              />
-            </div>
-          </div>
-        );
       default: return null;
     }
-  }
+  };
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
@@ -265,7 +375,7 @@ export default function IdeaValidator() {
       {!result && (
         <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">
           <div className="flex items-center gap-2 mb-8">
-            {[1, 2, 3, 4, 5].map(step => (
+            {[1, 2, 3, 4].map(step => (
               <div key={step} className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
                 <div className={step <= currentStep ? "h-full bg-indigo-600 transition-all duration-300" : "h-full bg-transparent transition-all duration-300"} />
               </div>
@@ -286,8 +396,8 @@ export default function IdeaValidator() {
             >
               Back
             </button>
-            
-            {currentStep < 5 ? (
+
+            {currentStep < 4 ? (
               <button
                 onClick={handleNextStep}
                 disabled={!isStepValid()}
@@ -312,22 +422,18 @@ export default function IdeaValidator() {
       {result && (
         <div className="bg-transparent animate-slide-up space-y-6">
           {/* Header Card */}
-          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden overflow-x-auto">
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden">
             <div className={"absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 -mr-20 -mt-20 " + (result.score >= 6 ? 'bg-green-400' : 'bg-yellow-400')} />
-            
+
             <div className="flex items-center justify-between mb-4 relative z-10">
-              <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider ${
-                result.verdict === 'PROCEED' ? 'bg-green-100 text-green-800' :
-                result.verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-800' :
-                'bg-red-100 text-red-800'
-              }`}>{result.verdict}</span>
-              
+              <span className={"inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider " + (result.verdict === 'PROCEED' ? 'bg-green-100 text-green-800' : result.verdict === 'REFINE' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')}>{result.verdict}</span>
+
               <div className="flex items-center gap-2">
                 <span className="text-4xl font-black text-gray-900">{result.score}</span>
                 <span className="text-xl text-gray-400 font-bold">/10</span>
               </div>
             </div>
-            
+
             <h2 className="text-2xl font-bold text-gray-900 mb-2 relative z-10">{result.executiveSummary}</h2>
             <p className="text-gray-500 font-medium relative z-10">AI Viability Score based on unit economics and market demand.</p>
           </div>
@@ -378,10 +484,8 @@ export default function IdeaValidator() {
             </div>
           )}
 
-
-
           {/* Actions Bar */}
-          <div className="flex gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm whitespace-nowrap overflow-x-auto">
+          <div className="flex gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
             <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
               <Save className="w-4 h-4" /> Save
             </button>
@@ -407,8 +511,8 @@ export default function IdeaValidator() {
               <ArrowRight className="w-6 h-6 text-white ml-auto group-hover:translate-x-2 transition-transform" />
             </div>
           </Link>
-          
-          {/* Next Steps Pipeline */}
+
+          {/* Next Steps Pipeline — Context-Aware */}
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mt-8">
             <div className="flex items-center gap-3 mb-6">
               <div className={"w-10 h-10 rounded-full flex items-center justify-center shrink-0 " + (result.score >= 6 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600')}>
@@ -416,70 +520,27 @@ export default function IdeaValidator() {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900">
-                  {result.score >= 6 ? 'Your Idea is Viable! Next Steps:' : 'Your Idea Needs Refinement. To proceed, explore these tools:'}
+                  {result.score >= 6 ? 'Your Idea is Viable! Next Steps:' : 'Your Idea Needs Refinement. Explore these tools:'}
                 </h3>
                 <p className="text-sm text-gray-500">
-                  {result.score >= 6 ? 'Follow this pipeline to launch your business properly.' : 'Use the pivot strategy above, then build your roadmap here.'}
+                  {result.score >= 6 ? 'Tools recommended for your ' + (BUSINESS_TYPES.find(b => b.value === wizardData.businessType)?.label || 'business') + '.' : 'Use the pivot strategy above, then build your roadmap here.'}
                 </p>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              <Link to="/name-generator" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-blue-200 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center"><Sparkles className="w-5 h-5" /></div>
-                  <div><h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">1. Name Generator</h4><p className="text-xs text-gray-500">Get a brand name</p></div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 transition-colors" />
-              </Link>
-              
-              <Link to="/swot-analysis" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-cyan-200 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-cyan-100 text-cyan-600 rounded-xl flex items-center justify-center"><Target className="w-5 h-5" /></div>
-                  <div><h4 className="font-bold text-gray-900 group-hover:text-cyan-600 transition-colors">2. SWOT Analysis</h4><p className="text-xs text-gray-500">Know your risks</p></div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-cyan-600 transition-colors" />
-              </Link>
-              
-              <Link to="/business-plan" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-indigo-200 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center"><FileText className="w-5 h-5" /></div>
-                  <div><h4 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">3. Business Plan</h4><p className="text-xs text-gray-500">Build the roadmap</p></div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 transition-colors" />
-              </Link>
-
-              <Link to="/registration-guide" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-emerald-200 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center"><Building2 className="w-5 h-5" /></div>
-                  <div><h4 className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">4. Formalise Setup</h4><p className="text-xs text-gray-500">PACRA & ZRA Guide</p></div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 transition-colors" />
-              </Link>
-
-              <Link to="/pitch-deck" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-fuchsia-200 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-fuchsia-100 text-fuchsia-600 rounded-xl flex items-center justify-center"><Presentation className="w-5 h-5" /></div>
-                  <div><h4 className="font-bold text-gray-900 group-hover:text-fuchsia-600 transition-colors">5. Pitch Deck</h4><p className="text-xs text-gray-500">For investors</p></div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-fuchsia-600 transition-colors" />
-              </Link>
-              
-              <Link to="/funding-matchmaker" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-teal-200 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center"><Banknote className="w-5 h-5" /></div>
-                  <div><h4 className="font-bold text-gray-900 group-hover:text-teal-600 transition-colors">6. Funding Matches</h4><p className="text-xs text-gray-500">Grants & Loans</p></div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-teal-600 transition-colors" />
-              </Link>
-              
-              <Link to="/social-media" className="group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-pink-200 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-pink-100 text-pink-600 rounded-xl flex items-center justify-center"><Share2 className="w-5 h-5" /></div>
-                  <div><h4 className="font-bold text-gray-900 group-hover:text-pink-600 transition-colors">7. Social Media</h4><p className="text-xs text-gray-500">Marketing Strategy</p></div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-pink-600 transition-colors" />
-              </Link>
+              {getRelevantModules().map((mod, idx) => (
+                <Link key={mod.path} to={mod.path} className={"group flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:shadow-md transition-all " + mod.hoverBorder}>
+                  <div className="flex items-center gap-3">
+                    <div className={"w-10 h-10 rounded-xl flex items-center justify-center " + mod.bgColor + " " + mod.textColor}><mod.icon className="w-5 h-5" /></div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm">{mod.name}</h4>
+                      <p className="text-xs text-gray-500">{mod.desc}</p>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-300 shrink-0" />
+                </Link>
+              ))}
             </div>
           </div>
         </div>
