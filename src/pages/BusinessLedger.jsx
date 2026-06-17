@@ -634,30 +634,32 @@ export default function BusinessLedger() {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto pb-24 animate-fade-in">
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
 
       {/* Header */}
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-10 h-10 bg-green-100 rounded-2xl flex items-center justify-center">
-          <BookOpen className="w-5 h-5 text-green-700" />
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/20">
+          <BookOpen className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-800">Business Ledger</h1>
-          <p className="text-xs text-gray-400">Track sales, expenses and debtors</p>
+          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Business Ledger</h1>
+          <p className="text-gray-500 font-medium">Track sales, expenses and debtors</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex bg-gray-100 rounded-2xl p-1 gap-1 mb-6 overflow-x-auto">
+      <div className="bg-white/70 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-2 flex gap-2 mb-8 overflow-x-auto relative z-10">
         {TABS.map(({ id, label, Icon }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex-1 justify-center ${
-              activeTab === id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold whitespace-nowrap transition-all flex-1 justify-center ${
+              activeTab === id 
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md shadow-green-500/20 transform scale-[1.02]' 
+                : 'text-gray-500 hover:bg-white/50 hover:text-gray-700'
             }`}
           >
-            <Icon className="w-3.5 h-3.5 shrink-0" />
+            <Icon className="w-4 h-4 shrink-0" />
             {label}
           </button>
         ))}
