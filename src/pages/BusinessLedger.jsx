@@ -690,10 +690,23 @@ export default function BusinessLedger() {
 
       {/* Menu Header */}
       {activeTab === 'menu' && (
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Business Ledger</h1>
-          <p className="text-gray-500 font-medium">Manage your financial books and track business health</p>
-        </div>
+        <>
+          <div className="mb-8">
+            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Business Ledger</h1>
+            <p className="text-gray-500 font-medium">Manage your financial books and track business health</p>
+          </div>
+
+          {/* Compliance Disclaimer */}
+          <div className="mb-8 bg-blue-50/60 border border-blue-100 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+            <AlertCircle className="w-6 h-6 text-blue-600 shrink-0 mt-0.5" />
+            <div className="space-y-1.5">
+              <h3 className="font-bold text-blue-900 text-sm">Offline Bookkeeping Notice</h3>
+              <p className="text-xs text-blue-800 leading-relaxed font-medium">
+                <strong>Simulated Records Only:</strong> This ledger is a spreadsheet-style bookkeeping utility. All logs, invoices, and debt targets are stored locally in your browser's database and secure account profile. IMPUNGA has no connection to bank accounts, mobile money platforms, or national tax databases. No monetary transactions are processed.
+              </p>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Menu Grid */}

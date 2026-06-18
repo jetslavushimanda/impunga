@@ -213,6 +213,20 @@ export default function InvestmentMatchmaker() {
         </p>
       </div>
 
+      {/* Compliance Disclaimer */}
+      <div className="mb-8 bg-amber-50/60 border border-amber-200 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+        <ShieldCheck className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
+        <div className="space-y-1.5">
+          <h3 className="font-bold text-amber-900 text-sm">Zambian Regulatory Compliance & Guardrails</h3>
+          <p className="text-xs text-amber-800 leading-relaxed font-medium">
+            <strong>National Payment Systems Act (Bank of Zambia):</strong> Because this platform functions purely as an educational matchmaking lead directory and does not hold client escrow funds, process investment values, or manage customer money, it is classified as a non-regulated communication hub. No payment transactions occur on-platform.
+          </p>
+          <p className="text-xs text-amber-800 leading-relaxed font-medium">
+            <strong>Data Protection Act (2021) & Securities Act:</strong> All profiles listed are public directories under the Zambian Data Protection Commission (ZDPC) guidelines. No private financial accounts, KYC documents, or bank details are requested, stored, or processed on this platform. Direct negotiations must be conducted externally.
+          </p>
+        </div>
+      </div>
+
       {/* Tabs */}
       <div className="flex bg-gray-100 p-1.5 rounded-2xl max-w-md mb-8">
         <button
@@ -305,20 +319,6 @@ export default function InvestmentMatchmaker() {
         </div>
       ) : (
         <div className="space-y-8">
-          
-          {/* Compliance Info Banner */}
-          <div className="bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-200 rounded-3xl p-6 flex flex-col md:flex-row gap-5 items-start">
-            <ShieldCheck className="w-10 h-10 text-amber-600 shrink-0" />
-            <div className="space-y-2">
-              <h3 className="font-extrabold text-amber-900 text-sm">Zambian Regulatory Compliance & Guardrails</h3>
-              <p className="text-xs text-amber-800 leading-relaxed font-medium">
-                <strong>National Payment Systems Act (Bank of Zambia):</strong> Because this platform functions purely as a matchmaking lead directory and does not hold client escrow funds or process transaction values, it is classified as a non-regulated communication hub. No payments should be transacted directly on-platform.
-              </p>
-              <p className="text-xs text-amber-800 leading-relaxed font-medium">
-                <strong>Data Protection Act (2021):</strong> All information uploaded here is protected under ZDPC guidelines. Contact details (emails) are displayed for connection purposes, but no personal private KYC documents should be uploaded onto this public board.
-              </p>
-            </div>
-          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Left: Registration Form */}

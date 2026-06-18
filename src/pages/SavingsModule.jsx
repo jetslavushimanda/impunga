@@ -164,12 +164,23 @@ export default function SavingsModule() {
         </div>
       </div>
 
+      {/* Compliance Disclaimer */}
+      <div className="mb-8 bg-amber-50/60 border border-amber-200 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+        <AlertCircle className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
+        <div className="space-y-1.5">
+          <h3 className="font-bold text-amber-900 text-sm">Simulated Savings Notice</h3>
+          <p className="text-xs text-amber-800 leading-relaxed font-medium">
+            <strong>Local Planning Simulator Only:</strong> This module is a spreadsheet-like bookkeeping tool for personal and business planning. IMPUNGA does not hold deposit accounts, manage savings funds, or connect to bank accounts or mobile money (MoMo) wallets for cash withdrawals/deposits. All entries logged here are local simulation data.
+          </p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Goals List */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center justify-between">
             <h2 className="font-extrabold text-gray-800 text-base flex items-center gap-2">
-              🎯 Savings Targets
+              Savings Targets
             </h2>
             <button 
               onClick={() => setShowGoalForm(!showGoalForm)}

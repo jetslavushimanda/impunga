@@ -135,7 +135,7 @@ export default function LoansPortal() {
       </Link>
 
       {/* Header section */}
-      <div className="mb-10">
+      <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <Building2 className="w-8 h-8 text-blue-600" />
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Loans & Credit</h1>
@@ -143,6 +143,17 @@ export default function LoansPortal() {
         <p className="text-gray-500 font-medium text-base">
           Calculate loan affordability, check debt capacity, and connect directly with verified lending institutions in Zambia.
         </p>
+      </div>
+
+      {/* Compliance Disclaimer */}
+      <div className="mb-8 bg-amber-50/60 border border-amber-200 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+        <AlertTriangle className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
+        <div className="space-y-1.5">
+          <h3 className="font-bold text-amber-900 text-sm">Regulatory Notice & Compliance</h3>
+          <p className="text-xs text-amber-800 leading-relaxed font-medium">
+            <strong>Educational Simulator & Directory Only:</strong> IMPUNGA is not a commercial bank, microfinance institution, or credit provider registered under the Banking and Financial Services Act (BFSA) of Zambia. This calculator is for educational guidance only. The platform does not issue loans, process credit applications, or handle financial transactions. All terms, interest rates, and loan options are simulations. Applications are made externally on the verified lenders' secure third-party portals.
+          </p>
+        </div>
       </div>
 
       {/* Personal vs Business Toggle */}
