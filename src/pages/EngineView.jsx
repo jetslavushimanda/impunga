@@ -85,7 +85,7 @@ export function ModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, ba
     </>
   );
 
-  const className = `group text-left bg-white/70 backdrop-blur-md overflow-hidden rounded-2xl p-6 border border-white/80 shadow-[0_4px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(99,102,241,0.08)] hover:border-indigo-100 hover:-translate-y-1 transition-all duration-300 w-full flex flex-col justify-between h-full relative`;
+  const className = `group text-left bg-white overflow-hidden rounded-2xl p-6 border border-gray-200/60 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:border-${color}-300 hover:bg-${color}-50/10 hover:-translate-y-1.5 active:scale-[0.98] transition-all duration-300 w-full flex flex-col justify-between h-full relative cursor-pointer`;
 
   if (onClick) {
     return (

@@ -240,11 +240,11 @@ export default function BusinessHubView() {
             gradient="from-blue-600 to-indigo-600"
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
             {/* Path A */}
             <button 
               onClick={() => setView('ideation')}
-              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-md transition-all duration-200 flex flex-col"
+              className="group text-left bg-white rounded-2xl p-6 border border-gray-200/60 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:border-blue-300 hover:bg-blue-50/10 hover:-translate-y-1.5 active:scale-[0.98] transition-all duration-300 flex flex-col justify-between cursor-pointer w-full"
             >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center shrink-0">
@@ -255,7 +255,7 @@ export default function BusinessHubView() {
                   <p className="text-gray-500 text-sm font-medium leading-relaxed">I have an idea or need guidance on how to start a business in Zambia.</p>
                 </div>
               </div>
-              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
+              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4 w-full">
                 <span className="text-blue-600 font-bold text-xs uppercase tracking-wide">Explore Tools</span>
                 <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
               </div>
@@ -264,7 +264,7 @@ export default function BusinessHubView() {
             {/* Path B */}
             <button 
               onClick={handlePathBClick}
-              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/30 hover:shadow-md transition-all duration-200 flex flex-col"
+              className="group text-left bg-white rounded-2xl p-6 border border-gray-200/60 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:border-indigo-300 hover:bg-indigo-50/10 hover:-translate-y-1.5 active:scale-[0.98] transition-all duration-300 flex flex-col justify-between cursor-pointer w-full"
             >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center shrink-0">
@@ -275,7 +275,7 @@ export default function BusinessHubView() {
                   <p className="text-gray-500 text-sm font-medium leading-relaxed">I already have a business and need operational tools to run it.</p>
                 </div>
               </div>
-              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
+              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4 w-full">
                 <span className="text-indigo-600 font-bold text-xs uppercase tracking-wide">Enter Workspace</span>
                 <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
               </div>
