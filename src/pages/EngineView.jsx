@@ -65,8 +65,8 @@ export function ModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, ba
           <Icon className={`w-6 h-6 ${iconColor}`} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-1 gap-2">
-            <h4 className="font-bold text-gray-900 text-sm group-hover:text-indigo-600 transition-colors truncate">
+          <div className="flex items-start justify-between mb-1.5 gap-2">
+            <h4 className="font-bold text-gray-900 text-sm md:text-base group-hover:text-indigo-600 transition-colors leading-snug">
               {name}
             </h4>
             {badge && (
@@ -75,7 +75,7 @@ export function ModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, ba
               </span>
             )}
           </div>
-          <p className="text-gray-500 text-xs font-medium line-clamp-2 leading-relaxed">{desc}</p>
+          <p className="text-gray-500 text-xs md:text-sm font-medium leading-relaxed">{desc}</p>
         </div>
       </div>
       <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4 w-full">
@@ -85,7 +85,7 @@ export function ModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, ba
     </>
   );
 
-  const className = `group text-left bg-white overflow-hidden rounded-2xl p-6 border border-gray-200/60 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:border-${color}-300 hover:bg-${color}-50/10 hover:-translate-y-1.5 active:scale-[0.98] transition-all duration-300 w-full flex flex-col justify-between h-full relative cursor-pointer`;
+  const className = `group text-left bg-white overflow-hidden rounded-2xl p-5 md:p-6 border border-gray-200/60 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:border-${color}-300 hover:bg-${color}-50/10 hover:-translate-y-1.5 active:scale-[0.98] transition-all duration-300 w-full flex flex-col justify-between h-full relative cursor-pointer`;
 
   if (onClick) {
     return (
