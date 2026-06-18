@@ -214,7 +214,7 @@ export default function BusinessHubView() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
+    <div className="max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto pb-24 animate-fade-in px-2 sm:px-4">
       <div className="mb-8">
         <Link 
           to="/dashboard" 
@@ -520,7 +520,7 @@ export default function BusinessHubView() {
               </button>
             }
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {businessEngine.modules.map(mod => (
               <ModuleCard key={mod.path} {...mod} />
             ))}

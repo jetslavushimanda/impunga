@@ -14,7 +14,7 @@ export default function Dashboard() {
   const engines = Object.values(ENGINE_MODULES);
 
   return (
-    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
+    <div className="max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto pb-24 animate-fade-in px-2 sm:px-4">
       {/* Welcome Message */}
       <div className="mb-8 px-1">
         <h1 className="text-3xl font-bold text-gray-800">
@@ -25,14 +25,14 @@ export default function Dashboard() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {engines.map((engine) => {
           const { id, title, description, icon: Icon, bg } = engine;
           return (
             <Link
               key={id}
               to={id === 'gateway' ? '/ai-advisor' : `/engine/${id}`}
-              className="group relative bg-white overflow-hidden rounded-[2rem] p-6 md:p-8 flex items-center justify-between border border-gray-200 transition-all duration-300 hover:border-gray-300 hover:shadow-md"
+              className={`group relative bg-white overflow-hidden rounded-[2rem] p-6 md:p-8 flex items-center justify-between border border-gray-200 transition-all duration-300 hover:border-gray-300 hover:shadow-md ${id === 'gateway' ? 'md:col-span-2' : ''}`}
             >
               <div className="relative z-10 flex items-center gap-6">
                 <div className="relative">
