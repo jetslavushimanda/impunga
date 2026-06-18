@@ -65,16 +65,16 @@ export function ModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, ba
           <Icon className={`w-6 h-6 ${iconColor}`} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-1.5 gap-2">
-            <h4 className="font-bold text-gray-900 text-sm md:text-base group-hover:text-indigo-600 transition-colors leading-snug">
-              {name}
-            </h4>
-            {badge && (
-              <span className={`text-[8px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badgeColorMap[badgeColor] || (badge === 'Folder' ? badgeColorMap.yellow : badgeColorMap.indigo)}`}>
+          {badge && (
+            <div className="mb-2">
+              <span className={`text-[9px] md:text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badgeColorMap[badgeColor] || (badge === 'Folder' ? badgeColorMap.yellow : badgeColorMap.indigo)}`}>
                 {badge}
               </span>
-            )}
-          </div>
+            </div>
+          )}
+          <h4 className="font-bold text-gray-900 text-sm md:text-base group-hover:text-indigo-600 transition-colors leading-snug mb-1">
+            {name}
+          </h4>
           <p className="text-gray-500 text-xs md:text-sm font-medium leading-relaxed">{desc}</p>
         </div>
       </div>
