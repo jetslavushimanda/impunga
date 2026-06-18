@@ -44,6 +44,9 @@ import PortfolioShowcase from './pages/PortfolioShowcase';
 import B2BTenders from './pages/B2BTenders';
 import GigBoard from './pages/GigBoard';
 import AssetSharing from './pages/AssetSharing';
+import KPIMonitor from './pages/KPIMonitor';
+import SavingsModule from './pages/SavingsModule';
+
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -119,6 +122,8 @@ export default function App() {
           <Route path="/b2b-tenders" element={<B2BTenders />} />
           <Route path="/gig-board" element={<GigBoard />} />
           <Route path="/asset-sharing" element={<AssetSharing />} />
+          <Route path="/kpi-tracker" element={<KPIMonitor />} />
+          <Route path="/savings-module" element={<SavingsModule />} />
           <Route path="/verified-directory" element={<PlaceholderPage title="Verified Service Directory" />} />
           <Route path="/learning-insights" element={<PlaceholderPage title="Learning Insight Cards" />} />
           <Route path="/regulatory-gateway" element={<RegistrationGuide />} />

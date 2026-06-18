@@ -27,6 +27,7 @@ export default function InvoiceGenerator() {
     notes: '',
     includeTax: false,
     taxRate: 16,
+    momoPaymentDetails: '',
   });
 
   function update(field, value) {
@@ -134,13 +135,26 @@ export default function InvoiceGenerator() {
     doc.text('TOTAL:', 134, finalY + (invoice.includeTax ? 19 : 12));
     doc.text(formatKwacha(total), 196, finalY + (invoice.includeTax ? 19 : 12), { align: 'right' });
 
-    // Notes
+    // Notes & Payment Info
+    let yNotes = finalY + 30;
+    if (invoice.momoPaymentDetails) {
+      doc.setTextColor(...primary);
+      doc.setFont(undefined, 'bold');
+      doc.setFontSize(10);
+      doc.text('Payment Instructions (Mobile Money):', 14, yNotes);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(9);
+      doc.text(invoice.momoPaymentDetails, 14, yNotes + 7);
+      yNotes += 17;
+    }
+
     if (invoice.notes) {
       doc.setTextColor(0, 0, 0);
       doc.setFont(undefined, 'normal');
       doc.setFontSize(9);
-      doc.text('Notes:', 14, finalY + 30);
-      doc.text(invoice.notes, 14, finalY + 37);
+      doc.text('Notes:', 14, yNotes);
+      doc.text(invoice.notes, 14, yNotes + 7);
     }
 
     // Footer
@@ -185,6 +199,7 @@ export default function InvoiceGenerator() {
             <div><label className="block text-sm font-semibold text-gray-700 mb-2">Phone</label><input value={invoice.businessPhone} onChange={e => update('businessPhone', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" placeholder="+260..." /></div>
             <div><label className="block text-sm font-semibold text-gray-700 mb-2">Email</label><input value={invoice.businessEmail} onChange={e => update('businessEmail', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" placeholder="email@example.com" /></div>
             <div><label className="block text-sm font-semibold text-gray-700 mb-2">Address</label><input value={invoice.businessAddress} onChange={e => update('businessAddress', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm" placeholder="Lusaka, Zambia" /></div>
+            <div><label className="block text-sm font-semibold text-gray-700 mb-2">Mobile Money Payment Info (MTN/Airtel/Zamtel)</label><input value={invoice.momoPaymentDetails} onChange={e => update('momoPaymentDetails', e.target.value)} className="w-full bg-white/50 backdrop-blur-sm border border-dashed border-indigo-200 rounded-xl px-4 py-3 text-gray-850 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all shadow-sm font-bold bg-indigo-50/10" placeholder="e.g. MTN MoMo - 0961122334" /></div>
           </div>
         </div>
         <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 relative overflow-hidden">

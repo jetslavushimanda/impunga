@@ -6,6 +6,7 @@ import useAuthStore from '../store/authStore';
 import { useAuth } from '../hooks/useAuth';
 import { useFirestore } from '../hooks/useFirestore';
 import { ModuleCard } from './EngineView'; 
+import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 const STARTUP_TOOLS = [
   {
@@ -182,6 +183,13 @@ export default function BusinessHubView() {
     }
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [registrationStep, setRegistrationStep] = useState(1);
+  const [selectedPlan, setSelectedPlan] = useState('Growth Pro');
+  const [paymentMethod, setPaymentMethod] = useState('momo');
+  const [momoProvider, setMomoProvider] = useState('mtn');
+  const [momoPhone, setMomoPhone] = useState('');
+  const [cardDetails, setCardDetails] = useState({ name: '', number: '', expiry: '', cvv: '' });
+  const [paymentMessage, setPaymentMessage] = useState('');
   
   // Registration form state
   const [formData, setFormData] = useState({
@@ -200,16 +208,42 @@ export default function BusinessHubView() {
     }
   }
 
-  async function handleRegister(e) {
+  function handleStep1Submit(e) {
+    e.preventDefault();
+    setRegistrationStep(2);
+  }
+
+  async function handleSubscribe(e) {
     e.preventDefault();
     setIsSubmitting(true);
+    
+    const messages = [
+      "Connecting to Kwacha Mobile Money gateway...",
+      "Sending USSD push request to " + (paymentMethod === 'momo' ? momoPhone : 'card processor') + "...",
+      "Authorizing subscription transaction...",
+      "Payment received! Setting up your operational tools..."
+    ];
+    
+    for (let i = 0; i < messages.length; i++) {
+      setPaymentMessage(messages[i]);
+      await new Promise(r => setTimeout(r, 900));
+    }
+    
     try {
-      await updateProfile({ businessProfile: formData });
+      await updateProfile({ 
+        businessProfile: { 
+          ...formData, 
+          subscriptionPlan: selectedPlan,
+          subscriptionActive: true,
+          subscriptionDate: Date.now()
+        } 
+      });
       setView('operations');
     } catch (error) {
       console.error('Failed to register business profile:', error);
     } finally {
       setIsSubmitting(false);
+      setRegistrationStep(1);
     }
   }
 
@@ -417,85 +451,299 @@ export default function BusinessHubView() {
       {view === 'registration' && (
         <div className="max-w-xl mx-auto bg-white/95 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[2rem] p-8 sm:p-10 relative overflow-hidden animate-slide-up mt-8">
           <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-100 rounded-full pointer-events-none" />
-          <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20 relative z-10">
-            <Briefcase className="w-10 h-10 text-white" />
-          </div>
-          <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-3 relative z-10">Register your Workspace</h2>
-          <p className="text-center text-gray-500 font-medium mb-10 relative z-10">
-            Before accessing the operational tools, please register your business profile on the IMPUNGA platform.
-          </p>
-
-          <form onSubmit={handleRegister} className="space-y-6 relative z-10">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Business or Project Name</label>
-              <input 
-                required
-                type="text"
-                value={formData.businessName}
-                onChange={e => setFormData({...formData, businessName: e.target.value})}
-                className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm"
-                placeholder="e.g. Kalulu Farms"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Primary Sector</label>
-              <select 
-                required
-                value={formData.sector}
-                onChange={e => setFormData({...formData, sector: e.target.value})}
-                className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm appearance-none cursor-pointer"
-              >
-                <option value="" disabled>Select a sector...</option>
-                <option value="agriculture">Agriculture & Farming</option>
-                <option value="retail">Retail & Trade</option>
-                <option value="services">Professional Services</option>
-                <option value="manufacturing">Manufacturing</option>
-                <option value="tech">Technology</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            <div className="pt-2">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">Is it registered with PACRA?</label>
-              <div className="flex gap-4">
-                <label className="flex-1 cursor-pointer">
-                  <input 
-                    type="radio" 
-                    name="registered" 
-                    value="yes"
-                    checked={formData.isRegistered === 'yes'}
-                    onChange={e => setFormData({...formData, isRegistered: e.target.value})}
-                    className="sr-only peer"
-                  />
-                  <div className="text-center py-4 border border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-indigo-500 peer-checked:to-purple-500 peer-checked:text-white font-bold text-gray-600 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-indigo-500/30">
-                    Yes, Registered
-                  </div>
-                </label>
-                <label className="flex-1 cursor-pointer">
-                  <input 
-                    type="radio" 
-                    name="registered" 
-                    value="no"
-                    checked={formData.isRegistered === 'no'}
-                    onChange={e => setFormData({...formData, isRegistered: e.target.value})}
-                    className="sr-only peer"
-                  />
-                  <div className="text-center py-4 border border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-gray-600 peer-checked:to-gray-800 peer-checked:text-white font-bold text-gray-600 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-gray-900/30">
-                    Not Yet
-                  </div>
-                </label>
+          
+          {registrationStep === 1 ? (
+            <>
+              <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20 relative z-10">
+                <Briefcase className="w-10 h-10 text-white" />
               </div>
-            </div>
+              <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-3 relative z-10">Step 1: Workspace Profile</h2>
+              <p className="text-center text-gray-500 font-medium mb-10 relative z-10">
+                Before accessing the operational tools, please tell us about your business.
+              </p>
 
-            <button 
-              type="submit"
-              disabled={isSubmitting || !formData.businessName || !formData.sector}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-2xl disabled:opacity-50 transition-all mt-6 shadow-lg shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
-            >
-              {isSubmitting ? 'Registering...' : 'Complete Registration'} <CheckCircle2 className="w-6 h-6" />
-            </button>
-          </form>
+              <form onSubmit={handleStep1Submit} className="space-y-6 relative z-10">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Business or Project Name</label>
+                  <input 
+                    required
+                    type="text"
+                    value={formData.businessName}
+                    onChange={e => setFormData({...formData, businessName: e.target.value})}
+                    className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm"
+                    placeholder="e.g. Kalulu Farms"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Primary Sector</label>
+                  <select 
+                    required
+                    value={formData.sector}
+                    onChange={e => setFormData({...formData, sector: e.target.value})}
+                    className="w-full bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled>Select a sector...</option>
+                    <option value="agriculture">Agriculture & Farming</option>
+                    <option value="retail">Retail & Trade</option>
+                    <option value="services">Professional Services</option>
+                    <option value="manufacturing">Manufacturing</option>
+                    <option value="tech">Technology</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div className="pt-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Is it registered with PACRA?</label>
+                  <div className="flex gap-4">
+                    <label className="flex-1 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="registered" 
+                        value="yes"
+                        checked={formData.isRegistered === 'yes'}
+                        onChange={e => setFormData({...formData, isRegistered: e.target.value})}
+                        className="sr-only peer"
+                      />
+                      <div className="text-center py-4 border border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-indigo-500 peer-checked:to-purple-500 peer-checked:text-white font-bold text-gray-600 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-indigo-500/30">
+                        Yes, Registered
+                      </div>
+                    </label>
+                    <label className="flex-1 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="registered" 
+                        value="no"
+                        checked={formData.isRegistered === 'no'}
+                        onChange={e => setFormData({...formData, isRegistered: e.target.value})}
+                        className="sr-only peer"
+                      />
+                      <div className="text-center py-4 border border-gray-200 bg-white/50 backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-gray-600 peer-checked:to-gray-800 peer-checked:text-white font-bold text-gray-600 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-gray-900/30">
+                        Not Yet
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <button 
+                  type="submit"
+                  disabled={!formData.businessName || !formData.sector}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-2xl disabled:opacity-50 transition-all mt-6 shadow-lg shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
+                >
+                  Continue to Subscription <ArrowRight className="w-5 h-5" />
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-extrabold text-center text-gray-800 mb-2 relative z-10">Step 2: Operational Workspace Tier</h2>
+              <p className="text-center text-gray-500 text-sm font-medium mb-4 relative z-10">
+                Unlock full access to Ledger, SWOT, Invoicing, AI Summaries & KPI tracker.
+              </p>
+
+              {/* Premium / Paid tier notice banner */}
+              <div className="mb-6 bg-indigo-50/70 border border-indigo-100 text-indigo-950 p-4 rounded-2xl text-xs font-medium leading-relaxed relative z-10 flex items-start gap-2.5">
+                <span className="text-base shrink-0 select-none">💡</span>
+                <div>
+                  <strong className="block mb-0.5 text-indigo-900">Premium Upgrade Screen</strong>
+                  This screen demonstrates the paid tier onboarding flow. To view/test the workspace tools without simulated payment details, click the <strong className="text-indigo-700 font-bold">"Bypass with Free Beta Access"</strong> button below.
+                </div>
+              </div>
+
+              {isSubmitting ? (
+                <div className="py-12 flex flex-col items-center justify-center relative z-10 text-indigo-600 animate-fade-in">
+                  <LoadingSpinner size="lg" />
+                  <p className="mt-4 font-bold text-gray-800 animate-pulse text-center">{paymentMessage}</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubscribe} className="space-y-6 relative z-10">
+                  {/* Plan Cards */}
+                  <div className="space-y-3">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Select a Plan</label>
+                    <div className="grid grid-cols-1 gap-2.5">
+                      {[
+                        { id: 'Basic Monitor', price: 'K150', desc: 'Financial ledger tracking & invoicing' },
+                        { id: 'Growth Pro', price: 'K350', desc: 'KPI tracking, SWOT, AI summaries & Savings' },
+                        { id: 'Enterprise Elite', price: 'K950', desc: 'Full suite & custom AI Co-Founder advice' }
+                      ].map(p => (
+                        <div 
+                          key={p.id}
+                          onClick={() => setSelectedPlan(p.id)}
+                          className={`cursor-pointer p-4 border rounded-2xl transition-all flex items-center justify-between ${selectedPlan === p.id ? 'border-indigo-500 bg-indigo-50/50 shadow-sm' : 'border-gray-250 hover:border-indigo-300 bg-white'}`}
+                        >
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-sm text-gray-800">{p.id}</span>
+                              {p.id === 'Growth Pro' && <span className="bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">POPULAR</span>}
+                            </div>
+                            <span className="text-xs text-gray-500 mt-1 block font-medium">{p.desc}</span>
+                          </div>
+                          <span className="text-lg font-black text-indigo-700">{p.price}<span className="text-[10px] text-gray-400 font-semibold">/mo</span></span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Payment Options */}
+                  <div className="space-y-3">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Payment Method</label>
+                    <div className="flex bg-gray-100 p-1 rounded-xl">
+                      <button 
+                        type="button"
+                        onClick={() => setPaymentMethod('momo')}
+                        className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${paymentMethod === 'momo' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
+                      >
+                        📱 Mobile Money
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setPaymentMethod('card')}
+                        className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${paymentMethod === 'card' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
+                      >
+                        💳 Debit/Credit Card
+                      </button>
+                    </div>
+
+                    {paymentMethod === 'momo' ? (
+                      <div className="space-y-3 bg-gray-50/50 border border-gray-100 p-4 rounded-2xl animate-fade-in">
+                        {/* MoMo Provider Logo Toggle */}
+                        <div className="flex gap-2">
+                          {[
+                            { id: 'mtn', label: 'MTN MoMo', color: 'peer-checked:bg-yellow-500 peer-checked:text-white border-yellow-200 text-yellow-600' },
+                            { id: 'airtel', label: 'Airtel Money', color: 'peer-checked:bg-red-600 peer-checked:text-white border-red-200 text-red-600' },
+                            { id: 'zamtel', label: 'Zamtel Kwacha', color: 'peer-checked:bg-green-600 peer-checked:text-white border-green-200 text-green-600' }
+                          ].map(provider => (
+                            <label key={provider.id} className="flex-1 cursor-pointer">
+                              <input 
+                                type="radio" 
+                                name="momo_provider" 
+                                value={provider.id}
+                                checked={momoProvider === provider.id}
+                                onChange={e => setMomoProvider(e.target.value)}
+                                className="sr-only peer"
+                              />
+                              <div className={`text-center py-2.5 border bg-white rounded-xl text-xs font-bold transition-all peer-checked:border-transparent peer-checked:shadow-sm ${provider.color}`}>
+                                {provider.label}
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Mobile Money Phone Number</label>
+                          <input 
+                            required={paymentMethod === 'momo'}
+                            type="tel"
+                            value={momoPhone}
+                            onChange={e => setMomoPhone(e.target.value)}
+                            placeholder="e.g. 0961234567"
+                            className="w-full bg-white border border-gray-250 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3 bg-gray-50/50 border border-gray-100 p-4 rounded-2xl animate-fade-in">
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Cardholder Name</label>
+                          <input 
+                            required={paymentMethod === 'card'}
+                            type="text"
+                            value={cardDetails.name}
+                            onChange={e => setCardDetails({...cardDetails, name: e.target.value})}
+                            placeholder="John Doe"
+                            className="w-full bg-white border border-gray-250 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Card Number</label>
+                          <input 
+                            required={paymentMethod === 'card'}
+                            type="text"
+                            value={cardDetails.number}
+                            onChange={e => setCardDetails({...cardDetails, number: e.target.value})}
+                            placeholder="4000 1234 5678 9010"
+                            className="w-full bg-white border border-gray-250 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Expiry Date</label>
+                            <input 
+                              required={paymentMethod === 'card'}
+                              type="text"
+                              value={cardDetails.expiry}
+                              onChange={e => setCardDetails({...cardDetails, expiry: e.target.value})}
+                              placeholder="MM/YY"
+                              className="w-full bg-white border border-gray-250 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">CVV</label>
+                            <input 
+                              required={paymentMethod === 'card'}
+                              type="password"
+                              maxLength="3"
+                              value={cardDetails.cvv}
+                              onChange={e => setCardDetails({...cardDetails, cvv: e.target.value})}
+                              placeholder="123"
+                              className="w-full bg-white border border-gray-250 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-3 pt-2">
+                    <div className="flex gap-3">
+                      <button 
+                        type="button"
+                        onClick={() => setRegistrationStep(1)}
+                        className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold py-3.5 rounded-xl text-sm transition-colors active:scale-95"
+                      >
+                        Back to Step 1
+                      </button>
+                      <button 
+                        type="submit"
+                        disabled={paymentMethod === 'momo' ? !momoPhone : (!cardDetails.name || !cardDetails.number || !cardDetails.expiry || !cardDetails.cvv)}
+                        className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-600/10 active:scale-95 disabled:opacity-50"
+                      >
+                        Pay & Activate Tier
+                      </button>
+                    </div>
+
+                    <button 
+                      type="button"
+                      onClick={async () => {
+                        setIsSubmitting(true);
+                        setPaymentMessage("Activating complimentary Beta testing access...");
+                        await new Promise(r => setTimeout(r, 1000));
+                        try {
+                          await updateProfile({ 
+                            businessProfile: { 
+                              ...formData, 
+                              subscriptionPlan: "Beta Trial (Free Access)",
+                              subscriptionActive: true,
+                              subscriptionDate: Date.now()
+                            } 
+                          });
+                          setView('operations');
+                        } catch (error) {
+                          console.error('Failed to activate Beta profile:', error);
+                        } finally {
+                          setIsSubmitting(false);
+                          setRegistrationStep(1);
+                        }
+                      }}
+                      className="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-3 rounded-xl text-xs transition-colors border border-indigo-200/50"
+                    >
+                      Bypass with Free Beta Access
+                    </button>
+                  </div>
+                </form>
+              )}
+            </>
+          )}
         </div>
       )}
 

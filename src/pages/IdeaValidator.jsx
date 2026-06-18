@@ -33,17 +33,104 @@ const PROVINCES = [
   'Northern', 'Luapula', 'North-Western', 'Western', 'Muchinga', 'Online',
 ];
 
-const PROBLEM_EXAMPLES = [
-  'People in my area travel far to buy fresh vegetables',
-  'Small businesses struggle to get affordable packaging',
-  'Students have no access to affordable tutoring services',
-];
-
-const SOLUTION_EXAMPLES = [
-  'I will set up a neighbourhood cold-storage farm stand',
-  'I will buy packaging in bulk and distribute locally',
-  'I will create an affordable online tutoring platform',
-];
+const SUGGESTIONS_BY_TYPE = {
+  agriculture: {
+    problems: [
+      'Smallholder farmers struggle to find direct markets for their maize and vegetables',
+      'Local restaurants lack a steady supply of fresh, organically grown chickens',
+      'Farmers in rural areas lose produce due to a lack of cold storage options'
+    ],
+    solutions: [
+      'I will create an off-take platform connecting farmers directly to city grocers',
+      'I will establish a poultry farm supplying high-quality broiler chickens locally',
+      'I will set up solar-powered cold hubs in local markets to rent out space to farmers'
+    ]
+  },
+  retail: {
+    problems: [
+      'Local boutique owners struggle to source high-quality clothing at wholesale prices',
+      'Consumers in my township have to travel to town to buy quality household plastics',
+      'Small retailers have no easy access to wholesale beverages and dry goods delivery'
+    ],
+    solutions: [
+      'I will launch a wholesale distribution store supplying imported fashion items to boutiques',
+      'I will open a plastics and hardware retail store right inside the residential area',
+      'I will create a B2B delivery service supplying tuckshops directly from local wholesalers'
+    ]
+  },
+  food: {
+    problems: [
+      'Office workers in the CBD lack access to affordable, clean, and quick local lunches',
+      'Families in my area have to travel far to find a decent family restaurant',
+      'Local events struggle to find reliable and professional catering services'
+    ],
+    solutions: [
+      'I will open a modern local kitchen offering express delivery of Nshima and T-bone to offices',
+      'I will start a clean, family-friendly backyard diner serving local and western meals',
+      'I will launch a premium event catering company specializing in local Zambian dishes'
+    ]
+  },
+  services: {
+    problems: [
+      'Working parents struggle to find reliable and verified after-school tutors for children',
+      'Local schools and clinics have no access to clean, professional cleaning services',
+      'SMEs cannot afford full-time accountants to manage ZRA tax and PACRA compliance'
+    ],
+    solutions: [
+      'I will run a agency that provides vetted home-tutoring services for primary students',
+      'I will start a commercial cleaning business specializing in office and clinic sanitation',
+      'I will offer affordable monthly accounting and tax filing packages for small businesses'
+    ]
+  },
+  tech: {
+    problems: [
+      'Small shops still record transactions manually, leading to inventory losses',
+      'Local high schools lack modern digital learning tools and computer lab software',
+      'Zambian artisans have no online marketplace to showcase and sell their handmade crafts'
+    ],
+    solutions: [
+      'I will build a simple, offline-first mobile POS app for market vendors and tuckshops',
+      'I will design an affordable e-learning portal for local syllabus revision',
+      'I will launch a curated e-commerce platform dedicated to Zambian artisans'
+    ]
+  },
+  manufacturing: {
+    problems: [
+      'Small food processors struggle to find affordable food-grade packaging bottles',
+      'Local carpentry shops lack access to seasoned, high-quality timber boards',
+      'High cost of imported animal feed makes local livestock farming unprofitable'
+    ],
+    solutions: [
+      'I will manufacture low-cost, food-safe plastic bottles for local beverage makers',
+      'I will establish a local timber processing facility providing treated construction timber',
+      'I will build a feed-processing plant utilizing local maize bran and soy ingredients'
+    ]
+  },
+  transport: {
+    problems: [
+      'Commuters spend hours in queues waiting for local minibuses during peak hours',
+      'Farming communities cannot find affordable trucks to transport their harvest to city markets',
+      'E-commerce businesses suffer from high costs and slow delivery times for parcel delivery'
+    ],
+    solutions: [
+      'I will launch a scheduled shuttle service for professionals on busy routes',
+      'I will operate a shared-truck service connecting rural farmers to urban hubs',
+      'I will build a network of motorcycle couriers offering instant last-mile delivery'
+    ]
+  },
+  other: {
+    problems: [
+      'People in my area travel far to buy fresh vegetables',
+      'Small businesses struggle to get affordable packaging',
+      'Students have no access to affordable tutoring services'
+    ],
+    solutions: [
+      'I will set up a neighbourhood cold-storage farm stand',
+      'I will buy packaging in bulk and distribute locally',
+      'I will create an affordable online tutoring platform'
+    ]
+  }
+};
 
 export default function IdeaValidator() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -281,8 +368,8 @@ export default function IdeaValidator() {
                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-24 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
               />
               <div className="flex flex-wrap gap-2 mt-2">
-                {PROBLEM_EXAMPLES.map((ex, i) => (
-                  <button key={i} onClick={() => setWizardData({...wizardData, problem: ex})} className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors">
+                {(SUGGESTIONS_BY_TYPE[wizardData.businessType] || SUGGESTIONS_BY_TYPE.other).problems.map((ex, i) => (
+                  <button key={i} onClick={() => setWizardData({...wizardData, problem: ex})} className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors text-left">
                     {ex}
                   </button>
                 ))}
@@ -297,8 +384,8 @@ export default function IdeaValidator() {
                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl h-24 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
               />
               <div className="flex flex-wrap gap-2 mt-2">
-                {SOLUTION_EXAMPLES.map((ex, i) => (
-                  <button key={i} onClick={() => setWizardData({...wizardData, solution: ex})} className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors">
+                {(SUGGESTIONS_BY_TYPE[wizardData.businessType] || SUGGESTIONS_BY_TYPE.other).solutions.map((ex, i) => (
+                  <button key={i} onClick={() => setWizardData({...wizardData, solution: ex})} className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors text-left">
                     {ex}
                   </button>
                 ))}
@@ -485,16 +572,22 @@ export default function IdeaValidator() {
           )}
 
           {/* Actions Bar */}
-          <div className="flex gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-            <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
-              <Save className="w-4 h-4" /> Save
-            </button>
-            <button onClick={handleDownloadPDF} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
-              <Download className="w-4 h-4" /> PDF
-            </button>
-            <button onClick={handleReset} className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
-              <RefreshCw className="w-4 h-4" /> New Idea
-            </button>
+          <div className="flex flex-wrap gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm justify-between items-center">
+            <div className="flex gap-2">
+              <button onClick={handleSave} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
+                <Save className="w-4 h-4" /> Save
+              </button>
+              <button onClick={handleDownloadPDF} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
+                <Download className="w-4 h-4" /> PDF
+              </button>
+              <button onClick={handleReset} className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors active:scale-95">
+                <RefreshCw className="w-4 h-4" /> New Idea
+              </button>
+            </div>
+            
+            <Link to="/engine/finance" className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-all shadow-md shadow-emerald-600/10 active:scale-95">
+              <Banknote className="w-4 h-4" /> Get Financing
+            </Link>
           </div>
 
           {/* AI Co-Founder Banner */}

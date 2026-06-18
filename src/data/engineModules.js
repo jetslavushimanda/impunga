@@ -19,6 +19,8 @@ export const ENGINE_MODULES = {
       { path: '/invoice-generator', icon: Receipt, name: 'Invoice Generator', desc: 'Create professional Kwacha invoices', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400', badge: 'BILLING', badgeColor: 'green' },
       { path: '/pricing-calculator', icon: Calculator, name: 'Pricing Calculator', desc: 'Calculate true costs and profit margins', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400', badge: 'FINANCIALS ZMW', badgeColor: 'orange' },
       { path: '/social-media', icon: Share2, name: 'Marketing Tools', desc: 'AI-generated content and templates', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400', badge: 'AI CONTENT', badgeColor: 'purple' },
+      { path: '/kpi-tracker', icon: TrendingUp, name: 'KPI & Summaries', desc: 'Monitor KPIs, track business performance & AI reports', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400', badge: 'MONITORING', badgeColor: 'blue' },
+      { path: '/savings-module', icon: DollarSign, name: 'Savings Tracker', desc: 'Set goals, track deposits and calculate savings speeds', bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-l-amber-400', badge: 'SAVINGS ZMW', badgeColor: 'orange' },
     ]
   },
   skills: {

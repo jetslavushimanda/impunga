@@ -115,14 +115,15 @@ IMPORTANT: Every response MUST cite at least one specific official Zambian regul
     setLoading(true);
     setError(null);
     try {
-      const prompt = `Convert this validated Zambian business idea into a 10-slide Pitch Deck structure:
+      const prompt = `Convert this validated Zambian business idea into a 10-slide Pitch Deck.
+Do NOT output writing guides, placeholders, or template instructions. Instead, write the actual fully fleshed-out slide content for this specific business. If the section requires team members, invent realistic co-founder roles. If it requires market sizing, estimate realistic metrics for the Zambian market in Kwacha.
       
 Idea: ${ideaData.ideaText}
 AI Validation: ${ideaData.aiAnalysis}
 Location: ${ideaData.location}
 Budget: ${ideaData.budget}
 
-Provide exactly 10 slides. For each slide, write the Slide Title, and 3-4 bullet points of what to say/show. 
+Provide exactly 10 slides. For each slide, write the Slide Title, and 3-4 bullet points of actual presentation content. 
 The slides must be:
 1. Title & Vision
 2. The Problem in Zambia
@@ -185,6 +186,7 @@ Description: ${description}
 Sector: ${sector || 'General'}
 Style preference: ${style}
 Location: ${province || 'Zambia'}
+Random Seed Key: ${Math.random().toString(36).substring(7)}
 
 For each name provide:
 1. The business name
@@ -212,6 +214,53 @@ Rules:
     } catch (err) {
       const msg = getFriendlyError(err);
       setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function generateRegistrationRoadmap(businessName, sector, description, province) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are a Zambian PACRA, ZRA, and business licensing expert.
+Create a customized, step-by-step registration roadmap and checklist for formalizing the following business in Zambia:
+Business Name: ${businessName}
+Sector: ${sector}
+Description: ${description}
+Location: ${province || 'Zambia'}
+
+Identify the exact registration steps required. Include standard PACRA registration (specifying sole proprietor vs limited liability based on the business type), ZRA TPIN & tax registration, and critically, identify any specific industry licenses or permits needed for this specific type of business in Zambia (e.g. Council Health Permit for food, ZICTA for tech, Ministry of Agriculture/Farming permit, NCC for construction, TEVETA for tutoring/schools, etc.).
+
+Also generate a "PACRA Autofill Cheat-Sheet" containing pre-formatted details: proposed business names, principal activity codes, and director roles based on their sector.
+
+Return the roadmap in this EXACT JSON format:
+{
+  "cheatSheet": {
+    "proposedNames": ["Name option 1", "Name option 2"],
+    "principalActivity": "Standard PACRA industry classification text & ISIC code",
+    "suggestedDirectors": ["Managing Director", "Finance Director"]
+  },
+  "steps": [
+    {
+      "stepNumber": 1,
+      "title": "PACRA Registration",
+      "description": "Short explanation of this specific step for this business.",
+      "requirements": ["Requirement 1", "Requirement 2"],
+      "cost": "K220 for Sole Proprietor or K500 for Limited Company",
+      "timeframe": "3-5 business days",
+      "authority": "PACRA (Patents and Companies Registration Agency)"
+    }
+  ]
+}
+Return ONLY a valid JSON object. Do not include markdown code blocks, just the raw JSON.`;
+
+      const response = await callGemini(prompt, 'You are an expert Zambian business registration advisor. Return only valid JSON objects.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      setError(getFriendlyError(err));
       throw err;
     } finally {
       setLoading(false);
@@ -709,5 +758,5 @@ Return ONLY valid JSON.`;
     return `Error: ${err.message}. Check internet and try again.`;
   }
 
-  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generatePitchDeck, matchFundingSources, generateBusinessNames, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast, critiqueBusinessPlan, generatePredictiveRoadmap, analyzePricingTrend, generateCoverLetter, generateInterviewQuestions, evaluateInterviewAnswers, generateSkillGapPlan };
+  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generatePitchDeck, matchFundingSources, generateBusinessNames, generateRegistrationRoadmap, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast, critiqueBusinessPlan, generatePredictiveRoadmap, analyzePricingTrend, generateCoverLetter, generateInterviewQuestions, evaluateInterviewAnswers, generateSkillGapPlan };
 }

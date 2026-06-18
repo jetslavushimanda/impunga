@@ -106,8 +106,12 @@ export default function BusinessNameGenerator() {
         <div className="space-y-4 animate-slide-up pb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-gray-800 tracking-tight">Generated Names</h2>
-            <button onClick={handleGenerate} className="flex items-center gap-1.5 border border-gray-200 hover:bg-white text-gray-600 font-semibold text-sm px-4 py-2 rounded-xl transition-colors bg-white/50 backdrop-blur-sm shadow-sm active:scale-95">
-              <RefreshCw className="w-4 h-4" /> Regenerate
+            <button 
+              onClick={handleGenerate} 
+              disabled={loading}
+              className="flex items-center gap-1.5 border border-gray-200 hover:bg-white text-gray-600 font-semibold text-sm px-4 py-2 rounded-xl transition-colors bg-white/50 backdrop-blur-sm shadow-sm active:scale-95 disabled:opacity-50"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> {loading ? 'Generating...' : 'Regenerate'}
             </button>
           </div>
           <div className="grid gap-4">
