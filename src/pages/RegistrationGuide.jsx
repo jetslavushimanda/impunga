@@ -522,7 +522,7 @@ export default function RegistrationGuide() {
                       <button
                         key={opt}
                         onClick={() => setAnswers(prev => ({ ...prev, [id]: opt }))}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors ${answers[id] === opt ? 'bg-indigo-650 text-white border-indigo-650 shadow-md shadow-indigo-650/15' : 'border-gray-200 text-gray-600 hover:border-indigo-400 bg-white'}`}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors ${answers[id] === opt ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/15' : 'border-gray-200 text-gray-600 hover:border-indigo-400 bg-white'}`}
                       >
                         {opt}
                       </button>

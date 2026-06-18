@@ -173,7 +173,7 @@ export default function SavingsModule() {
             </h2>
             <button 
               onClick={() => setShowGoalForm(!showGoalForm)}
-              className="bg-amber-550 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-sm shadow-amber-550/15"
+              className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-sm shadow-amber-500/15"
             >
               <Plus className="w-4 h-4" /> Create Goal
             </button>
@@ -321,7 +321,7 @@ export default function SavingsModule() {
           <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
             <button 
               onClick={() => setShowTxForm(!showTxForm)}
-              className="w-full bg-gradient-to-r from-amber-500 to-amber-650 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-md shadow-amber-500/10 active:scale-95 flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-md shadow-amber-500/10 active:scale-95 flex items-center justify-center gap-2"
             >
               <Plus className="w-5 h-5" /> Log Savings Deposit
             </button>

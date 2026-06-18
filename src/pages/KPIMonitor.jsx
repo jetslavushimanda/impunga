@@ -372,7 +372,7 @@ Write in clear, simple English. Avoid empty placeholder text.`;
             </h2>
             <button 
               onClick={() => setShowKpiForm(!showKpiForm)} 
-              className="bg-indigo-650 hover:bg-indigo-750 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5"
             >
               <Plus className="w-4 h-4" /> Add KPI
             </button>
@@ -449,7 +449,7 @@ Write in clear, simple English. Avoid empty placeholder text.`;
                   </button>
                   <button 
                     type="submit"
-                    className="bg-indigo-650 hover:bg-indigo-750 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors"
                   >
                     Save KPI Target
                   </button>
