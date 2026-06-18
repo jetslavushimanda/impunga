@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, CheckCircle2, MapPin, Briefcase, Filter, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Search, CheckCircle2, MapPin, Briefcase, Filter, ArrowRight, X } from 'lucide-react';
+import { Toast, useToast } from '../components/shared/SuccessToast';
 
 // Mock data for the directory until Firebase profiles are populated
 const MOCK_BUSINESSES = [
@@ -46,15 +47,79 @@ export default function MarketDirectory() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSector, setFilterSector] = useState('All');
   const navigate = useNavigate();
+  const { toast, show, hide } = useToast();
+
+  const [businesses, setBusinesses] = useState(() => {
+    const saved = localStorage.getItem('impunga_businesses');
+    return saved ? JSON.parse(saved) : MOCK_BUSINESSES;
+  });
+
+  // Modal States
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [selectedBusiness, setSelectedBusiness] = useState(null);
+
+  // Form States - List Business
+  const [name, setName] = useState('');
+  const [sector, setSector] = useState('Agriculture');
+  const [location, setLocation] = useState('');
+  const [contact, setContact] = useState('');
+  const [description, setDescription] = useState('');
+
+  // Form States - Contact
+  const [senderName, setSenderName] = useState('');
+  const [senderEmail, setSenderEmail] = useState('');
+  const [senderMessage, setSenderMessage] = useState('');
 
   const sectors = ['All', 'Agriculture', 'Manufacturing', 'Logistics', 'Technology', 'Retail'];
 
-  const filteredBusinesses = MOCK_BUSINESSES.filter(biz => {
+  const filteredBusinesses = businesses.filter(biz => {
     const matchesSearch = biz.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           biz.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSector = filterSector === 'All' || biz.sector === filterSector;
     return matchesSearch && matchesSector;
   });
+
+  const handleListBusiness = (e) => {
+    e.preventDefault();
+    if (!name.trim() || !location.trim() || !contact.trim() || !description.trim()) return;
+
+    const newBiz = {
+      id: String(Date.now()),
+      name,
+      sector,
+      location,
+      description,
+      verified: false,
+      contact
+    };
+
+    const updated = [newBiz, ...businesses];
+    setBusinesses(updated);
+    localStorage.setItem('impunga_businesses', JSON.stringify(updated));
+
+    // Reset Form
+    setName('');
+    setSector('Agriculture');
+    setLocation('');
+    setContact('');
+    setDescription('');
+
+    setShowPostModal(false);
+    show('Business listing created successfully!');
+  };
+
+  const handleContactBusiness = (e) => {
+    e.preventDefault();
+    if (!senderName.trim() || !senderEmail.trim() || !senderMessage.trim()) return;
+
+    show(`Inquiry successfully sent to ${selectedBusiness.name}!`);
+
+    // Reset Form
+    setSenderName('');
+    setSenderEmail('');
+    setSenderMessage('');
+    setSelectedBusiness(null);
+  };
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fade-in">
@@ -71,7 +136,10 @@ export default function MarketDirectory() {
           <p className="text-gray-500 font-medium text-lg max-w-2xl">Find trusted B2B partners, suppliers, and clients across Zambia. Only verified registered businesses earn the blue tick.</p>
         </div>
         
-        <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap">
+        <button 
+          onClick={() => setShowPostModal(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap cursor-pointer"
+        >
           List Your Business
         </button>
       </div>
@@ -128,7 +196,10 @@ export default function MarketDirectory() {
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <MapPin className="w-4 h-4" /> {biz.location}
                   </div>
-                  <button className="text-indigo-600 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                  <button 
+                    onClick={() => setSelectedBusiness(biz)}
+                    className="text-indigo-600 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all cursor-pointer"
+                  >
                     Contact <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -143,6 +214,175 @@ export default function MarketDirectory() {
           )}
         </div>
       </div>
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
+
+      {/* List Business Modal */}
+      {showPostModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowPostModal(false)}
+          />
+          
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-slide-up border border-white/20 z-10">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 shrink-0">
+              <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <Briefcase className="w-6 h-6 text-indigo-600" /> List Your Business
+              </h3>
+              <button 
+                onClick={() => setShowPostModal(false)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleListBusiness} className="p-6 overflow-y-auto bg-gray-50/50 flex-1 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Business Name *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Copperbelt Logistics ZM"
+                  className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Sector *</label>
+                  <select
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100 bg-white"
+                    value={sector}
+                    onChange={e => setSector(e.target.value)}
+                  >
+                    {sectors.filter(s => s !== 'All').map(s => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Location (City/Area) *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Lusaka CBD"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    value={location}
+                    onChange={e => setLocation(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Contact Info (Email/Phone) *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. contact@business.com"
+                  className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={contact}
+                  onChange={e => setContact(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Description & Products/Services *</label>
+                <textarea
+                  required
+                  placeholder="Describe your business offerings, wholesale prices, capacity, and partnerships you're looking for..."
+                  className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100 min-h-24"
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-md text-sm mt-2 cursor-pointer font-sans"
+              >
+                Submit Listing
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Contact Business Modal */}
+      {selectedBusiness && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setSelectedBusiness(null)}
+          />
+          
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-slide-up border border-white/20 z-10">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 shrink-0">
+              <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <Briefcase className="w-6 h-6 text-indigo-600" /> Contact Business Partner
+              </h3>
+              <button 
+                onClick={() => setSelectedBusiness(null)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleContactBusiness} className="p-6 overflow-y-auto bg-gray-50/50 flex-1 space-y-4">
+              <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 mb-2">
+                <h4 className="font-bold text-indigo-900 text-sm mb-1">{selectedBusiness.name}</h4>
+                <p className="text-xs text-indigo-700 font-medium">Sector: {selectedBusiness.sector} | Location: {selectedBusiness.location}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Your Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. John Banda"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    value={senderName}
+                    onChange={e => setSenderName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Your Email/Phone *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. email/phone"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    value={senderEmail}
+                    onChange={e => setSenderEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Message / Business Inquiry *</label>
+                <textarea
+                  required
+                  placeholder="Ask about pricing, procurement details, delivery timelines, or partnership proposals..."
+                  className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100 min-h-28"
+                  value={senderMessage}
+                  onChange={e => setSenderMessage(e.target.value)}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-md text-sm mt-2 cursor-pointer font-sans"
+              >
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

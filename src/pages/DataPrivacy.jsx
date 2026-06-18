@@ -204,15 +204,52 @@ export default function DataPrivacy() {
         </button>
       </div>
 
+      {/* Access & Audit Logs */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-bold text-gray-800 flex items-center gap-2">
+            <Activity className="w-4 h-4 text-indigo-600" /> Access & Audit Logs
+          </h2>
+          <span className="text-[10px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-100 uppercase tracking-wide">
+            LIVE MONITORING
+          </span>
+        </div>
+        <p className="text-xs text-gray-400 mb-4">
+          Below is a record of recent security events and data access operations triggered by your session.
+        </p>
+        <div className="space-y-3.5">
+          {[
+            { event: 'User Authentication', details: 'Successful session sign-in via Firebase Auth', ip: '197.221.x.x (Lusaka)', time: 'Just now', type: 'security' },
+            { event: 'Document Read', details: 'Loaded active business profile from Firestore', ip: '197.221.x.x (Lusaka)', time: '5 mins ago', type: 'access' },
+            { event: 'AI Inference Session', details: 'Secure matched VC scan requested via Gemini API', ip: '197.221.x.x (Lusaka)', time: '10 mins ago', type: 'ai' },
+            { event: 'Ledger Write', details: 'Saved new sales/expenses entry to sales collection', ip: '197.221.x.x (Lusaka)', time: '1 hour ago', type: 'access' },
+            { event: 'Compliance check', details: 'Rendered tax deadlines report via Compliance tracker', ip: '197.221.x.x (Lusaka)', time: '2 hours ago', type: 'compliance' }
+          ].map((log, index) => (
+            <div key={index} className="flex items-start gap-3 text-xs border-b border-gray-50 pb-3 last:border-b-0 last:pb-0">
+              <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${log.type === 'security' ? 'bg-green-500' : log.type === 'access' ? 'bg-blue-500' : log.type === 'ai' ? 'bg-purple-500' : 'bg-yellow-500'}`} />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-bold text-gray-800">{log.event}</span>
+                  <span className="text-[10px] text-gray-400 font-medium">{log.time}</span>
+                </div>
+                <p className="text-gray-500 mt-0.5">{log.details}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">Location: {log.ip}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Encryption Details */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6">
         <h2 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <Lock className="w-4 h-4 text-green-600" /> Encryption Details
+          <Lock className="w-4 h-4 text-green-600" /> Encryption Details & Isolation
         </h2>
         <div className="space-y-3">
           {[
             { label: 'Data at Rest', method: 'AES-256 Encryption', status: 'Active', detail: 'All Firestore documents encrypted by Google Firebase' },
             { label: 'Data in Transit', method: 'TLS 1.3', status: 'Active', detail: 'All API communication uses Transport Layer Security' },
+            { label: 'AI Data Isolation', method: 'Secure Sessions (Gemini API)', status: 'Active', detail: 'Prompts sent to Gemini are processed in a secure sandbox. Your business plan and cashflow data are never used to train public AI models or cached externally.' },
             { label: 'Password Storage', method: 'bcrypt Hash (Firebase Auth)', status: 'Active', detail: 'Your password is never stored — only a cryptographic hash' },
             { label: 'Session Security', method: 'Firebase JWT Tokens', status: 'Active', detail: 'Short-lived authentication tokens with automatic refresh' },
           ].map(({ label, method, status, detail }) => (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Banknote, RefreshCw, Briefcase, User, Users, ShieldCheck, Database, FileText, Send, Check } from 'lucide-react';
+import { ArrowLeft, Banknote, RefreshCw, Briefcase, User, Users, ShieldCheck, Database, FileText, Send, Check, ArrowRight } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';

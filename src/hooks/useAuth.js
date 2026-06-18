@@ -6,13 +6,14 @@ import {
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
+  OAuthProvider
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../lib/firebase';
 import useAuthStore from '../store/authStore';
 
 export function useAuth() {
-  const { user, userProfile, loading, setUser, setUserProfile, clearUser, setLoading, setSelectedPath } = useAuthStore();
+  const { user, userProfile, loading, setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -73,6 +74,31 @@ export function useAuth() {
     return user;
   }
 
+  async function loginWithApple() {
+    const provider = new OAuthProvider('apple.com');
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const docRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
+      const profile = {
+        fullName: user.displayName || '',
+        email: user.email || '',
+        createdAt: serverTimestamp(),
+        lastActive: serverTimestamp(),
+      };
+      await setDoc(docRef, profile);
+      setUserProfile(profile);
+    } else {
+      const data = docSnap.data();
+      setUserProfile(data);
+      if (data.selectedPath) {
+        setSelectedPath(data.selectedPath);
+      }
+    }
+    return user;
+  }
+
   async function register(email, password, profileData) {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user = result.user;
@@ -103,5 +129,5 @@ export function useAuth() {
     setUserProfile({ ...userProfile, ...updates });
   }
 
-  return { user, userProfile, loading, login, loginWithGoogle, register, logout, resetPassword, updateProfile, loadUserProfile };
+  return { user, userProfile, loading, login, loginWithGoogle, loginWithApple, register, logout, resetPassword, updateProfile, loadUserProfile };
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Globe, Filter, CheckCircle2, Bookmark, BookmarkCheck, ExternalLink, Award } from 'lucide-react';
+import { ArrowLeft, Globe, Filter, CheckCircle2, Bookmark, BookmarkCheck, ExternalLink, Award, AlertTriangle } from 'lucide-react';
 import { FUNDING_SOURCES } from '../data/fundingSources';
 import { formatKwachaSimple } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';

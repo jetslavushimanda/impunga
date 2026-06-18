@@ -12,7 +12,7 @@ If a user asks how to do something, refer them to the specific IMPUNGA module:
 - Finances/Pricing? -> "Engine 1: Ledger / Pricing Calculator"
 - Building a professional profile? -> "Engine 2: Skill Profile Builder"
 - Looking for jobs? -> "Engine 2: Career Matches"
-- Want to trade/network/find jobs? -> "Engine 4: Community (Zambian Jobs / Verified Directory / Portfolio Showcase / Gig Board / Asset Sharing)"
+- Want to trade/network/find jobs? -> "Engine 4: Community (Zambian Jobs / Verified Directory / Portfolio Showcase / Piece-Work Board / Asset Rentals)"
 
 When giving business advice, you MUST cite official Zambian regulatory sources (PACRA, ZRA, CEEC, etc.) and use Kwacha for all money.
 Be direct, helpful, and proudly represent the IMPUNGA ecosystem.`;
@@ -411,17 +411,24 @@ Available modules in the app:
 - /pricing-calculator: Pricing Calculator (set product prices)
 - /business-ledger: Business Ledger (track finances)
 - /engine/finance: Finance & Funding (find grants, loans, investment)
+- /grants-portal: Grants & Subsidies (find Zambian non-dilutive grants)
+- /loans-portal: Loans & Credit (debt capacity calculator & Zambian bank/CEEC loans)
+- /investment-matchmaker: Investment Matchmaker (AI VC matching & regional ecosystem hub)
 - /ai-advisor: AI Business Advisor (get business advice)
 - /registration-guide: Registration Guide (PACRA/ZRA registration)
 - /name-generator: Business Name Generator
 - /invoice-generator: Invoice Generator
 - /market-prices: Market Prices (check commodity prices)
 - /swot-analysis: SWOT Analysis
-- /social-media: Social Media Generator
+- /social-media: Social Media / Marketing Tools
 - /skill-profile-builder: Skill Profile Builder
-- /career-matches: Career Matches
+- /career-matches: Career Matches / Zambian Jobs
 - /compliance-tracker: Compliance Tracker (ZRA/PACRA deadlines)
-- /market-trends: Market Trend Predictor
+- /gig-board: Piece-Work Board (casual labor, chore tasks, and local piece-works)
+- /asset-sharing: Asset Rentals (machinery and agricultural rentals)
+- /b2b-tenders: B2B Tenders (corporate procurement contracts)
+- /market-directory: Verified Directory (marketplace of trusted business users)
+- /portfolio-showcase: Portfolio Showcase (skill monetization)
 
 Market price categories available: Grains & Staples, Vegetables & Fruits, Meat & Protein, Fuel & Transport
 

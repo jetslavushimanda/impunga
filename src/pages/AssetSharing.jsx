@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, Filter, MapPin, DollarSign, Calendar, PackageOpen, Monitor } from 'lucide-react';
+import { ArrowLeft, Search, Filter, MapPin, Calendar, PackageOpen, Monitor, X } from 'lucide-react';
+import { Toast, useToast } from '../components/shared/SuccessToast';
 
 const MOCK_ASSETS = [
   {
@@ -39,15 +40,87 @@ export default function AssetSharing() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
   const navigate = useNavigate();
+  const { toast, show, hide } = useToast();
+
+  const [assets, setAssets] = useState(() => {
+    const saved = localStorage.getItem('impunga_assets');
+    return saved ? JSON.parse(saved) : MOCK_ASSETS;
+  });
+
+  // Modal States
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState(null);
+
+  // Form States - List Asset
+  const [title, setTitle] = useState('');
+  const [owner, setOwner] = useState('');
+  const [category, setCategory] = useState('Machinery');
+  const [priceValue, setPriceValue] = useState('');
+  const [priceUnit, setPriceUnit] = useState('day');
+  const [location, setLocation] = useState('');
+  const [availability, setAvailability] = useState('Available Now');
+  const [description, setDescription] = useState('');
+
+  // Form States - Request
+  const [requestDuration, setRequestDuration] = useState('');
+  const [requestDate, setRequestDate] = useState('');
+  const [requestMessage, setRequestMessage] = useState('');
 
   const categories = ['All', 'Machinery', 'Workspace', 'Equipment', 'Vehicles'];
 
-  const filteredAssets = MOCK_ASSETS.filter(asset => {
+  const filteredAssets = assets.filter(asset => {
     const matchesSearch = asset.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          asset.description.toLowerCase().includes(searchTerm.toLowerCase());
+                          asset.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          asset.owner.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === 'All' || asset.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleListAsset = (e) => {
+    e.preventDefault();
+    if (!title.trim() || !owner.trim() || !priceValue.trim() || !location.trim() || !description.trim()) return;
+
+    const newAsset = {
+      id: `A-${Math.floor(100 + Math.random() * 900)}`,
+      title,
+      owner,
+      category,
+      price: `K${priceValue} / ${priceUnit}`,
+      location,
+      availability: availability || 'Available Now',
+      description
+    };
+
+    const updated = [newAsset, ...assets];
+    setAssets(updated);
+    localStorage.setItem('impunga_assets', JSON.stringify(updated));
+
+    // Reset form
+    setTitle('');
+    setOwner('');
+    setCategory('Machinery');
+    setPriceValue('');
+    setPriceUnit('day');
+    setLocation('');
+    setAvailability('Available Now');
+    setDescription('');
+
+    setShowPostModal(false);
+    show('Asset listed successfully!');
+  };
+
+  const handleSendRequest = (e) => {
+    e.preventDefault();
+    if (!requestDuration.trim() || !requestDate.trim() || !requestMessage.trim()) return;
+
+    show(`Rental request for "${selectedAsset.title}" sent to ${selectedAsset.owner} successfully!`);
+
+    // Reset Request
+    setRequestDuration('');
+    setRequestDate('');
+    setRequestMessage('');
+    setSelectedAsset(null);
+  };
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fade-in">
@@ -64,7 +137,10 @@ export default function AssetSharing() {
           <p className="text-gray-500 font-medium text-lg max-w-2xl">Rent out idle equipment or find affordable shared resources for your business.</p>
         </div>
         
-        <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap">
+        <button 
+          onClick={() => setShowPostModal(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap cursor-pointer"
+        >
           List an Asset
         </button>
       </div>
@@ -133,7 +209,10 @@ export default function AssetSharing() {
                         <Calendar className="w-3.5 h-3.5" /> {asset.availability}
                       </div>
                     </div>
-                    <button className="bg-gray-900 hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-xl transition-colors text-sm">
+                    <button 
+                      onClick={() => setSelectedAsset(asset)}
+                      className="bg-gray-900 hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-xl transition-colors text-sm cursor-pointer"
+                    >
                       Request
                     </button>
                   </div>
@@ -149,6 +228,212 @@ export default function AssetSharing() {
           )}
         </div>
       </div>
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
+
+      {/* List Modal */}
+      {showPostModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowPostModal(false)}
+          />
+          
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-slide-up border border-white/20 z-10">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 shrink-0">
+              <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <PackageOpen className="w-6 h-6 text-indigo-600" /> List an Asset or Space
+              </h3>
+              <button 
+                onClick={() => setShowPostModal(false)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleListAsset} className="p-6 overflow-y-auto bg-gray-50/50 flex-1 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Asset/Space Title *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. 5-Tonne Flatbed Truck"
+                  className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Owner / Company Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Lusaka Hire Services"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    value={owner}
+                    onChange={e => setOwner(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Category *</label>
+                  <select
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100 bg-white"
+                    value={category}
+                    onChange={e => setCategory(e.target.value)}
+                  >
+                    {categories.filter(c => c !== 'All').map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Rental Price (ZMW) *</label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="e.g. 500"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    value={priceValue}
+                    onChange={e => setPriceValue(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Per Unit *</label>
+                  <select
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100 bg-white"
+                    value={priceUnit}
+                    onChange={e => setPriceUnit(e.target.value)}
+                  >
+                    <option value="day">per Day</option>
+                    <option value="week">per Week</option>
+                    <option value="month">per Month</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Location *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Lusaka West"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    value={location}
+                    onChange={e => setLocation(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Availability Status</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Available Now"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    value={availability}
+                    onChange={e => setAvailability(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Description & Terms *</label>
+                <textarea
+                  required
+                  placeholder="Describe details, technical specs, safety deposit rules, and pickup details..."
+                  className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100 min-h-24"
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-md text-sm mt-2 cursor-pointer font-sans"
+              >
+                List Asset
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Request Modal */}
+      {selectedAsset && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setSelectedAsset(null)}
+          />
+          
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-slide-up border border-white/20 z-10">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 shrink-0">
+              <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <Calendar className="w-6 h-6 text-indigo-600" /> Request Asset Rental
+              </h3>
+              <button 
+                onClick={() => setSelectedAsset(null)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSendRequest} className="p-6 overflow-y-auto bg-gray-50/50 flex-1 space-y-4">
+              <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 mb-2">
+                <h4 className="font-bold text-indigo-900 text-sm mb-1">{selectedAsset.title}</h4>
+                <p className="text-xs text-indigo-700 font-medium">Owner: {selectedAsset.owner} | Rate: {selectedAsset.price}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Duration of Rental *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 3 Days or 2 Weeks"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    value={requestDuration}
+                    onChange={e => setRequestDuration(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Start Date *</label>
+                  <input
+                    type="date"
+                    required
+                    className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    value={requestDate}
+                    onChange={e => setRequestDate(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Message to Owner *</label>
+                <textarea
+                  required
+                  placeholder="Tell the owner how you plan to use it, request pickup logistics, or propose terms..."
+                  className="w-full bg-white border border-gray-250 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-100 min-h-28"
+                  value={requestMessage}
+                  onChange={e => setRequestMessage(e.target.value)}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-md text-sm mt-2 cursor-pointer font-sans"
+              >
+                Send Rental Request
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

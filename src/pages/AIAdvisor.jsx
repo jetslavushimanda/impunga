@@ -1,19 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, RotateCcw, Copy, Check } from 'lucide-react';
+import { Bot, Send, RotateCcw, Copy, Check, Navigation, Building2, Wallet, Users } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import useAuthStore from '../store/authStore';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import AIResponse from '../components/shared/AIResponse';
 
 const SUGGESTED_QUESTIONS = [
-  'How do I use the Idea Validator?',
-  'Where can I create a professional profile?',
-  'I need to write a business plan. Which module do I use?',
-  'How do I register my business with PACRA?',
-  'Where can I find funding for my startup?',
-  'How do I use the Verified Directory?',
-  'Can you help me calculate my product pricing?',
-  'What taxes do I need to pay as a small business?',
+  'How do I test my business idea using the Idea Validator?',
+  'What are the requirements and costs for PACRA registration?',
+  'Where can I apply for CEEC loans or non-dilutive grants?',
+  'How do I use the Piece-Work Board to find short-term tasks?',
+  'How do I setup my profile in the Skill Profile Builder?',
+  'What ZRA tax deadlines do I need to follow in the Compliance Tracker?',
+  'How do I list machinery or tools on the Asset Rentals portal?',
+  'Can you help me calculate my product markup in the Pricing Calculator?'
 ];
 
 function TypingIndicator() {
@@ -129,24 +129,71 @@ export default function AIAdvisor() {
       {/* Chat window */}
       <div className="flex-1 overflow-y-auto space-y-6 pb-4">
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center px-4 animate-fade-in mt-10">
-            <div className="w-20 h-20 bg-gradient-to-br from-slate-800 to-slate-900 rounded-full flex items-center justify-center mb-6 shadow-xl border-4 border-white">
-              <Bot className="w-10 h-10 text-white" />
+          <div className="flex flex-col items-center justify-center text-center px-4 animate-fade-in mt-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-slate-800 to-slate-900 rounded-full flex items-center justify-center mb-4 shadow-xl border-4 border-white shrink-0">
+              <Bot className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl font-extrabold text-gray-800 mb-2">How can I help you today?</h2>
-            <p className="text-gray-500 text-base max-w-md mx-auto mb-10">
+            <h2 className="text-2xl font-extrabold text-gray-800 mb-2">How can I help you today?</h2>
+            <p className="text-gray-500 text-sm max-w-md mx-auto mb-8">
               I am your intelligent platform guide. Ask me anything about IMPUNGA modules, Zambia business registration, or funding.
             </p>
+
+            {/* Capabilities Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl mx-auto mb-8 text-left">
+              <div className="p-4 bg-white/60 border border-gray-100 rounded-2xl flex gap-3 shadow-sm">
+                <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                  <Navigation className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs text-gray-800 uppercase tracking-wide">Platform Navigator</h4>
+                  <p className="text-xs text-gray-500 mt-1">Get guided walks on how to use the Idea Validator, SWOT, and Ledger tools.</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white/60 border border-gray-100 rounded-2xl flex gap-3 shadow-sm">
+                <div className="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+                  <Building2 className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs text-gray-800 uppercase tracking-wide">PACRA & ZRA Assistant</h4>
+                  <p className="text-xs text-gray-500 mt-1">Understand how to register companies, obtain TPINs, and track tax deadlines.</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white/60 border border-gray-100 rounded-2xl flex gap-3 shadow-sm">
+                <div className="w-8 h-8 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center shrink-0">
+                  <Wallet className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs text-gray-800 uppercase tracking-wide">Funding & Finance Finder</h4>
+                  <p className="text-xs text-gray-500 mt-1">Learn typical criteria for CEEC, CDF, and regional private equity venture funds.</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white/60 border border-gray-100 rounded-2xl flex gap-3 shadow-sm">
+                <div className="w-8 h-8 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center shrink-0">
+                  <Users className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs text-gray-800 uppercase tracking-wide">Community & Connections</h4>
+                  <p className="text-xs text-gray-500 mt-1">Discover B2B Tenders, local Piece-Works, and machinery rentals on the platform.</p>
+                </div>
+              </div>
+            </div>
             
+            <div className="w-full max-w-2xl text-left mb-3">
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Suggested Questions</span>
+            </div>
+
             {/* Beautiful Suggested Questions Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl mx-auto">
-              {SUGGESTED_QUESTIONS.slice(0, 4).map(q => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl mx-auto">
+              {SUGGESTED_QUESTIONS.slice(0, 6).map(q => (
                 <button 
                   key={q} 
                   onClick={() => sendMessage(q)} 
-                  className="text-left px-5 py-4 bg-white rounded-2xl hover:bg-gray-50 transition-colors border border-gray-100 shadow-sm hover:shadow-md group"
+                  className="text-left px-5 py-3.5 bg-white rounded-2xl hover:bg-gray-50 transition-colors border border-gray-100 shadow-sm hover:shadow-md group cursor-pointer"
                 >
-                  <p className="text-sm font-medium text-gray-700 group-hover:text-primary transition-colors">{q}</p>
+                  <p className="text-xs font-semibold text-gray-700 group-hover:text-primary transition-colors leading-snug">{q}</p>
                 </button>
               ))}
             </div>

@@ -49,8 +49,8 @@ export function ModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, ba
   else if (checkText.includes('directory') || checkText.includes('marketplace')) footerText = 'Enter Directory';
   else if (checkText.includes('showcase')) footerText = 'View Showcase';
   else if (checkText.includes('tender')) footerText = 'View Tenders';
-  else if (checkText.includes('gig')) footerText = 'View Gig Board';
-  else if (checkText.includes('asset') || checkText.includes('sharing')) footerText = 'Explore Sharing';
+  else if (checkText.includes('gig') || checkText.includes('piece')) footerText = 'View Piece-Works';
+  else if (checkText.includes('asset') || checkText.includes('sharing') || checkText.includes('rental')) footerText = 'Explore Rentals';
   else if (checkText.includes('name-generator') || checkText.includes('name')) footerText = 'Generate Names';
   else if (checkText.includes('swot')) footerText = 'Perform SWOT';
   else if (checkText.includes('plan')) footerText = 'Build Plan';

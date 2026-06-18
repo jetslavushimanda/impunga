@@ -137,8 +137,10 @@ export default function Profile() {
                 <option value="student">Secondary School Student</option>
                 <option value="outOfSchool">Out of School Youth</option>
                 <option value="university">University Student</option>
+                <option value="jobseeker">Job Seeker / Unemployed</option>
                 <option value="vendor">Market Vendor</option>
                 <option value="farmer">Farmer</option>
+                <option value="artisan">Local Artisan / Tradesperson</option>
                 <option value="employed">Employed Person</option>
                 <option value="retired">Retired Person</option>
                 <option value="other">Other</option>

@@ -31,6 +31,7 @@ import MarketDirectory from './pages/MarketDirectory';
 import BusinessLedger from './pages/BusinessLedger';
 import SkillProfileBuilder from './pages/SkillProfileBuilder';
 import CareerMatches from './pages/CareerMatches';
+import ZambianJobs from './pages/ZambianJobs';
 import DataPrivacy from './pages/DataPrivacy';
 import ComplianceTracker from './pages/ComplianceTracker';
 import PlaceholderPage from './pages/PlaceholderPage';
@@ -110,6 +111,7 @@ export default function App() {
           <Route path="/business-ledger" element={<BusinessLedger />} />
           <Route path="/skill-profile-builder" element={<SkillProfileBuilder />} />
           <Route path="/career-matches" element={<CareerMatches />} />
+          <Route path="/zambian-jobs" element={<ZambianJobs />} />
           <Route path="/data-privacy" element={<DataPrivacy />} />
           <Route path="/compliance-tracker" element={<ComplianceTracker />} />
           <Route path="/cv-generator" element={<CVGenerator />} />

@@ -1,9 +1,9 @@
 import {
-  Lightbulb, Building2, FileText, Target, Sparkles,
-  Calculator, Receipt, ShoppingCart, BookOpen,
+  FileText, Target,
+  Calculator, Receipt, BookOpen,
   DollarSign, Share2, MessageCircle,
   Bot, GraduationCap, User, Briefcase, ShieldCheck,
-  Globe, TrendingUp, Handshake, Shield, PenTool, Compass,
+  Globe, TrendingUp, Handshake, PenTool,
   Package
 } from 'lucide-react';
 
@@ -31,7 +31,8 @@ export const ENGINE_MODULES = {
     bg: 'bg-gradient-to-br from-purple-600 to-pink-700',
     modules: [
       { path: '/skill-profile-builder', icon: User, name: 'Skill Profile Builder', desc: 'Build your professional skill portfolio', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400', badge: 'FOUNDATION', badgeColor: 'purple' },
-      { path: '/career-matches', icon: Briefcase, name: 'Career Matches', desc: 'Match your skills with Zambian jobs', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400', badge: 'AI MATCH', badgeColor: 'purple' },
+      { path: '/career-matches', icon: Briefcase, name: 'Career Matches', desc: 'Discover career paths and get AI roadmaps', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-l-purple-400', badge: 'AI ROADMAPS', badgeColor: 'purple' },
+      { path: '/zambian-jobs', icon: Briefcase, name: 'Zambian Jobs', desc: 'Find work matching your specific skill set or browse active postings', bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-l-rose-400', badge: 'JOBS', badgeColor: 'purple' },
       { path: '/cv-generator', icon: FileText, name: 'CV Generator', desc: 'Instantly build your professional CV', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400', badge: 'EXPORT READY', badgeColor: 'green' },
       { path: '/cover-letter-generator', icon: PenTool, name: 'Cover Letter AI', desc: 'Generate tailored cover letters', bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-l-indigo-400', badge: 'AI WRITER', badgeColor: 'purple' },
       { path: '/interview-prep', icon: MessageCircle, name: 'Interview Prep Wizard', desc: 'AI mock interviews for local jobs', bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-l-rose-400', badge: 'AI COACH', badgeColor: 'blue' },
@@ -57,12 +58,12 @@ export const ENGINE_MODULES = {
     icon: Handshake,
     bg: 'bg-gradient-to-br from-orange-500 to-rose-600',
     modules: [
-      { path: '/career-matches', icon: Briefcase, name: 'Zambian Jobs', desc: 'Find and match with local employment opportunities', bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-l-rose-400', badge: 'CAREERS', badgeColor: 'purple' },
-      { path: '/market-directory', icon: ShieldCheck, name: 'Verified Directory', desc: 'Marketplace for verified users', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400', badge: 'TRUSTED', badgeColor: 'blue' },
-      { path: '/portfolio-showcase', icon: User, name: 'Portfolio Showcase', desc: 'Monetize skills through P2P trade', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400', badge: 'SHOWCASE', badgeColor: 'purple' },
-      { path: '/b2b-tenders', icon: FileText, name: 'B2B Tenders', desc: 'Corporate procurement notices and contracts', bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-l-orange-400', badge: 'CORPORATE', badgeColor: 'orange' },
-      { path: '/gig-board', icon: Briefcase, name: 'Gig Board', desc: 'Freelance work and short-term projects', bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-l-indigo-400', badge: 'FREELANCE', badgeColor: 'green' },
-      { path: '/asset-sharing', icon: Package, name: 'Asset Sharing', desc: 'Rent idle equipment and workspaces', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-l-emerald-400', badge: 'PEER TO PEER', badgeColor: 'teal' },
+      { path: '/zambian-jobs', icon: Briefcase, name: 'Zambian Jobs', desc: 'Find and match with local employment opportunities', bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-l-rose-400', badge: 'CAREERS', badgeColor: 'purple' },
+      { path: '/market-directory', icon: ShieldCheck, name: 'Verified Directory', desc: 'Marketplace for verified local business users', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400', badge: 'TRUSTED', badgeColor: 'blue' },
+      { path: '/portfolio-showcase', icon: User, name: 'Portfolio Showcase', desc: 'Monetize skills through local peer-to-peer trade', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400', badge: 'SHOWCASE', badgeColor: 'purple' },
+      { path: '/b2b-tenders', icon: FileText, name: 'B2B Tenders', desc: 'Corporate procurement notices and tenders', bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-l-orange-400', badge: 'CORPORATE', badgeColor: 'orange' },
+      { path: '/gig-board', icon: Briefcase, name: 'Piece-Work Board', desc: 'Casual labor, short-term tasks, and local piece-works', bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-l-indigo-400', badge: 'PIECE WORK', badgeColor: 'green' },
+      { path: '/asset-sharing', icon: Package, name: 'Asset Rentals', desc: 'Rent idle machinery, agricultural equipment, and workspaces', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-l-emerald-400', badge: 'RENTALS', badgeColor: 'teal' },
     ]
   },
   gateway: {
