@@ -4,7 +4,7 @@ import { useFirestore } from '../hooks/useFirestore';
 import { useGemini } from '../hooks/useGemini';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
-import { Briefcase, ArrowRight, Map, Sparkles, Loader2, Bot } from 'lucide-react';
+import { Briefcase, ArrowRight, Map, Sparkles, Loader2, Bot, ArrowLeft } from 'lucide-react';
 
 import { CAREERS } from '../data/careers';
 import { ZAMBIAN_JOBS } from '../data/jobs';
@@ -114,6 +114,9 @@ export default function CareerMatches() {
   if (!profile) {
     return (
       <div className="max-w-md mx-auto py-16 px-4 text-center">
+        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back
+        </button>
         <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
           <Briefcase className="w-8 h-8 text-blue-600" />
         </div>
@@ -131,6 +134,9 @@ export default function CareerMatches() {
 
   return (
     <div className="max-w-2xl mx-auto pb-24 px-4 animate-fade-in">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
       
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">

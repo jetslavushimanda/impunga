@@ -146,7 +146,7 @@ export default function SkillGapCloser() {
                 {/* CDF Skills Development Bursaries Info */}
                 <div className="mt-6 bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-3xl p-6">
                   <h3 className="font-bold text-indigo-900 text-sm mb-3 flex items-center gap-1.5">
-                    🎓 CDF Skills Development Bursaries (Zambia)
+                    CDF Skills Development Bursaries (Zambia)
                   </h3>
                   <p className="text-xs text-indigo-800 leading-relaxed font-medium mb-3">
                     Did you know? Under the **Zambian Constituency Development Fund (CDF)**, you can apply for a full skills training bursary to attend TEVETA-approved institutions in your district.

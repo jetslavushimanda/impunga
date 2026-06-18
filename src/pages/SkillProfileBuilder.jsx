@@ -5,7 +5,7 @@ import { db } from '../lib/firebase';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
-import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, X, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, X, Plus, ArrowLeft } from 'lucide-react';
 import { getProvinces, getDistricts } from '../data/provinces';
 import { useAI } from '../hooks/useAI';
 
@@ -325,6 +325,10 @@ export default function SkillProfileBuilder() {
 
   return (
     <div className="max-w-2xl mx-auto pb-24 animate-fade-in px-4">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
+
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
@@ -468,21 +472,21 @@ export default function SkillProfileBuilder() {
                 onClick={() => setSkillsTab('quiz')}
                 className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${skillsTab === 'quiz' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
               >
-                📝 Skills Quiz
+                Skills Quiz
               </button>
               <button
                 type="button"
                 onClick={() => setSkillsTab('catalog')}
                 className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${skillsTab === 'catalog' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
               >
-                🔍 Skill Catalog
+                Skill Catalog
               </button>
               <button
                 type="button"
                 onClick={() => setSkillsTab('ai')}
                 className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${skillsTab === 'ai' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
               >
-                ✨ AI Extractor
+                AI Extractor
               </button>
             </div>
 

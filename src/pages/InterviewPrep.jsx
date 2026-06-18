@@ -262,7 +262,7 @@ export default function InterviewPrep() {
           )}
 
           <div className="bg-gradient-to-br from-rose-50 to-pink-50/50 p-5 rounded-2xl border border-rose-100/60 space-y-3">
-            <h3 className="font-bold text-rose-950 text-sm flex items-center gap-1.5">🎙️ Voice & Interactive Settings</h3>
+            <h3 className="font-bold text-rose-950 text-sm flex items-center gap-1.5">Voice & Interactive Settings</h3>
             <div className="flex flex-col sm:flex-row gap-4 text-xs font-semibold text-rose-800">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={autoSpeak} onChange={e => setAutoSpeak(e.target.checked)} className="rounded text-rose-600 focus:ring-rose-500 h-4 w-4" />
@@ -271,7 +271,7 @@ export default function InterviewPrep() {
               
               <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-lg border border-rose-100">
                 <span className="text-[10px] uppercase font-bold text-gray-500">Mic Status:</span>
-                <span>{recognitionSupported ? '🎙️ Speech-to-Text Available' : '❌ Mic Unsupported'}</span>
+                <span>{recognitionSupported ? 'Speech-to-Text Available' : 'Mic Unsupported'}</span>
               </div>
             </div>
           </div>
