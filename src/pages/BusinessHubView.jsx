@@ -261,14 +261,14 @@ export default function BusinessHubView() {
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          {view === 'paths' ? 'Back to Home' : 'Back to Business Hub'}
+          {view === 'paths' ? 'Back to Home' : 'Back to Business Space'}
         </Link>
       </div>
 
       {view === 'paths' && (
         <div className="animate-slide-up">
           <SectionHeader 
-            title="Business Hub" 
+            title="Business Space" 
             description="Choose your path. Whether you are just starting out with an idea or managing an existing operation, we have the tools for you."
             icon={Building2}
             gradient="from-blue-600 to-indigo-600"

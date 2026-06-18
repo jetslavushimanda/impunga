@@ -10,7 +10,7 @@ import {
 export const ENGINE_MODULES = {
   business: {
     id: 'business',
-    title: 'Business Hub',
+    title: 'Business Space',
     description: 'The Economic Journey. De-risk your startup phase and scale your operations.',
     icon: TrendingUp,
     bg: 'bg-gradient-to-br from-blue-600 to-indigo-800',
