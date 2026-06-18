@@ -34,14 +34,12 @@ export default function SkillGapCloser() {
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
 
-      <div className="flex flex-col md:flex-row gap-6 mb-8 items-start md:items-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0">
-          <Target className="w-8 h-8 text-white" />
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <Target className="w-8 h-8 text-cyan-600" />
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Skill Gap Closer</h1>
         </div>
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Skill Gap Closer</h1>
-          <p className="text-gray-500 font-medium text-lg">Generate a personalized 4-week learning plan to master a new skill in Zambia.</p>
-        </div>
+        <p className="text-gray-500 font-medium text-base">Generate a personalized 4-week learning plan to master a new skill in Zambia.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

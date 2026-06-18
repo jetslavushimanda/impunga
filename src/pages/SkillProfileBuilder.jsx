@@ -330,14 +330,12 @@ export default function SkillProfileBuilder() {
       </button>
 
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
-          <CheckCircle className="w-5 h-5 text-blue-700" />
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <CheckCircle className="w-8 h-8 text-blue-600" />
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Skill Profile Builder</h1>
         </div>
-        <div>
-          <h1 className="text-xl font-bold text-gray-800">Skill Profile Builder</h1>
-          <p className="text-xs text-gray-400">Build your professional skills and profile</p>
-        </div>
+        <p className="text-gray-500 font-medium text-base">Build your professional skills and profile</p>
       </div>
 
       {/* Progress Bar & Steps indicator */}

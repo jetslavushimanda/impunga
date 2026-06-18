@@ -199,14 +199,12 @@ export default function InterviewPrep() {
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
 
-      <div className="flex flex-col md:flex-row gap-6 mb-8 items-start md:items-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-rose-500/20 shrink-0">
-          <MessageCircle className="w-8 h-8 text-white" />
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <MessageCircle className="w-8 h-8 text-rose-600" />
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Interactive Interview Prep</h1>
         </div>
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Interactive Interview Prep</h1>
-          <p className="text-gray-500 font-medium text-lg">Practice with interactive voice calls read out by a virtual HR manager.</p>
-        </div>
+        <p className="text-gray-500 font-medium text-base">Practice with interactive voice calls read out by a virtual HR manager.</p>
       </div>
 
       {aiError && <ErrorMessage message={aiError} />}

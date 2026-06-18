@@ -139,10 +139,13 @@ export default function CareerMatches() {
       </button>
       
       {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">Your Career Matches</h1>
-          <p className="text-xs text-gray-400">Based on your skill profile</p>
+          <div className="flex items-center gap-3 mb-2">
+            <Briefcase className="w-8 h-8 text-purple-600" />
+            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Your Career Matches</h1>
+          </div>
+          <p className="text-gray-500 font-medium text-base">Based on your skill profile</p>
         </div>
         <button
           onClick={() => navigate('/skill-profile-builder')}

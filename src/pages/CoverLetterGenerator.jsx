@@ -5,7 +5,7 @@ import { useGemini } from '../hooks/useGemini';
 import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
-import { PenTool, ArrowLeft, Copy, User, Check, Sparkles } from 'lucide-react';
+import { PenTool, ArrowLeft, Copy, User, Check, Sparkles, Download } from 'lucide-react';
 
 export default function CoverLetterGenerator() {
   const { user } = useAuthStore();
@@ -20,6 +20,50 @@ export default function CoverLetterGenerator() {
   const [company, setCompany] = useState('');
   const [letterContent, setLetterContent] = useState('');
   const [copied, setCopied] = useState(false);
+
+  const downloadDOCX = () => {
+    if (!letterContent || !profile) return;
+    
+    const formattedContent = letterContent
+      .split('\n')
+      .map(line => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          return '<p style="margin: 0; min-height: 12pt;">&nbsp;</p>';
+        }
+        return `<p style="font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; margin: 0 0 10pt 0; text-align: left;">${trimmed}</p>`;
+      })
+      .join('');
+
+    const html = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <title>Cover Letter</title>
+        <!--[if gte mso 9]>
+        <xml>
+          <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>100</w:Zoom>
+          </w:WordDocument>
+        </xml>
+        <![endif]-->
+      </head>
+      <body style="font-family: Arial, sans-serif; padding: 1in; max-width: 6.5in; margin: auto;">
+        ${formattedContent}
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${profile.fullName.replace(/\s+/g, '_')}_Cover_Letter.docx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   // Address and header particulars
   const [details, setDetails] = useState({
@@ -106,14 +150,12 @@ export default function CoverLetterGenerator() {
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
 
-      <div className="flex flex-col md:flex-row gap-6 mb-8 items-start md:items-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
-          <PenTool className="w-8 h-8 text-white" />
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <PenTool className="w-8 h-8 text-indigo-600" />
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Cover Letter AI</h1>
         </div>
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Cover Letter AI</h1>
-          <p className="text-gray-500 font-medium text-lg">Generate a professional, structured cover letter matching standard Zambian layouts.</p>
-        </div>
+        <p className="text-gray-500 font-medium text-base">Generate a professional, structured cover letter matching standard Zambian layouts.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -218,12 +260,20 @@ export default function CoverLetterGenerator() {
             <div className="flex justify-between items-center mb-4 border-b border-gray-50 pb-3">
               <h2 className="text-lg font-bold text-gray-800">Your Structured Letter</h2>
               {letterContent && (
-                <button 
-                  onClick={handleCopy}
-                  className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors"
-                >
-                  {copied ? <><Check className="w-4 h-4 text-green-600"/> Copied!</> : <><Copy className="w-4 h-4"/> Copy Text</>}
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={handleCopy}
+                    className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    {copied ? <><Check className="w-4 h-4 text-green-600"/> Copied!</> : <><Copy className="w-4 h-4"/> Copy Text</>}
+                  </button>
+                  <button 
+                    onClick={downloadDOCX}
+                    className="text-xs font-bold text-emerald-600 hover:text-emerald-800 flex items-center gap-1.5 bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    <Download className="w-4 h-4"/> Download DOCX
+                  </button>
+                </div>
               )}
             </div>
 
