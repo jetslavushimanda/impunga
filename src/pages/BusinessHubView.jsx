@@ -126,7 +126,7 @@ export default function BusinessHubView() {
   async function loadSavedIdeas() {
     setLoadingIdeas(true);
     try {
-      const ideas = await getUserDocuments('businessIdeas');
+      const ideas = await getUserDocuments('businessIdeas', null);
       // Sort by newest
       setSavedIdeas(ideas.sort((a, b) => b.timestamp - a.timestamp));
     } catch (err) {

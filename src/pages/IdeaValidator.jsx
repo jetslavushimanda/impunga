@@ -169,7 +169,7 @@ export default function IdeaValidator() {
   }, []);
 
   async function loadSavedIdeas() {
-    const ideas = await getUserDocuments('businessIdeas');
+    const ideas = await getUserDocuments('businessIdeas', null);
     setSavedIdeas(ideas);
   }
 

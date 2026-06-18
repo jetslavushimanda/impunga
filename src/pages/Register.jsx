@@ -6,12 +6,13 @@ import { z } from 'zod';
 import { 
   Sprout, ChevronRight, ChevronLeft, Eye, EyeOff, 
   User, Mail, Lock, Calendar, Users, MapPin, 
-  ChevronDown, ArrowLeft
+  ChevronDown, ArrowLeft, X
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import { getProvinces, getDistricts } from '../data/provinces';
+import { DisclaimerDetailsSection } from './Agreement';
 
 const step1Schema = z.object({
   fullName: z.string().min(2, 'Enter your full name'),
@@ -20,6 +21,9 @@ const step1Schema = z.object({
   confirmPassword: z.string(),
   age: z.number({ coerce: true }).min(13, 'You must be at least 13').max(100, 'Invalid age'),
   sex: z.string().min(1, 'Please select'),
+  acceptTerms: z.literal(true, {
+    errorMap: () => ({ message: 'You must accept the disclaimers to register' }),
+  }),
 }).refine(d => d.password === d.confirmPassword, { message: 'Passwords do not match', path: ['confirmPassword'] });
 
 const step2Schema = z.object({
@@ -31,6 +35,7 @@ const schemas = [step1Schema, step2Schema];
 
 export default function Register() {
   const [step, setStep] = useState(1);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({});
   const [authError, setAuthError] = useState('');
@@ -41,12 +46,13 @@ export default function Register() {
   const { register: registerUser, loginWithGoogle, loginWithApple } = useAuth();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm({
     resolver: zodResolver(schemas[step - 1]),
     defaultValues: formData,
   });
 
   const province = watch('province');
+  const acceptTermsVal = watch('acceptTerms');
 
   async function onNext(data) {
     const merged = { ...formData, ...data };
@@ -60,6 +66,10 @@ export default function Register() {
   }
 
   async function handleGoogle() {
+    if (!acceptTermsVal) {
+      setAuthError('You must accept the disclaimers to register');
+      return;
+    }
     setIsGoogleLoading(true);
     setAuthError('');
     try {
@@ -73,6 +83,10 @@ export default function Register() {
   }
 
   async function handleApple() {
+    if (!acceptTermsVal) {
+      setAuthError('You must accept the disclaimers to register');
+      return;
+    }
     setIsAppleLoading(true);
     setAuthError('');
     try {
@@ -261,6 +275,20 @@ export default function Register() {
                 </div>
               </div>
 
+              <div className="pt-2">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input 
+                    {...register('acceptTerms')} 
+                    type="checkbox" 
+                    className="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary mt-0.5 cursor-pointer" 
+                  />
+                  <span className="text-[11px] text-gray-500 leading-normal font-medium text-left">
+                    I accept the <button type="button" onClick={(e) => { e.stopPropagation(); setShowTermsModal(true); }} className="text-primary hover:underline font-bold focus:outline-none inline-block">Platform Governance & Disclaimers</button>, and understand that all tools are educational simulators and directories.
+                  </span>
+                </label>
+                {errors.acceptTerms && <p className="text-red-500 text-xs mt-1">{errors.acceptTerms.message}</p>}
+              </div>
+
               <div className="flex items-center gap-3 my-5">
                 <hr className="flex-1 border-gray-200" />
                 <span className="text-gray-400 text-[11px] tracking-wider uppercase font-semibold">Or signup with</span>
@@ -353,6 +381,60 @@ export default function Register() {
           <Link to="/login" className="text-primary font-semibold hover:underline transition-colors">Sign in</Link>
         </p>
       </div>
+
+      {/* Platform Governance & Disclaimers Popup Modal */}
+      {showTermsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl relative border border-gray-100 flex flex-col max-h-[85vh]">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-50">
+              <div className="flex items-center gap-2">
+                <Sprout className="w-5 h-5 text-accent-gold" />
+                <h3 className="font-extrabold text-gray-900 text-sm">Platform Disclaimers & Governance</h3>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setShowTermsModal(false)} 
+                className="p-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <X className="w-4 h-4 text-gray-400" />
+              </button>
+            </div>
+            
+            <div className="overflow-y-auto pr-1 space-y-4 text-xs text-gray-500 leading-relaxed max-h-[55vh] text-left">
+              <p className="font-semibold text-gray-700 text-xs">
+                Compliance, Transparency, & Safety Standards
+              </p>
+              <p>
+                By signing up, you explicitly agree to the following guidelines, compliance notices, and simulated boundaries of our educational tools.
+              </p>
+              
+              <DisclaimerDetailsSection />
+            </div>
+
+
+
+            <div className="flex gap-3 pt-4 mt-4 border-t border-gray-50">
+              <button
+                type="button"
+                onClick={() => setShowTermsModal(false)}
+                className="btn-secondary flex-1 py-2 text-xs"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setValue('acceptTerms', true, { shouldValidate: true });
+                  setShowTermsModal(false);
+                }}
+                className="btn-primary flex-1 py-2 text-xs"
+              >
+                Accept & Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

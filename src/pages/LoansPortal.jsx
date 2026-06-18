@@ -145,17 +145,6 @@ export default function LoansPortal() {
         </p>
       </div>
 
-      {/* Compliance Disclaimer */}
-      <div className="mb-8 bg-amber-50/60 border border-amber-200 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
-        <AlertTriangle className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
-        <div className="space-y-1.5">
-          <h3 className="font-bold text-amber-900 text-sm">Regulatory Notice & Compliance</h3>
-          <p className="text-xs text-amber-800 leading-relaxed font-medium">
-            <strong>Educational Simulator & Directory Only:</strong> IMPUNGA is not a commercial bank, microfinance institution, or credit provider registered under the Banking and Financial Services Act (BFSA) of Zambia. This calculator is for educational guidance only. The platform does not issue loans, process credit applications, or handle financial transactions. All terms, interest rates, and loan options are simulations. Applications are made externally on the verified lenders' secure third-party portals.
-          </p>
-        </div>
-      </div>
-
       {/* Personal vs Business Toggle */}
       <div className="flex bg-gray-100 p-1.5 rounded-2xl max-w-sm mb-8">
         <button
@@ -502,6 +491,10 @@ export default function LoansPortal() {
 
         </div>
       </div>
+      {/* Small Legal Footer Note */}
+      <p className="text-center text-[11px] text-gray-400 mt-12">
+        Simulated calculations for educational purposes only. Review our compliance declarations on the <Link to="/agreement" className="underline font-bold text-gray-500 hover:text-primary">Platform Governance & Disclaimers</Link> page.
+      </p>
     </div>
   );
 }

@@ -213,19 +213,6 @@ export default function InvestmentMatchmaker() {
         </p>
       </div>
 
-      {/* Compliance Disclaimer */}
-      <div className="mb-8 bg-amber-50/60 border border-amber-200 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
-        <ShieldCheck className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
-        <div className="space-y-1.5">
-          <h3 className="font-bold text-amber-900 text-sm">Zambian Regulatory Compliance & Guardrails</h3>
-          <p className="text-xs text-amber-800 leading-relaxed font-medium">
-            <strong>National Payment Systems Act (Bank of Zambia):</strong> Because this platform functions purely as an educational matchmaking lead directory and does not hold client escrow funds, process investment values, or manage customer money, it is classified as a non-regulated communication hub. No payment transactions occur on-platform.
-          </p>
-          <p className="text-xs text-amber-800 leading-relaxed font-medium">
-            <strong>Data Protection Act (2021) & Securities Act:</strong> All profiles listed are public directories under the Zambian Data Protection Commission (ZDPC) guidelines. No private financial accounts, KYC documents, or bank details are requested, stored, or processed on this platform. Direct negotiations must be conducted externally.
-          </p>
-        </div>
-      </div>
 
       {/* Tabs */}
       <div className="flex bg-gray-100 p-1.5 rounded-2xl max-w-md mb-8">
@@ -584,6 +571,10 @@ export default function InvestmentMatchmaker() {
           </div>
         </div>
       )}
+      {/* Small Legal Footer Note */}
+      <p className="text-center text-[11px] text-gray-400 mt-12">
+        Simulated matchmaker directory for educational purposes only. Review our compliance declarations on the <Link to="/agreement" className="underline font-bold text-gray-500 hover:text-primary">Platform Governance & Disclaimers</Link> page.
+      </p>
     </div>
   );
 }

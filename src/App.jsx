@@ -34,6 +34,7 @@ const SkillProfileBuilder = lazy(() => import('./pages/SkillProfileBuilder'));
 const CareerMatches = lazy(() => import('./pages/CareerMatches'));
 const ZambianJobs = lazy(() => import('./pages/ZambianJobs'));
 const DataPrivacy = lazy(() => import('./pages/DataPrivacy'));
+const Agreement = lazy(() => import('./pages/Agreement'));
 const ComplianceTracker = lazy(() => import('./pages/ComplianceTracker'));
 const PlaceholderPage = lazy(() => import('./pages/PlaceholderPage'));
 const EngineView = lazy(() => import('./pages/EngineView'));
@@ -99,6 +100,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/agreement" element={<Agreement />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/engine/:engineId" element={<EngineView />} />
@@ -123,8 +125,8 @@ export default function App() {
           <Route path="/skill-profile-builder" element={<SkillProfileBuilder />} />
           <Route path="/career-matches" element={<CareerMatches />} />
           <Route path="/zambian-jobs" element={<ZambianJobs />} />
-          <Route path="/data-privacy" element={<DataPrivacy />} />
           <Route path="/compliance-tracker" element={<ComplianceTracker />} />
+          <Route path="/data-privacy" element={<DataPrivacy />} />
           <Route path="/cv-generator" element={<CVGenerator />} />
           <Route path="/cover-letter-generator" element={<CoverLetterGenerator />} />
           <Route path="/interview-prep" element={<InterviewPrep />} />

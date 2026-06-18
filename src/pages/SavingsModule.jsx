@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   DollarSign, Plus, Trash2, Calendar, TrendingUp, TrendingDown,
   Info, Award, ArrowLeft, Target, Wallet, AlertCircle, Percent
@@ -164,16 +164,6 @@ export default function SavingsModule() {
         </div>
       </div>
 
-      {/* Compliance Disclaimer */}
-      <div className="mb-8 bg-amber-50/60 border border-amber-200 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
-        <AlertCircle className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
-        <div className="space-y-1.5">
-          <h3 className="font-bold text-amber-900 text-sm">Simulated Savings Notice</h3>
-          <p className="text-xs text-amber-800 leading-relaxed font-medium">
-            <strong>Local Planning Simulator Only:</strong> This module is a spreadsheet-like bookkeeping tool for personal and business planning. IMPUNGA does not hold deposit accounts, manage savings funds, or connect to bank accounts or mobile money (MoMo) wallets for cash withdrawals/deposits. All entries logged here are local simulation data.
-          </p>
-        </div>
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Goals List */}
@@ -456,6 +446,10 @@ export default function SavingsModule() {
           </div>
         </div>
       </div>
+      {/* Small Legal Footer Note */}
+      <p className="text-center text-[11px] text-gray-400 mt-12">
+        Simulated savings vault calculations for educational purposes only. Review our compliance declarations on the <Link to="/agreement" className="underline font-bold text-gray-500 hover:text-primary">Platform Governance & Disclaimers</Link> page.
+      </p>
     </div>
   );
 }

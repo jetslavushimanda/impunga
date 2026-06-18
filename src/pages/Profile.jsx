@@ -36,7 +36,7 @@ export default function Profile() {
       getUserDocumentCount('bookmarkedFunding'),
     ]);
     setCounts({ ideas, plans, calcs, bookmarks });
-    const savedIdeasData = await getUserDocuments('businessIdeas');
+    const savedIdeasData = await getUserDocuments('businessIdeas', null);
     setSavedIdeas(savedIdeasData);
   }
 
@@ -179,8 +179,8 @@ export default function Profile() {
             <ul className="space-y-2">
               {savedIdeas.map(idea => (
                 <li key={idea.id} className="flex items-start gap-2 text-sm p-2 bg-surface-light rounded-lg">
-                  <span className={`score-circle w-6 h-6 text-xs font-bold flex-shrink-0 ${idea.viabilityScore >= 8 ? 'bg-accent-green' : idea.viabilityScore >= 5 ? 'bg-accent-orange' : 'bg-accent-red'} text-white rounded-full flex items-center justify-center`}>{idea.viabilityScore ?? '?'}</span>
-                  <span className="flex-1 text-gray-700 line-clamp-1">{idea.ideaText}</span>
+                  <span className={`score-circle w-6 h-6 text-xs font-bold flex-shrink-0 ${idea.score >= 8 ? 'bg-accent-green' : idea.score >= 5 ? 'bg-accent-orange' : 'bg-accent-red'} text-white rounded-full flex items-center justify-center`}>{idea.score ?? '?'}</span>
+                  <span className="flex-1 text-gray-700 line-clamp-1">{idea.wizardData?.solution || idea.ideaText || 'Business Idea'}</span>
                   <button onClick={async () => { await deleteDocument('businessIdeas', idea.id); loadData(); show('Deleted'); }} className="text-gray-300 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
                 </li>
               ))}
