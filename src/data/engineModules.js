@@ -25,7 +25,7 @@ export const ENGINE_MODULES = {
   },
   skills: {
     id: 'skills',
-    title: 'Skills & Careers',
+    title: 'Career Connect',
     description: 'The Professional Journey. Define your professional product and monetize it.',
     icon: GraduationCap,
     bg: 'bg-gradient-to-br from-purple-600 to-pink-700',
