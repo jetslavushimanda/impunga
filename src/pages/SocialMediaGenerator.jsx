@@ -7,6 +7,7 @@ import ErrorMessage from '../components/shared/ErrorMessage';
 import AIResponse from '../components/shared/AIResponse';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import useAuthStore from '../store/authStore';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const PLATFORMS = [
   { id: 'facebook', label: 'Facebook', icon: <ThumbsUp className="w-5 h-5 text-blue-600" />, char: 500 },
@@ -102,16 +103,17 @@ Return ONLY valid JSON:
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Social Media Generator</h1>
-        <p className="text-gray-500 font-medium">AI writes marketing posts for Facebook, WhatsApp, TikTok and Instagram</p>
-      </div>
+      <PageHeaderCard 
+        title="Marketing Tools"
+        description="AI writes marketing posts for Facebook, WhatsApp, TikTok and Instagram"
+        icon={Share2}
+        bg="bg-purple-50"
+        text="text-purple-600"
+        badge="AI CONTENT"
+        badgeColor="purple"
+      />
 
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-pink-200/20 rounded-full blur-3xl pointer-events-none" />

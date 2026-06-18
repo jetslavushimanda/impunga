@@ -4,6 +4,7 @@ import { useAI } from '../hooks/useAI';
 import useAuthStore from '../store/authStore';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import AIResponse from '../components/shared/AIResponse';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const SUGGESTED_QUESTIONS = [
   'How do I test my business idea using the Idea Validator?',
@@ -107,24 +108,23 @@ export default function AIAdvisor() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-130px)] animate-fade-in">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-            <Bot className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-gray-800">IMPUNGA AI Assistant</h1>
-            <p className="text-gray-500 text-xs">Platform Guide · Business Advisor</p>
-          </div>
-        </div>
-        {messages.length > 0 && (
-          <button onClick={newConversation} className="btn-secondary gap-2 text-sm">
-            <RotateCcw className="w-4 h-4" /> New Chat
-          </button>
-        )}
-      </div>
+    <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-130px)] animate-fade-in text-left">
+      <PageHeaderCard
+        title="AI Assistant"
+        description="Your intelligent platform guide. Get tailored advice on business, skills, and how to use IMPUNGA."
+        icon={Bot}
+        bg="bg-slate-800"
+        text="text-white"
+        badge="Universal Guide"
+        badgeColor="slate"
+        rightElement={
+          messages.length > 0 && (
+            <button onClick={newConversation} className="btn-secondary gap-2 text-sm py-2 px-4 shadow-sm">
+              <RotateCcw className="w-4 h-4" /> New Chat
+            </button>
+          )
+        }
+      />
 
       {/* Chat window */}
       <div className="flex-1 overflow-y-auto space-y-6 pb-4">

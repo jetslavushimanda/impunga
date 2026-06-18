@@ -118,23 +118,27 @@ export default function EngineView() {
 
   return (
     <div className="max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto pb-24 animate-fade-in relative px-2 sm:px-4">
-      <Link to="/dashboard" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-8 transition-colors">
-        <ArrowLeft className="w-4 h-4" />
-        Back to Home
-      </Link>
-
-      <div className="mb-10 relative">
-        <div className="flex items-start md:items-center gap-5 relative z-10">
-          <div className="relative">
-            <div className={`absolute inset-0 blur-2xl opacity-20 rounded-full ${bg}`} />
-            <div className={`relative w-16 h-16 rounded-[1.25rem] flex items-center justify-center shadow-lg border border-white/30 shrink-0 ${bg}`}>
+      {/* Flat Parent Card Header */}
+      <div className="bg-white rounded-[2rem] p-6 md:p-8 border border-gray-200/80 shadow-sm relative overflow-hidden flex items-center justify-between mb-8 text-left">
+        {/* Subtle ambient glow */}
+        <div className="absolute -right-10 -top-10 w-48 h-48 bg-gradient-to-br from-gray-150/10 to-gray-200/5 blur-3xl rounded-full pointer-events-none" />
+        
+        <div className="relative z-10 flex items-center gap-6 w-full">
+          <div className="relative shrink-0">
+            <div className={`absolute inset-0 blur-xl opacity-20 rounded-full ${bg}`} />
+            <div className={`relative w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg border border-white/20 ${bg}`}>
               <EngineIcon className="w-8 h-8 text-white drop-shadow-md" />
             </div>
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2">{title}</h1>
-            <p className="text-gray-500 text-base max-w-2xl font-medium leading-relaxed">{description}</p>
+            <h2 className="text-2xl font-extrabold text-gray-900 mb-1 tracking-tight">{title}</h2>
+            <p className="text-gray-500 text-sm md:text-base max-w-xl font-medium leading-relaxed">{description}</p>
           </div>
+        </div>
+
+        {/* Decorative large background icon */}
+        <div className="absolute -right-10 -bottom-10 w-64 h-64 text-gray-100/30 pointer-events-none">
+          <EngineIcon className="w-full h-full" />
         </div>
       </div>
 

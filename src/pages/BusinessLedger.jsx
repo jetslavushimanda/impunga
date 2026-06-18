@@ -14,6 +14,7 @@ import { Toast, useToast } from '../components/shared/SuccessToast';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const EXPENSE_CATEGORIES = [
   'Stock/Inventory', 'Transport', 'Rent', 'Airtime/Data',
@@ -682,21 +683,29 @@ export default function BusinessLedger() {
     { id: 'credit', label: 'Credit Score', Icon: Award, desc: 'Check your business credit health', bg: 'bg-purple-100', text: 'text-purple-600' },
   ];
 
+  const setCustomBack = useAuthStore(state => state.setCustomBack);
+  useEffect(() => {
+    if (activeTab !== 'menu') {
+      setCustomBack(() => setActiveTab('menu'));
+    } else {
+      setCustomBack(null);
+    }
+    return () => setCustomBack(null);
+  }, [activeTab, setCustomBack]);
+
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
-      <button onClick={() => activeTab === 'menu' ? navigate(-1) : setActiveTab('menu')} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> {activeTab === 'menu' ? 'Back' : 'Back to Ledger Menu'}
-      </button>
-
       {/* Menu Header */}
       {activeTab === 'menu' && (
-        <>
-          <div className="mb-8">
-            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Business Ledger</h1>
-            <p className="text-gray-500 font-medium">Manage your financial books and track business health</p>
-          </div>
-
-        </>
+        <PageHeaderCard 
+          title="Business Ledger"
+          description="Manage your financial books and track business health"
+          icon={BookOpen}
+          bg="bg-green-50"
+          text="text-green-600"
+          badge="FINANCIALS"
+          badgeColor="green"
+        />
       )}
 
       {/* Menu Grid */}

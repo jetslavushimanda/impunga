@@ -4,6 +4,7 @@ import { Receipt, Plus, Trash2, Download, ArrowLeft } from 'lucide-react';
 import { formatKwacha } from '../lib/utils';
 import useAuthStore from '../store/authStore';
 import { Toast, useToast } from '../components/shared/SuccessToast';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -168,16 +169,17 @@ export default function InvoiceGenerator() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Invoice Generator</h1>
-        <p className="text-gray-500 font-medium">Create professional invoices in Kwacha and download as PDF</p>
-      </div>
+      <PageHeaderCard 
+        title="Invoice Generator"
+        description="Create professional invoices in Kwacha and download as PDF"
+        icon={Receipt}
+        bg="bg-green-50"
+        text="text-green-600"
+        badge="BILLING"
+        badgeColor="green"
+      />
 
       {/* Invoice details */}
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">

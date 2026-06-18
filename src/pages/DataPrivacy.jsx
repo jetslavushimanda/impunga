@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const PRIVACY_PILLARS = [
   { key: 'encryption', label: 'Data Encryption', description: 'AES-256 at rest + TLS 1.3 in transit', icon: Lock, color: 'text-green-600', bg: 'bg-green-50' },
@@ -57,28 +58,16 @@ export default function DataPrivacy() {
   const totalDocuments = Object.values(docCounts).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="max-w-3xl mx-auto pb-24 animate-fade-in">
-      {/* Header Banner */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-6 relative overflow-hidden">
-        {/* Ambient background glow */}
-        <div className="absolute -right-10 -top-10 w-48 h-48 bg-gradient-to-br from-blue-500/10 to-indigo-500/5 blur-3xl rounded-full pointer-events-none" />
-        
-        <div className="relative z-10">
-          <div className="flex items-center gap-3.5 mb-3">
-            <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center shadow-sm">
-              <Shield className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Data Governance Dashboard</h1>
-              <p className="text-gray-500 text-xs font-semibold mt-0.5">Your live privacy and data protection status</p>
-            </div>
-          </div>
-          <p className="text-gray-650 text-sm leading-relaxed font-medium">
-            See exactly what data IMPUNGA holds about you, how it is protected, and our core privacy standards.
-          </p>
-        </div>
-        <Shield className="absolute right-4 top-4 w-24 h-24 text-blue-100/30 pointer-events-none" />
-      </div>
+    <div className="max-w-3xl mx-auto pb-24 animate-fade-in text-left">
+      <PageHeaderCard
+        title="Data Governance Dashboard"
+        description="See exactly what data IMPUNGA holds about you, how it is protected, and our core privacy standards."
+        icon={Shield}
+        bg="bg-blue-50"
+        text="text-blue-600"
+        badge="Platform Governance"
+        badgeColor="indigo"
+      />
 
       {/* Privacy Pillars Grid */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">

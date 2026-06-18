@@ -24,7 +24,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-surface-light">
       <OfflineBanner />
-      <Header onMenuToggle={() => setSidebarOpen(true)} />
+      <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
       <div className="flex h-[calc(100vh-57px)]">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-6">

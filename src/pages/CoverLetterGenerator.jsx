@@ -6,6 +6,7 @@ import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { PenTool, ArrowLeft, Copy, User, Check, Sparkles, Download } from 'lucide-react';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function CoverLetterGenerator() {
   const { user } = useAuthStore();
@@ -146,17 +147,15 @@ export default function CoverLetterGenerator() {
 
   return (
     <div className="max-w-5xl mx-auto pb-24 animate-fade-in px-4">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <PenTool className="w-8 h-8 text-indigo-600" />
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Cover Letter AI</h1>
-        </div>
-        <p className="text-gray-500 font-medium text-base">Generate a professional, structured cover letter matching standard Zambian layouts.</p>
-      </div>
+      <PageHeaderCard
+        title="Cover Letter AI"
+        description="Generate a professional, structured cover letter matching standard Zambian layouts."
+        icon={PenTool}
+        bg="bg-indigo-50"
+        text="text-indigo-600"
+        badge="Career Connect"
+        badgeColor="indigo"
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         

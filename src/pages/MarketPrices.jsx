@@ -6,6 +6,7 @@ import { useAI } from '../hooks/useAI';
 import useAuthStore from '../store/authStore';
 import AIResponse from '../components/shared/AIResponse';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const CATEGORY_ICONS = {
   'Grains & Staples': Wheat,
@@ -59,16 +60,15 @@ export default function MarketPrices() {
 
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
-          <ShoppingCart className="w-5 h-5 text-accent-orange" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Zambia Market Prices</h1>
-          <p className="text-gray-500 text-sm">Current prices & AI seasonal forecasts — reference for 2026</p>
-        </div>
-      </div>
+      <PageHeaderCard
+        title="Zambia Market Prices"
+        description="Current prices & AI seasonal forecasts — reference for 2026"
+        icon={ShoppingCart}
+        bg="bg-orange-50"
+        text="text-orange-600"
+        badge="Business Space"
+        badgeColor="orange"
+      />
 
       {/* Tabs */}
       <div className="flex gap-1 bg-gray-100 rounded-2xl p-1 mb-5">

@@ -6,6 +6,7 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 import { Briefcase, Sparkles, MapPin, DollarSign, Clock, CheckCircle2, X, Search, Filter, ArrowLeft } from 'lucide-react';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import { ZAMBIAN_JOBS } from '../data/jobs';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function ZambianJobs() {
   const { user } = useAuthStore();
@@ -148,20 +149,15 @@ export default function ZambianJobs() {
 
   return (
     <div className="max-w-6xl mx-auto pb-24 px-4 animate-fade-in text-left">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-      
-      {/* Header section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-            Engine 4: Community
-          </div>
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Zambian Jobs</h1>
-          <p className="text-gray-500 font-medium text-base">Find work listings matched to your expertise or browse all available jobs across Zambia.</p>
-        </div>
-      </div>
+      <PageHeaderCard
+        title="Zambian Jobs"
+        description="Find work listings matched to your expertise or browse all available jobs across Zambia."
+        icon={Briefcase}
+        bg="bg-rose-50"
+        text="text-rose-600"
+        badge="Community"
+        badgeColor="purple"
+      />
 
       {/* Tabs Switcher */}
       <div className="flex border-b border-gray-200 mb-8 bg-white p-1 rounded-2xl shadow-sm border border-gray-100 max-w-md">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Banknote, RefreshCw, Briefcase, User, Users, ShieldCheck, Database, FileText, Send, Check, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Banknote, RefreshCw, Briefcase, User, Users, ShieldCheck, Database, FileText, Send, Check, ArrowRight, Target } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
@@ -9,6 +9,7 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 import AIResponse from '../components/shared/AIResponse';
 import { formatKwachaSimple } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 // Pre-seeded genuine/realistic Zambian ecosystem players
 const SEEDED_PROFILES = [
@@ -198,20 +199,15 @@ export default function InvestmentMatchmaker() {
     <div className="max-w-6xl mx-auto pb-24 animate-fade-in px-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <Link to="/engine/finance" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-8 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to Finance & Funding
-      </Link>
-
-      {/* Clean aligned header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <Briefcase className="w-8 h-8 text-purple-600" />
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Investment Matchmaker</h1>
-        </div>
-        <p className="text-gray-500 font-medium text-base">
-          Scan Venture Capital matches for your business model or register to connect directly in the Zambian Funding Ecosystem.
-        </p>
-      </div>
+      <PageHeaderCard 
+        title="Investment Matchmaker"
+        description="Scan Venture Capital matches for your business model or register to connect directly in the Zambian Funding Ecosystem."
+        icon={Target}
+        bg="bg-purple-50"
+        text="text-purple-600"
+        badge="AI MATCH"
+        badgeColor="purple"
+      />
 
 
       {/* Tabs */}

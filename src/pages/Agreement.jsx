@@ -2,39 +2,20 @@ import {
   Shield, AlertTriangle, Wallet, Percent, BookOpen, 
   Award, Users, ArrowLeft, Scale, Info 
 } from 'lucide-react';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function Agreement() {
   return (
-    <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-4 pt-6">
-      {/* Back button */}
-      <button 
-        onClick={() => window.history.back()} 
-        className="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-gray-600 mb-6 transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
-      {/* Header Banner */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-8 relative overflow-hidden">
-        {/* Ambient background glow */}
-        <div className="absolute -right-10 -top-10 w-48 h-48 bg-gradient-to-br from-slate-500/10 to-slate-600/5 blur-3xl rounded-full pointer-events-none" />
-        
-        <div className="relative z-10 max-w-2xl">
-          <div className="flex items-center gap-3.5 mb-4">
-            <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-sm">
-              <Scale className="w-6 h-6 text-slate-700" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Platform Governance & Disclaimers</h1>
-              <p className="text-gray-500 text-xs font-semibold mt-0.5">Regulatory Compliance, Simulated Tools, & Directory Guardrails</p>
-            </div>
-          </div>
-          <p className="text-gray-600 text-sm leading-relaxed font-medium">
-            IMPUNGA operates purely as an educational simulator and directory service. By using the platform or creating an account, you acknowledge and agree to the following guidelines and boundaries.
-          </p>
-        </div>
-        <Scale className="absolute right-6 top-6 w-32 h-32 text-slate-100/30 pointer-events-none" />
-      </div>
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-4 text-left">
+      <PageHeaderCard
+        title="Platform Governance & Disclaimers"
+        description="IMPUNGA operates purely as an educational simulator and directory service. By using the platform or creating an account, you acknowledge and agree to the following guidelines and boundaries."
+        icon={Scale}
+        bg="bg-slate-50"
+        text="text-slate-700"
+        badge="Platform Governance"
+        badgeColor="slate"
+      />
 
       <div className="space-y-6">
         {/* Core Declarations Cards */}

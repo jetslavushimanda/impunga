@@ -8,6 +8,7 @@ import ErrorMessage from '../components/shared/ErrorMessage';
 import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, X, Plus, ArrowLeft } from 'lucide-react';
 import { getProvinces, getDistricts } from '../data/provinces';
 import { useAI } from '../hooks/useAI';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const EDUCATION_LEVELS = [
   'Primary School Certificate',
@@ -325,18 +326,15 @@ export default function SkillProfileBuilder() {
 
   return (
     <div className="max-w-2xl mx-auto pb-24 animate-fade-in px-4">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <CheckCircle className="w-8 h-8 text-blue-600" />
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Skill Profile Builder</h1>
-        </div>
-        <p className="text-gray-500 font-medium text-base">Build your professional skills and profile</p>
-      </div>
+      <PageHeaderCard
+        title="Skill Profile Builder"
+        description="Build your professional skills and profile"
+        icon={CheckCircle}
+        bg="bg-blue-50"
+        text="text-blue-600"
+        badge="Career Connect"
+        badgeColor="blue"
+      />
 
       {/* Progress Bar & Steps indicator */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6">

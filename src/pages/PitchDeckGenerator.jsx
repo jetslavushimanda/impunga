@@ -5,6 +5,7 @@ import { useAI } from '../hooks/useAI';
 import { jsPDF } from 'jspdf';
 import pptxgen from 'pptxgenjs';
 import { stripMarkdown } from '../lib/stripMarkdown';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import AIResponse from '../components/shared/AIResponse';
@@ -115,15 +116,16 @@ export default function PitchDeckGenerator() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Pitch Deck Generator</h1>
-        <p className="text-gray-500 font-medium">10-slide investor presentation tailored to your business</p>
-      </div>
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in text-left">
+      <PageHeaderCard
+        title="Pitch Deck Generator"
+        description="10-slide investor presentation tailored to your business"
+        icon={Presentation}
+        bg="bg-indigo-50"
+        text="text-indigo-600"
+        badge="Business Space"
+        badgeColor="indigo"
+      />
 
       <div className="bg-white/85 border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 relative overflow-hidden">
         {loading ? (

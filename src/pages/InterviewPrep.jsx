@@ -6,6 +6,7 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { MessageCircle, ArrowLeft, Send, Play, CheckCircle, Volume2, VolumeX, Mic, MicOff, Settings, AlertCircle } from 'lucide-react';
 import { CAREERS } from '../data/careers';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function InterviewPrep() {
   const { userProfile } = useAuthStore();
@@ -195,17 +196,15 @@ export default function InterviewPrep() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-4">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <MessageCircle className="w-8 h-8 text-rose-600" />
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Interactive Interview Prep</h1>
-        </div>
-        <p className="text-gray-500 font-medium text-base">Practice with interactive voice calls read out by a virtual HR manager.</p>
-      </div>
+      <PageHeaderCard
+        title="Interactive Interview Prep"
+        description="Practice with interactive voice calls read out by a virtual HR manager."
+        icon={MessageCircle}
+        bg="bg-rose-50"
+        text="text-rose-600"
+        badge="Career Connect"
+        badgeColor="blue"
+      />
 
       {aiError && <ErrorMessage message={aiError} />}
 

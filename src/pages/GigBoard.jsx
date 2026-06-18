@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Search, Filter, Briefcase, MapPin, DollarSign, Clock, CheckCircle2, X } from 'lucide-react';
 import { ZAMBIAN_JOBS } from '../data/jobs';
 import { Toast, useToast } from '../components/shared/SuccessToast';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function GigBoard() {
   const [searchParams] = useSearchParams();
@@ -92,29 +93,26 @@ export default function GigBoard() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto pb-24 animate-fade-in">
+    <div className="max-w-6xl mx-auto pb-24 animate-fade-in text-left">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-            Engine 4: Community
-          </div>
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Piece-Work & Gigs Board</h1>
-          <p className="text-gray-500 font-medium text-lg max-w-2xl">Find short-term tasks, casual labor projects, and piece-work contracts matched to your skills.</p>
-        </div>
-        
-        <button 
-          onClick={() => setShowPostModal(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap cursor-pointer font-sans"
-        >
-          Post a Piece-Work
-        </button>
-      </div>
+      <PageHeaderCard
+        title="Piece-Work Board"
+        description="Find short-term tasks, casual labor projects, and piece-work contracts matched to your skills."
+        icon={Briefcase}
+        bg="bg-indigo-50"
+        text="text-indigo-600"
+        badge="Community"
+        badgeColor="green"
+        rightElement={
+          <button 
+            onClick={() => setShowPostModal(true)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap cursor-pointer font-sans"
+          >
+            Post a Piece-Work
+          </button>
+        }
+      />
 
       <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8">
         <div className="flex flex-col md:flex-row gap-4 mb-8">

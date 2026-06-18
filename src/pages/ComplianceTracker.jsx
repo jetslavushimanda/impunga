@@ -5,6 +5,7 @@ import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 import AIResponse from '../components/shared/AIResponse';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 // Static known deadlines that apply to ALL registered Zambian businesses
 const STATIC_DEADLINES = [
@@ -175,50 +176,35 @@ export default function ComplianceTracker() {
   const dueSoonCount = staticDeadlines.filter(d => d.status === 'due_soon').length;
 
   return (
-    <div className="max-w-3xl mx-auto pb-24 animate-fade-in">
-      {/* Header Banner */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-6 relative overflow-hidden">
-        {/* Ambient background glow */}
-        <div className="absolute -right-10 -top-10 w-48 h-48 bg-gradient-to-br from-purple-500/10 to-blue-500/5 blur-3xl rounded-full pointer-events-none" />
-        
-        <div className="relative z-10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 bg-purple-50 border border-purple-100 rounded-2xl flex items-center justify-center shadow-sm">
-                <ShieldCheck className="w-6 h-6 text-purple-650 text-purple-600" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Compliance Tracker</h1>
-                <p className="text-gray-500 text-xs font-semibold mt-0.5">ZRA · PACRA · NAPSA · NHIMA regulatory deadlines</p>
-              </div>
-            </div>
-
-            {/* Score pills */}
-            <div className="flex gap-2 flex-wrap sm:justify-end">
-              {overdueCount > 0 && (
-                <span className="text-xs bg-red-50 text-red-600 border border-red-100 font-extrabold px-3.5 py-1 rounded-full shadow-sm">
-                  {overdueCount} Overdue
-                </span>
-              )}
-              {dueSoonCount > 0 && (
-                <span className="text-xs bg-amber-50 text-amber-700 border border-amber-100 font-extrabold px-3.5 py-1 rounded-full shadow-sm">
-                  {dueSoonCount} Due Soon
-                </span>
-              )}
-              {overdueCount === 0 && dueSoonCount === 0 && (
-                <span className="text-xs bg-green-50 text-green-700 border border-green-100 font-extrabold px-3.5 py-1 rounded-full shadow-sm">
-                  ✓ All Clear
-                </span>
-              )}
-            </div>
+    <div className="max-w-3xl mx-auto pb-24 animate-fade-in text-left">
+      <PageHeaderCard
+        title="Compliance Tracker"
+        description="Stay compliant with Zambian law. Never miss a tax or regulatory deadline."
+        icon={ShieldCheck}
+        bg="bg-purple-50"
+        text="text-purple-600"
+        badge="Platform Governance"
+        badgeColor="indigo"
+        rightElement={
+          <div className="flex gap-2 flex-wrap sm:justify-end">
+            {overdueCount > 0 && (
+              <span className="text-xs bg-red-50 text-red-600 border border-red-100 font-extrabold px-3.5 py-1 rounded-full shadow-sm">
+                {overdueCount} Overdue
+              </span>
+            )}
+            {dueSoonCount > 0 && (
+              <span className="text-xs bg-amber-50 text-amber-700 border border-amber-100 font-extrabold px-3.5 py-1 rounded-full shadow-sm">
+                {dueSoonCount} Due Soon
+              </span>
+            )}
+            {overdueCount === 0 && dueSoonCount === 0 && (
+              <span className="text-xs bg-green-50 text-green-700 border border-green-100 font-extrabold px-3.5 py-1 rounded-full shadow-sm">
+                ✓ All Clear
+              </span>
+            )}
           </div>
-
-          <p className="text-gray-600 text-sm leading-relaxed font-medium">
-            Stay compliant with Zambian law. Never miss a tax or regulatory deadline.
-          </p>
-        </div>
-        <ShieldCheck className="absolute right-4 top-4 w-24 h-24 text-purple-100/30 pointer-events-none" />
-      </div>
+        }
+      />
 
       {/* Compliance Calendar */}
       <div className="mb-6">

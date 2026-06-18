@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { formatKwacha } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const DEFAULT_GOALS = [
   { id: 'goal-1', name: 'Emergency Working Capital Buffer', target: 5000, current: 2400, dueDate: '2026-08-30' },
@@ -144,25 +145,21 @@ export default function SavingsModule() {
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-2 sm:px-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
-      {/* Header */}
-      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2 flex items-center gap-3">
-            <Wallet className="w-8 h-8 text-amber-500" /> Savings Tracker
-          </h1>
-          <p className="text-gray-500 font-medium font-outfit">Define target vaults, simulate Kwacha deposits, and evaluate savings target speeds.</p>
-        </div>
-
-        {/* Balance */}
-        <div className="bg-white border border-gray-100 px-5 py-3 rounded-2xl shadow-sm text-right">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-0.5">Total Savings Balance</span>
-          <span className="text-2xl font-black text-amber-600">{formatKwacha(totalBalance)}</span>
-        </div>
-      </div>
+      <PageHeaderCard 
+        title="Savings Tracker"
+        description="Define target vaults, simulate Kwacha deposits, and evaluate savings target speeds."
+        icon={Wallet}
+        bg="bg-amber-50"
+        text="text-amber-600"
+        badge="SAVINGS ZMW"
+        badgeColor="orange"
+        rightElement={(
+          <div className="bg-white border border-gray-150 px-5 py-3 rounded-2xl shadow-sm text-right shrink-0">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-0.5">Total Savings Balance</span>
+            <span className="text-2xl font-black text-amber-600">{formatKwacha(totalBalance)}</span>
+          </div>
+        )}
+      />
 
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

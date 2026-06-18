@@ -7,6 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useFirestore } from '../hooks/useFirestore';
 import { ModuleCard } from './EngineView'; 
 import LoadingSpinner from '../components/shared/LoadingSpinner';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const STARTUP_TOOLS = [
   {
@@ -105,7 +106,7 @@ function SectionHeader({ title, description, icon: Icon, badge, gradient = "from
 }
 
 export default function BusinessHubView() {
-  const { userProfile } = useAuthStore();
+  const { userProfile, user, setCustomBack } = useAuthStore();
   const { updateProfile } = useAuth();
   const { getUserDocuments, deleteDocument } = useFirestore();
   const navigate = useNavigate();
@@ -117,13 +118,27 @@ export default function BusinessHubView() {
   const [loadingIdeas, setLoadingIdeas] = useState(false);
   const [showSavedBlueprints, setShowSavedBlueprints] = useState(false);
 
+  // Wire up custom back so the global ← navbar button respects sub-view state
   useEffect(() => {
-    if (view === 'ideation') {
-      loadSavedIdeas();
+    if (view === 'paths') {
+      // On root view, let the global back go to dashboard naturally
+      setCustomBack(null);
+    } else {
+      // On any sub-view, the back button returns to 'paths'
+      setCustomBack(() => setView('paths'));
     }
+    return () => setCustomBack(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view]);
 
+  useEffect(() => {
+    if (view === 'ideation' || showSavedBlueprints) {
+      loadSavedIdeas();
+    }
+  }, [view, showSavedBlueprints, user]);
+
   async function loadSavedIdeas() {
+    if (!user) return;
     setLoadingIdeas(true);
     try {
       const ideas = await getUserDocuments('businessIdeas', null);
@@ -249,29 +264,17 @@ export default function BusinessHubView() {
 
   return (
     <div className="max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto pb-24 animate-fade-in px-2 sm:px-4">
-      <div className="mb-8">
-        <Link 
-          to="/dashboard" 
-          onClick={(e) => {
-            if (view !== 'paths') {
-              e.preventDefault();
-              setView('paths');
-            }
-          }}
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {view === 'paths' ? 'Back to Home' : 'Back to Business Space'}
-        </Link>
-      </div>
 
       {view === 'paths' && (
         <div className="animate-slide-up">
-          <SectionHeader 
-            title="Business Space" 
+          <PageHeaderCard
+            title="Business Space"
             description="Choose your path. Whether you are just starting out with an idea or managing an existing operation, we have the tools for you."
             icon={Building2}
-            gradient="from-blue-600 to-indigo-600"
+            bg="bg-blue-50"
+            text="text-blue-600"
+            badge="Business Space"
+            badgeColor="blue"
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
@@ -320,11 +323,14 @@ export default function BusinessHubView() {
 
       {view === 'ideation' && (
         <div className="animate-fade-in relative z-0">
-          <SectionHeader 
-            title="Start a Business" 
+          <PageHeaderCard
+            title="Start a Business"
             description="Everything you need to validate your idea, structure a plan, and prepare for launch."
             icon={Rocket}
-            gradient="from-blue-500 to-cyan-500"
+            bg="bg-blue-50"
+            text="text-blue-600"
+            badge="Business Space"
+            badgeColor="blue"
           />
 
           {/* Startup Planning Modules Grid */}
@@ -749,20 +755,18 @@ export default function BusinessHubView() {
 
       {view === 'operations' && (
         <div className="animate-fade-in">
-          <SectionHeader 
+          <PageHeaderCard
             title={userProfile?.businessProfile?.businessName || 'Business Workspace'}
             description="Your operational tools for running and scaling your business."
             icon={Briefcase}
-            gradient="from-indigo-600 to-purple-600"
-            badge={
-              <span className="flex items-center gap-1.5 text-green-700">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Platform Verified
-              </span>
-            }
-            rightAction={
+            bg="bg-indigo-50"
+            text="text-indigo-600"
+            badge="Platform Verified"
+            badgeColor="indigo"
+            rightElement={
               <button 
                 onClick={() => setView('registration')}
-                className="w-full lg:w-auto bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center"
+                className="bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center text-sm"
               >
                 Edit Profile
               </button>

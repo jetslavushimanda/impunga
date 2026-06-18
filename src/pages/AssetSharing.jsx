@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, Filter, MapPin, Calendar, PackageOpen, Monitor, X } from 'lucide-react';
+import { ArrowLeft, Search, Filter, MapPin, Calendar, PackageOpen, Monitor, X, Package } from 'lucide-react';
 import { Toast, useToast } from '../components/shared/SuccessToast';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const MOCK_ASSETS = [
   {
@@ -123,27 +124,24 @@ export default function AssetSharing() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto pb-24 animate-fade-in">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-            Engine 4: Community
-          </div>
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Asset & Space Sharing</h1>
-          <p className="text-gray-500 font-medium text-lg max-w-2xl">Rent out idle equipment or find affordable shared resources for your business.</p>
-        </div>
-        
-        <button 
-          onClick={() => setShowPostModal(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap cursor-pointer"
-        >
-          List an Asset
-        </button>
-      </div>
+    <div className="max-w-6xl mx-auto pb-24 animate-fade-in text-left">
+      <PageHeaderCard
+        title="Asset Rentals"
+        description="Rent out idle equipment or find affordable shared resources for your business."
+        icon={Package}
+        bg="bg-emerald-50"
+        text="text-emerald-600"
+        badge="Community"
+        badgeColor="teal"
+        rightElement={
+          <button 
+            onClick={() => setShowPostModal(true)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap cursor-pointer"
+          >
+            List an Asset
+          </button>
+        }
+      />
 
       <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8">
         <div className="flex flex-col md:flex-row gap-4 mb-8">

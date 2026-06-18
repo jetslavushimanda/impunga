@@ -12,6 +12,7 @@ import { stripMarkdown } from '../lib/stripMarkdown';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import useAuthStore from '../store/authStore';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const SECTIONS = ['Business Basics', 'Business Description', 'Market Analysis', 'Products & Services', 'Marketing Plan', 'Operations', 'Financial Plan', 'Review & Generate'];
 
@@ -195,11 +196,7 @@ export default function BusinessPlanBuilder() {
   const districts = getDistricts(selectedProvince || data.province || '');
 
   return (
-    <div className="max-w-4xl mx-auto animate-fade-in">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       {pipelineBanner && (
@@ -214,10 +211,15 @@ export default function BusinessPlanBuilder() {
         </div>
       )}
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Business Plan Builder</h1>
-        <p className="text-gray-500 font-medium">Build a professional business plan — step by step</p>
-      </div>
+      <PageHeaderCard 
+        title="Business Plan Builder"
+        description="Build a professional business plan — step by step"
+        icon={FileText}
+        bg="bg-green-50"
+        text="text-green-600"
+        badge="BUSINESS PLAN"
+        badgeColor="green"
+      />
 
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 relative overflow-hidden mb-8">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-green-200/20 rounded-full blur-3xl pointer-events-none" />

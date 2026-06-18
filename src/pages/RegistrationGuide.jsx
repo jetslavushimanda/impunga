@@ -5,6 +5,7 @@ import {
   ExternalLink, Globe, Sparkles, Calendar, Clock, AlertTriangle, 
   CheckCircle, Copy, Check, Info, Trash2, ArrowLeft 
 } from 'lucide-react';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 import { useAI } from '../hooks/useAI';
 import { BUSINESS_TYPES } from '../data/businessTypes';
 import { PACRA_STEPS, ZRA_STEPS, BANK_ACCOUNT_STEPS } from '../data/pacraSteps';
@@ -196,36 +197,32 @@ export default function RegistrationGuide() {
   const progress = stepsCount > 0 ? Math.round((completedCount / stepsCount) * 100) : 0;
 
   return (
-    <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-2 sm:px-4">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
-      {/* Header */}
-      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2 flex items-center gap-3">
-            <Building2 className="w-8 h-8 text-indigo-600" /> Compliance & Registration Guide
-          </h1>
-          <p className="text-gray-500 font-medium">Formally launch your business with PACRA, ZRA and licensing authorities.</p>
-        </div>
-
-        {/* Tab switchers */}
-        <div className="flex bg-gray-100 p-1 rounded-xl">
-          <button 
-            onClick={() => setActiveTab('ai-journey')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'ai-journey' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
-          >
-            🌱 Interactive AI Journey
-          </button>
-          <button 
-            onClick={() => setActiveTab('static-comparison')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'static-comparison' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
-          >
-            📋 PACRA Comparison Guide
-          </button>
-        </div>
-      </div>
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-2 sm:px-4 text-left">
+      <PageHeaderCard
+        title="Compliance & Registration Guide"
+        description="Formally launch your business with PACRA, ZRA and licensing authorities."
+        icon={Building2}
+        bg="bg-indigo-50"
+        text="text-indigo-600"
+        badge="Business Space"
+        badgeColor="indigo"
+        rightElement={
+          <div className="flex bg-gray-100 p-1 rounded-xl shrink-0">
+            <button 
+              onClick={() => setActiveTab('ai-journey')}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'ai-journey' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
+            >
+              🌱 Interactive AI Journey
+            </button>
+            <button 
+              onClick={() => setActiveTab('static-comparison')}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'static-comparison' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
+            >
+              📋 PACRA Comparison Guide
+            </button>
+          </div>
+        }
+      />
 
       {/* Official Links */}
       <div className="bg-white rounded-2xl p-6 border border-gray-150 shadow-[0_4px_15px_rgb(0,0,0,0.02)] mb-8">

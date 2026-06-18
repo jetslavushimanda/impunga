@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Calculator, Plus, Trash2, Save, TrendingUp, Sparkles, Loader2, ArrowLeft } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useFirestore } from '../hooks/useFirestore';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 import { useGemini } from '../hooks/useGemini';
 import useAuthStore from '../store/authStore';
 import { formatKwacha, calculateRecommendedPrice } from '../lib/utils';
@@ -109,16 +110,17 @@ export default function PricingCalculator() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Pricing Calculator</h1>
-        <p className="text-gray-500 font-medium">Price correctly and actually make profit</p>
-      </div>
+      <PageHeaderCard 
+        title="Pricing Calculator"
+        description="Price correctly and actually make profit"
+        icon={Calculator}
+        bg="bg-green-50"
+        text="text-green-600"
+        badge="FINANCIALS ZMW"
+        badgeColor="orange"
+      />
 
       {/* Form */}
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">

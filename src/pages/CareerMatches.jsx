@@ -8,6 +8,7 @@ import { Briefcase, ArrowRight, Map, Sparkles, Loader2, Bot, ArrowLeft } from 'l
 
 import { CAREERS } from '../data/careers';
 import { ZAMBIAN_JOBS } from '../data/jobs';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const RANKS = ['1st Match', '2nd Match', '3rd Match', '4th Match', '5th Match'];
 
@@ -114,9 +115,6 @@ export default function CareerMatches() {
   if (!profile) {
     return (
       <div className="max-w-md mx-auto py-16 px-4 text-center">
-        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back
-        </button>
         <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
           <Briefcase className="w-8 h-8 text-blue-600" />
         </div>
@@ -134,26 +132,23 @@ export default function CareerMatches() {
 
   return (
     <div className="max-w-2xl mx-auto pb-24 px-4 animate-fade-in">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </button>
-      
-      {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <Briefcase className="w-8 h-8 text-purple-600" />
-            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Your Career Matches</h1>
-          </div>
-          <p className="text-gray-500 font-medium text-base">Based on your skill profile</p>
-        </div>
-        <button
-          onClick={() => navigate('/skill-profile-builder')}
-          className="btn-secondary text-xs py-2.5 px-4 font-bold shadow-sm whitespace-nowrap"
-        >
-          Update My Profile
-        </button>
-      </div>
+      <PageHeaderCard
+        title="Your Career Matches"
+        description="Based on your skill profile"
+        icon={Briefcase}
+        bg="bg-purple-50"
+        text="text-purple-600"
+        badge="Career Connect"
+        badgeColor="purple"
+        rightElement={
+          <button
+            onClick={() => navigate('/skill-profile-builder')}
+            className="btn-secondary text-xs py-2.5 px-4 font-bold shadow-sm whitespace-nowrap"
+          >
+            Update My Profile
+          </button>
+        }
+      />
 
       {/* Info Banner */}
       <div className="bg-primary text-white rounded-2xl p-4 shadow-sm mb-6 flex flex-col sm:flex-row justify-between gap-2">

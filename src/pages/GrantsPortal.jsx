@@ -4,6 +4,7 @@ import { ArrowLeft, Globe, Filter, CheckCircle2, Bookmark, BookmarkCheck, Extern
 import { FUNDING_SOURCES } from '../data/fundingSources';
 import { formatKwachaSimple } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
+import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 // Filter for only grants, competitions, and NGOs (exclude loans)
 const GRANT_SOURCES = FUNDING_SOURCES.filter(s => s.fundingType !== 'loan');
@@ -48,19 +49,15 @@ export default function GrantsPortal() {
     <div className="max-w-6xl mx-auto pb-24 animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <Link to="/engine/finance" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 mb-8 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to Finance & Funding
-      </Link>
-
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <Globe className="w-8 h-8 text-green-600" />
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Grants & Subsidies</h1>
-        </div>
-        <p className="text-gray-500 font-medium text-base">
-          Discover genuine, non-dilutive government and international grants available in Zambia.
-        </p>
-      </div>
+      <PageHeaderCard 
+        title="Grants & Subsidies"
+        description="Discover genuine, non-dilutive government and international grants available in Zambia."
+        icon={Globe}
+        bg="bg-green-50"
+        text="text-green-600"
+        badge="NON-DILUTIVE"
+        badgeColor="emerald"
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
