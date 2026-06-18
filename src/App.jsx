@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './lib/firebase';
@@ -7,45 +7,55 @@ import useAuthStore from './store/authStore';
 
 import { LanguageProvider } from './contexts/LanguageContext';
 import Layout from './components/layout/Layout';
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import IdeaValidator from './pages/IdeaValidator';
-import RegistrationGuide from './pages/RegistrationGuide';
-import BusinessPlanBuilder from './pages/BusinessPlanBuilder';
-import PitchDeckGenerator from './pages/PitchDeckGenerator';
-import InvestmentMatchmaker from './pages/InvestmentMatchmaker';
-import PricingCalculator from './pages/PricingCalculator';
-import GrantsPortal from './pages/GrantsPortal';
-import LoansPortal from './pages/LoansPortal';
-import AIAdvisor from './pages/AIAdvisor';
-import Profile from './pages/Profile';
-import BusinessNameGenerator from './pages/BusinessNameGenerator';
-import InvoiceGenerator from './pages/InvoiceGenerator';
-import MarketPrices from './pages/MarketPrices';
-import WhatsAppTemplates from './pages/WhatsAppTemplates';
-import SWOTAnalysis from './pages/SWOTAnalysis';
-import SocialMediaGenerator from './pages/SocialMediaGenerator';
-import MarketDirectory from './pages/MarketDirectory';
-import BusinessLedger from './pages/BusinessLedger';
-import SkillProfileBuilder from './pages/SkillProfileBuilder';
-import CareerMatches from './pages/CareerMatches';
-import ZambianJobs from './pages/ZambianJobs';
-import DataPrivacy from './pages/DataPrivacy';
-import ComplianceTracker from './pages/ComplianceTracker';
-import PlaceholderPage from './pages/PlaceholderPage';
-import EngineView from './pages/EngineView';
-import CVGenerator from './pages/CVGenerator';
-import CoverLetterGenerator from './pages/CoverLetterGenerator';
-import InterviewPrep from './pages/InterviewPrep';
-import SkillGapCloser from './pages/SkillGapCloser';
-import PortfolioShowcase from './pages/PortfolioShowcase';
-import B2BTenders from './pages/B2BTenders';
-import GigBoard from './pages/GigBoard';
-import AssetSharing from './pages/AssetSharing';
-import KPIMonitor from './pages/KPIMonitor';
-import SavingsModule from './pages/SavingsModule';
+
+const Landing = lazy(() => import('./pages/Landing'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const IdeaValidator = lazy(() => import('./pages/IdeaValidator'));
+const RegistrationGuide = lazy(() => import('./pages/RegistrationGuide'));
+const BusinessPlanBuilder = lazy(() => import('./pages/BusinessPlanBuilder'));
+const PitchDeckGenerator = lazy(() => import('./pages/PitchDeckGenerator'));
+const InvestmentMatchmaker = lazy(() => import('./pages/InvestmentMatchmaker'));
+const PricingCalculator = lazy(() => import('./pages/PricingCalculator'));
+const GrantsPortal = lazy(() => import('./pages/GrantsPortal'));
+const LoansPortal = lazy(() => import('./pages/LoansPortal'));
+const AIAdvisor = lazy(() => import('./pages/AIAdvisor'));
+const Profile = lazy(() => import('./pages/Profile'));
+const BusinessNameGenerator = lazy(() => import('./pages/BusinessNameGenerator'));
+const InvoiceGenerator = lazy(() => import('./pages/InvoiceGenerator'));
+const MarketPrices = lazy(() => import('./pages/MarketPrices'));
+const WhatsAppTemplates = lazy(() => import('./pages/WhatsAppTemplates'));
+const SWOTAnalysis = lazy(() => import('./pages/SWOTAnalysis'));
+const SocialMediaGenerator = lazy(() => import('./pages/SocialMediaGenerator'));
+const MarketDirectory = lazy(() => import('./pages/MarketDirectory'));
+const BusinessLedger = lazy(() => import('./pages/BusinessLedger'));
+const SkillProfileBuilder = lazy(() => import('./pages/SkillProfileBuilder'));
+const CareerMatches = lazy(() => import('./pages/CareerMatches'));
+const ZambianJobs = lazy(() => import('./pages/ZambianJobs'));
+const DataPrivacy = lazy(() => import('./pages/DataPrivacy'));
+const ComplianceTracker = lazy(() => import('./pages/ComplianceTracker'));
+const PlaceholderPage = lazy(() => import('./pages/PlaceholderPage'));
+const EngineView = lazy(() => import('./pages/EngineView'));
+const CVGenerator = lazy(() => import('./pages/CVGenerator'));
+const CoverLetterGenerator = lazy(() => import('./pages/CoverLetterGenerator'));
+const InterviewPrep = lazy(() => import('./pages/InterviewPrep'));
+const SkillGapCloser = lazy(() => import('./pages/SkillGapCloser'));
+const PortfolioShowcase = lazy(() => import('./pages/PortfolioShowcase'));
+const B2BTenders = lazy(() => import('./pages/B2BTenders'));
+const GigBoard = lazy(() => import('./pages/GigBoard'));
+const AssetSharing = lazy(() => import('./pages/AssetSharing'));
+const KPIMonitor = lazy(() => import('./pages/KPIMonitor'));
+const SavingsModule = lazy(() => import('./pages/SavingsModule'));
+
+const LoadingFallback = () => (
+  <div className="min-h-screen bg-surface-light flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <p className="text-sm font-semibold text-gray-500">Loading...</p>
+    </div>
+  </div>
+);
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -84,6 +94,7 @@ export default function App() {
     <LanguageProvider>
     <BrowserRouter>
       <ScrollToTop />
+      <Suspense fallback={<LoadingFallback />}>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -130,6 +141,7 @@ export default function App() {
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
     </LanguageProvider>
   );

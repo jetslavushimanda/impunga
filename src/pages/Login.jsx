@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Sprout, Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Sprout, Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
@@ -81,9 +81,13 @@ export default function Login() {
       <Sprout className="absolute -left-8 -bottom-8 w-48 h-48 text-white/5 pointer-events-none" />
 
       <div className="card w-full max-w-md relative z-10 shadow-2xl">
-        <div className="text-center mb-6">
+        {/* Back Link to Landing */}
+        <Link to="/" className="absolute left-6 top-6 text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider">
+          <ArrowLeft className="w-4 h-4" /> Back
+        </Link>
+        <div className="text-center mb-6 pt-4">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Sprout className="w-8 h-8 text-accent-gold" />
+            <Sprout className="w-8 h-8 text-accent-gold logo-sprout" />
             <span className="text-2xl font-bold text-primary">IMPUNGA</span>
           </div>
           <p className="text-gray-500 text-sm">Welcome back. Sign in to continue.</p>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, LogOut, User, ChevronDown, Menu, Search } from 'lucide-react';
+import { Bell, LogOut, User, ChevronDown, Menu, Search, Sprout } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
 import { getGreeting, getFirstName, getInitials } from '../../lib/utils';
@@ -29,8 +29,9 @@ export default function Header({ onMenuToggle }) {
             <Menu className="w-5 h-5 text-gray-600" />
           </button>
           <Link to="/dashboard" className="flex items-center gap-2">
+            <Sprout className="w-5 h-5 text-accent-gold logo-sprout" />
             <span className="text-xl font-bold text-primary">IMPUNGA</span>
-            <span className="hidden sm:block text-xs text-gray-400 font-medium">Start. Match. Build Zambia.</span>
+            <span className="hidden sm:block text-xs text-gray-400 font-medium">Zambia’s AI platform for business and career growth.</span>
           </Link>
         </div>
 
