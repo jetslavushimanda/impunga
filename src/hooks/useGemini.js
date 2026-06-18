@@ -361,7 +361,7 @@ Available modules in the app:
 - /business-plan: Business Plan Builder (create business plans)
 - /pricing-calculator: Pricing Calculator (set product prices)
 - /business-ledger: Business Ledger (track finances)
-- /funding-finder: Funding Finder (find funding sources)
+- /engine/finance: Finance & Funding (find grants, loans, investment)
 - /ai-advisor: AI Business Advisor (get business advice)
 - /registration-guide: Registration Guide (PACRA/ZRA registration)
 - /name-generator: Business Name Generator

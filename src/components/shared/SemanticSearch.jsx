@@ -197,12 +197,12 @@ export default function SemanticSearch({ isOpen, onClose }) {
               {/* Funding shortcut */}
               {results.fundingKeyword && (
                 <button
-                  onClick={() => handleNavigate('/funding-finder')}
+                  onClick={() => handleNavigate('/engine/finance')}
                   className="w-full text-left bg-purple-50/80 border border-purple-200 border-l-4 border-l-purple-400 rounded-2xl p-4 hover:shadow-sm transition-shadow"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-bold text-gray-900 text-base">Funding Finder — {results.fundingKeyword}</p>
+                      <p className="font-bold text-gray-900 text-base">Finance & Funding — {results.fundingKeyword}</p>
                       <p className="text-sm text-gray-600 mt-1">Find Zambian grants and loans for this sector</p>
                     </div>
                     <ArrowRight className="w-5 h-5 text-gray-400 shrink-0" />

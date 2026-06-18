@@ -570,12 +570,91 @@ export default function BusinessHubView() {
               </button>
             }
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {businessEngine.modules.map(mod => (
-              <ModuleCard key={mod.path} {...mod} />
-            ))}
-            <ModuleCard path="/market-directory" icon={Handshake} name="Marketplace" desc="Trade and connect in the verified directory" bg="bg-blue-50" text="text-blue-600" border="border-l-blue-400" />
-            <ModuleCard path="/funding-finder" icon={DollarSign} name="Funding Connect" desc="Institutional Gateway for Grants & Loans" bg="bg-green-50" text="text-green-600" border="border-l-green-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {businessEngine.modules.map(mod => {
+              let hoverBorder = 'hover:border-green-200';
+              let hoverBg = 'hover:bg-green-50/30';
+              let iconBg = 'bg-green-50 border border-green-100';
+              let iconColor = 'text-green-600';
+              let footerText = 'Explore Tools';
+              
+              if (mod.path === '/social-media') {
+                hoverBorder = 'hover:border-purple-200';
+                hoverBg = 'hover:bg-purple-50/30';
+                iconBg = 'bg-purple-50 border border-purple-100';
+                iconColor = 'text-purple-600';
+                footerText = 'Create Content';
+              } else if (mod.path === '/business-ledger') {
+                footerText = 'Track Ledger';
+              } else if (mod.path === '/invoice-generator') {
+                footerText = 'Create Invoice';
+              } else if (mod.path === '/pricing-calculator') {
+                footerText = 'Calculate Prices';
+              }
+
+              const Icon = mod.icon;
+              return (
+                <Link
+                  key={mod.path}
+                  to={mod.path}
+                  className={`group text-left bg-white rounded-2xl p-6 border border-gray-100 ${hoverBorder} ${hoverBg} hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full w-full`}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`w-12 h-12 ${iconBg} rounded-xl flex items-center justify-center shrink-0`}>
+                      <Icon className={`w-6 h-6 ${iconColor}`} />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-gray-900 mb-1 leading-tight">{mod.name}</h2>
+                      <p className="text-gray-500 text-sm font-medium leading-relaxed">{mod.desc}</p>
+                    </div>
+                  </div>
+                  <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
+                    <span className={`${iconColor} font-bold text-xs uppercase tracking-wide`}>{footerText}</span>
+                    <ChevronRight className={`w-4 h-4 text-gray-300 group-hover:${iconColor} group-hover:translate-x-0.5 transition-all`} />
+                  </div>
+                </Link>
+              );
+            })}
+            
+            {/* Marketplace Card (replicated premium style) */}
+            <Link 
+              to="/market-directory"
+              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full w-full"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                  <Handshake className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900 mb-1">Marketplace</h2>
+                  <p className="text-gray-500 text-sm font-medium leading-relaxed">Trade and connect in the verified directory.</p>
+                </div>
+              </div>
+              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
+                <span className="text-blue-600 font-bold text-xs uppercase tracking-wide">Enter Directory</span>
+                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+              </div>
+            </Link>
+
+            {/* Funding & Finance Card (replicated premium style) */}
+            <Link 
+              to="/engine/finance"
+              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-emerald-200 hover:bg-emerald-50/30 hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full w-full"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
+                  <DollarSign className="w-6 h-6 text-emerald-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900 mb-1">Funding & Finance</h2>
+                  <p className="text-gray-500 text-sm font-medium leading-relaxed">Institutional Gateway for Grants, Loans & Investment.</p>
+                </div>
+              </div>
+              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
+                <span className="text-emerald-600 font-bold text-xs uppercase tracking-wide">Explore Funding</span>
+                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
+              </div>
+            </Link>
           </div>
         </div>
       )}

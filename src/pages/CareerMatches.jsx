@@ -310,14 +310,14 @@ export default function CareerMatches() {
         <div>
           <h3 className="font-bold text-gray-800 text-base">Want to close your skill gaps?</h3>
           <p className="text-gray-500 text-sm mt-1 leading-relaxed">
-            IMPUNGA's Funding Finder can help you find training programmes and bursaries to develop the skills you need.
+            IMPUNGA's Finance & Funding engine can help you find grants and loans to develop the skills and business you need.
           </p>
         </div>
         <Link
-          to="/funding-finder"
+          to="/engine/finance"
           className="btn-primary w-full py-3 text-sm font-bold flex items-center justify-center gap-1.5"
         >
-          Go to Funding Finder <ArrowRight className="w-4.5 h-4.5" />
+          Go to Finance & Funding <ArrowRight className="w-4.5 h-4.5" />
         </Link>
       </div>
 
