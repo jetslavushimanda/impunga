@@ -59,22 +59,25 @@ export default function DataPrivacy() {
   return (
     <div className="max-w-3xl mx-auto pb-24 animate-fade-in">
       {/* Header Banner */}
-      <div className="rounded-2xl p-6 mb-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1B4F72 0%, #1a237e 100%)' }}>
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-6 relative overflow-hidden">
+        {/* Ambient background glow */}
+        <div className="absolute -right-10 -top-10 w-48 h-48 bg-gradient-to-br from-blue-500/10 to-indigo-500/5 blur-3xl rounded-full pointer-events-none" />
+        
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center">
-              <Shield className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-3.5 mb-3">
+            <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center shadow-sm">
+              <Shield className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Data Governance Dashboard</h1>
-              <p className="text-blue-200 text-xs">Your live privacy and data protection status</p>
+              <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Data Governance Dashboard</h1>
+              <p className="text-gray-500 text-xs font-semibold mt-0.5">Your live privacy and data protection status</p>
             </div>
           </div>
-          <p className="text-blue-100 text-sm leading-relaxed">
+          <p className="text-gray-650 text-sm leading-relaxed font-medium">
             See exactly what data IMPUNGA holds about you, how it is protected, and our core privacy standards.
           </p>
         </div>
-        <Shield className="absolute right-4 top-4 w-20 h-20 text-white/5" />
+        <Shield className="absolute right-4 top-4 w-24 h-24 text-blue-100/30 pointer-events-none" />
       </div>
 
       {/* Privacy Pillars Grid */}

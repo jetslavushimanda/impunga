@@ -207,14 +207,15 @@ export default function ZambianJobs() {
         ) : (
           <div className="space-y-6 animate-slide-up">
             {/* Info Banner */}
-            <div className="bg-gradient-to-r from-indigo-800 to-slate-900 text-white rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row justify-between gap-4">
-              <div>
-                <p className="text-xs text-indigo-200 uppercase font-bold tracking-wider mb-1">User Name</p>
-                <p className="font-extrabold text-lg">{profile.fullName}</p>
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row justify-between gap-4 relative overflow-hidden">
+              <div className="absolute -right-10 -top-10 w-48 h-48 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 blur-3xl rounded-full pointer-events-none" />
+              <div className="relative z-10">
+                <p className="text-[10px] text-indigo-650 text-indigo-600 uppercase font-extrabold tracking-wider mb-1">User Name</p>
+                <p className="font-extrabold text-gray-800 text-lg">{profile.fullName}</p>
               </div>
-              <div>
-                <p className="text-xs text-indigo-200 uppercase font-bold tracking-wider mb-1">Province Location</p>
-                <p className="font-extrabold text-lg">{profile.province}</p>
+              <div className="relative z-10">
+                <p className="text-[10px] text-indigo-650 text-indigo-600 uppercase font-extrabold tracking-wider mb-1">Province Location</p>
+                <p className="font-extrabold text-gray-800 text-lg">{profile.province}</p>
               </div>
             </div>
 

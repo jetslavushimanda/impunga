@@ -15,22 +15,25 @@ export default function Agreement() {
       </button>
 
       {/* Header Banner */}
-      <div className="rounded-3xl p-8 mb-8 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-8 relative overflow-hidden">
+        {/* Ambient background glow */}
+        <div className="absolute -right-10 -top-10 w-48 h-48 bg-gradient-to-br from-slate-500/10 to-slate-600/5 blur-3xl rounded-full pointer-events-none" />
+        
         <div className="relative z-10 max-w-2xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md">
-              <Scale className="w-6 h-6 text-white" />
+          <div className="flex items-center gap-3.5 mb-4">
+            <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-sm">
+              <Scale className="w-6 h-6 text-slate-700" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">Platform Governance & Disclaimers</h1>
-              <p className="text-gray-300 text-xs mt-0.5">Regulatory Compliance, Simulated Tools, & Directory Guardrails</p>
+              <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Platform Governance & Disclaimers</h1>
+              <p className="text-gray-500 text-xs font-semibold mt-0.5">Regulatory Compliance, Simulated Tools, & Directory Guardrails</p>
             </div>
           </div>
-          <p className="text-gray-200 text-sm leading-relaxed">
+          <p className="text-gray-600 text-sm leading-relaxed font-medium">
             IMPUNGA operates purely as an educational simulator and directory service. By using the platform or creating an account, you acknowledge and agree to the following guidelines and boundaries.
           </p>
         </div>
-        <Scale className="absolute right-6 top-6 w-32 h-32 text-white/5 pointer-events-none" />
+        <Scale className="absolute right-6 top-6 w-32 h-32 text-slate-100/30 pointer-events-none" />
       </div>
 
       <div className="space-y-6">
