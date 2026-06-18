@@ -52,16 +52,14 @@ export default function GrantsPortal() {
         <ArrowLeft className="w-4 h-4" /> Back to Finance & Funding
       </Link>
 
-      <div className="mb-10 flex items-start gap-5">
-        <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border border-green-200">
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-2">
           <Globe className="w-8 h-8 text-green-600" />
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Grants & Subsidies</h1>
         </div>
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Grants & Subsidies</h1>
-          <p className="text-gray-500 text-base max-w-2xl leading-relaxed">
-            Discover non-dilutive funding. Use the eligibility engine to find grants that match your profile and track your applications.
-          </p>
-        </div>
+        <p className="text-gray-500 font-medium text-base">
+          Discover genuine, non-dilutive government and international grants available in Zambia.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -183,9 +181,9 @@ export default function GrantsPortal() {
                     <a 
                       href={`https://${grant.contactInfo.website.replace(/^https?:\/\//, '')}`}
                       target="_blank" rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-green-50 hover:text-green-600 transition-colors"
+                      className="btn-secondary text-xs py-2 px-3 font-bold flex items-center gap-1 bg-green-50 text-green-700 border border-green-100 hover:bg-green-100 transition-colors"
                     >
-                      <ExternalLink className="w-4 h-4" />
+                      <Globe className="w-3.5 h-3.5" /> Apply / Get Forms
                     </a>
                   )}
                 </div>
