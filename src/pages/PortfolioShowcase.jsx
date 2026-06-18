@@ -67,7 +67,7 @@ export default function PortfolioShowcase() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-            Engine 4: Marketplace
+            Engine 4: Community
           </div>
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Portfolio Showcase</h1>
           <p className="text-gray-500 font-medium text-lg max-w-2xl">Discover and collaborate with top verified professionals across Zambia.</p>

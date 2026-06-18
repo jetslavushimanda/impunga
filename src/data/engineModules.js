@@ -51,11 +51,12 @@ export const ENGINE_MODULES = {
   },
   connect: {
     id: 'connect',
-    title: 'Marketplace',
-    description: 'Community Utility. A trust-based ecosystem for trade and human connection.',
+    title: 'Community',
+    description: 'Community Utility. Find jobs, trade, rent assets, and connect in a trust-based ecosystem.',
     icon: Handshake,
     bg: 'bg-gradient-to-br from-orange-500 to-rose-600',
     modules: [
+      { path: '/career-matches', icon: Briefcase, name: 'Zambian Jobs', desc: 'Find and match with local employment opportunities', bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-l-rose-400', badge: 'CAREERS', badgeColor: 'purple' },
       { path: '/market-directory', icon: ShieldCheck, name: 'Verified Directory', desc: 'Marketplace for verified users', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-l-blue-400', badge: 'TRUSTED', badgeColor: 'blue' },
       { path: '/portfolio-showcase', icon: User, name: 'Portfolio Showcase', desc: 'Monetize skills through P2P trade', bg: 'bg-green-50', text: 'text-green-600', border: 'border-l-green-400', badge: 'SHOWCASE', badgeColor: 'purple' },
       { path: '/b2b-tenders', icon: FileText, name: 'B2B Tenders', desc: 'Corporate procurement notices and contracts', bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-l-orange-400', badge: 'CORPORATE', badgeColor: 'orange' },

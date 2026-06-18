@@ -525,8 +525,8 @@ export default function BusinessHubView() {
               <ModuleCard key={mod.path} {...mod} />
             ))}
             
-            {/* Marketplace Card (replicated premium style) */}
-            <ModuleCard path="/market-directory" icon={Handshake} name="Marketplace" desc="Trade and connect in the verified directory." bg="bg-blue-50" text="text-blue-600" badge="COMMUNITY" badgeColor="blue" />
+            {/* Community Card (replicated premium style) */}
+            <ModuleCard path="/engine/connect" icon={Handshake} name="Community" desc="Find jobs, trade, rent assets, and connect." bg="bg-blue-50" text="text-blue-600" badge="COMMUNITY" badgeColor="blue" />
 
             {/* Funding & Finance Card (replicated premium style) */}
             <ModuleCard path="/engine/finance" icon={DollarSign} name="Funding & Finance" desc="Institutional Gateway for Grants, Loans & Investment." bg="bg-emerald-50" text="text-emerald-600" badge="GATEWAY" badgeColor="emerald" />

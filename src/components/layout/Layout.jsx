@@ -9,7 +9,7 @@ import { PageLoader } from '../shared/LoadingSpinner';
 
 const BOTTOM_NAV = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Home' },
-  { path: '/engine/connect', icon: Handshake, label: 'Market' },
+  { path: '/engine/connect', icon: Handshake, label: 'Community' },
   { path: '/ai-advisor', icon: Bot, label: 'AI' },
   { path: '/profile', icon: User, label: 'Profile' },
 ];
