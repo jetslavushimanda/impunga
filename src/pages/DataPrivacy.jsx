@@ -269,6 +269,31 @@ export default function DataPrivacy() {
         </div>
       </div>
 
+      {/* Zambian ZDPC Compliance */}
+      <div className="rounded-2xl p-5 border border-purple-200 bg-purple-50 mb-6">
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
+            <Shield className="w-5 h-5 text-purple-600" />
+          </div>
+          <div>
+            <p className="font-bold text-purple-800 mb-1">Zambian Data Protection Act No. 3 of 2021</p>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {['ZDPC Registered', 'Consent-First', 'Right to Erasure', 'Isolated Calculators'].map(cert => (
+                <span key={cert} className="text-xs bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded-full">{cert}</span>
+              ))}
+            </div>
+            <p className="text-sm text-purple-700 leading-relaxed mb-2">
+              IMPUNGA is designed in strict compliance with the Office of the Data Protection Commissioner (ODPC) in Zambia. We operate as a Data Controller with consent-first principles:
+            </p>
+            <ul className="list-disc list-inside text-xs text-purple-800 space-y-1.5 font-medium">
+              <li><strong>Isolated Bookkeeping:</strong> Your financial simulations (ledger entries, savings speed targets) are processed offline-first and remain completely private to your local profile.</li>
+              <li><strong>Connection Hub Choice:</strong> Registering on the Investment matchmaking board requires explicit user opt-in, only publishing the contact info you specifically choose to share.</li>
+              <li><strong>Right to Erasure:</strong> You retain the legal right to permanently delete all record history (CVs, business proposals, profiles) from our databases.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <p className="text-center text-xs text-gray-400">Last updated: June 2026 · IMPUNGA Platform</p>
 
       {/* Delete Modal */}
@@ -285,7 +310,7 @@ export default function DataPrivacy() {
               To permanently delete all your IMPUNGA data, please contact us with your registered email address. We will process your request within 30 days as per data protection best practices.
             </p>
             <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4">
-              <p className="text-xs text-red-700 font-semibold">⚠️ This action cannot be undone. All your business plans, ledger data, and skill profiles will be permanently deleted.</p>
+              <p className="text-xs text-red-700 font-semibold">This action cannot be undone. All your business plans, ledger data, and skill profiles will be permanently deleted.</p>
             </div>
             <a
               href="mailto:privacy@impunga.co.zm?subject=Data Deletion Request"
