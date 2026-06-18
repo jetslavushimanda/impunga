@@ -15,85 +15,92 @@ const badgeColorMap = {
   indigo: 'bg-indigo-50/80 text-indigo-600 border-indigo-100/40 group-hover:bg-indigo-600 group-hover:text-white',
 };
 
-export function ModuleCard({ path, icon: Icon, name, desc, bg, text, badge, badgeColor }) {
-  return (
-    <Link
-      to={path}
-      className="group relative bg-white/70 backdrop-blur-md overflow-hidden rounded-2xl p-4 flex items-center gap-4 border border-white/80 shadow-[0_4px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(99,102,241,0.08)] hover:border-indigo-100 hover:-translate-y-1 transition-all duration-300 w-full"
-    >
-      {/* Decorative gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-indigo-50/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      
-      <div className="relative shrink-0 z-10">
-        {/* Glowing background */}
-        <div className={`absolute inset-0 opacity-20 blur-md rounded-full ${bg} group-hover:opacity-35 transition-opacity duration-300`} />
-        <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center shadow-md border border-white/50 group-hover:scale-105 transition-transform duration-300 ${bg}`}>
-          <Icon className={`w-6 h-6 ${text || 'text-gray-700'} drop-shadow-sm`} />
-        </div>
-      </div>
+export function ModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, badge, badgeColor }) {
+  // Extract color key from bg or text prop (e.g. "bg-green-50" -> "green")
+  let color = 'indigo';
+  if (text) {
+    const match = text.match(/text-([a-z]+)-/);
+    if (match) color = match[1];
+  } else if (bg) {
+    const match = bg.match(/bg-([a-z]+)-/);
+    if (match) color = match[1];
+  }
+  if (color === 'emerald') color = 'green';
 
-      <div className="flex-1 min-w-0 relative z-10 text-left">
-        <div className="flex items-center justify-between mb-1 gap-2">
-          <h4 className="font-bold text-gray-900 text-sm group-hover:text-indigo-600 transition-colors truncate">
-            {name}
-          </h4>
-          {badge && (
-            <span className={`text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badgeColorMap[badgeColor] || (badge === 'Folder' ? badgeColorMap.yellow : badgeColorMap.indigo)}`}>
-              {badge}
-            </span>
-          )}
+  const hoverBorder = `hover:border-${color}-200`;
+  const hoverBg = `hover:bg-${color}-50/30`;
+  const iconBg = `${bg || `bg-${color}-50`} border border-${color}-100`;
+  const iconColor = text || `text-${color}-600`;
+
+  // Determine an appropriate footer action text based on path or name
+  let footerText = 'Explore Tools';
+  const checkText = (path || name || '').toLowerCase();
+  if (checkText.includes('ledger')) footerText = 'Track Ledger';
+  else if (checkText.includes('invoice')) footerText = 'Create Invoice';
+  else if (checkText.includes('pricing') || checkText.includes('calculator')) footerText = 'Calculate';
+  else if (checkText.includes('profile')) footerText = 'Build Profile';
+  else if (checkText.includes('career') || checkText.includes('match')) footerText = 'Match Careers';
+  else if (checkText.includes('cv')) footerText = 'Generate CV';
+  else if (checkText.includes('cover')) footerText = 'Generate Cover Letter';
+  else if (checkText.includes('prep') || checkText.includes('interview')) footerText = 'Start Prep';
+  else if (checkText.includes('gap') || checkText.includes('closer')) footerText = 'Close Gaps';
+  else if (checkText.includes('grant')) footerText = 'Explore Grants';
+  else if (checkText.includes('loan')) footerText = 'Explore Loans';
+  else if (checkText.includes('directory') || checkText.includes('marketplace')) footerText = 'Enter Directory';
+  else if (checkText.includes('showcase')) footerText = 'View Showcase';
+  else if (checkText.includes('tender')) footerText = 'View Tenders';
+  else if (checkText.includes('gig')) footerText = 'View Gig Board';
+  else if (checkText.includes('asset') || checkText.includes('sharing')) footerText = 'Explore Sharing';
+  else if (checkText.includes('name-generator') || checkText.includes('name')) footerText = 'Generate Names';
+  else if (checkText.includes('swot')) footerText = 'Perform SWOT';
+  else if (checkText.includes('plan')) footerText = 'Build Plan';
+  else if (checkText.includes('pitch')) footerText = 'Generate Pitch';
+  else if (checkText.includes('validate')) footerText = 'Validate Now';
+  else if (checkText.includes('blueprints') || checkText.includes('folder')) footerText = 'Open Blueprints';
+
+  const content = (
+    <>
+      <div className="flex items-start gap-4 w-full">
+        <div className={`w-12 h-12 ${iconBg} rounded-xl flex items-center justify-center shrink-0`}>
+          <Icon className={`w-6 h-6 ${iconColor}`} />
         </div>
-        <p className="text-gray-500 text-xs font-medium line-clamp-2 leading-relaxed">{desc}</p>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-1 gap-2">
+            <h4 className="font-bold text-gray-900 text-sm group-hover:text-indigo-600 transition-colors truncate">
+              {name}
+            </h4>
+            {badge && (
+              <span className={`text-[8px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badgeColorMap[badgeColor] || (badge === 'Folder' ? badgeColorMap.yellow : badgeColorMap.indigo)}`}>
+                {badge}
+              </span>
+            )}
+          </div>
+          <p className="text-gray-500 text-xs font-medium line-clamp-2 leading-relaxed">{desc}</p>
+        </div>
       </div>
-      
-      {/* Subtle background icon */}
-      <div className="absolute -right-2 -bottom-2 w-16 h-16 opacity-[0.03] pointer-events-none group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 text-gray-900">
-        <Icon className="w-full h-full" />
+      <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4 w-full">
+        <span className={`${iconColor} font-bold text-xs uppercase tracking-wide`}>{footerText}</span>
+        <ChevronRight className={`w-4 h-4 text-gray-300 group-hover:${iconColor} group-hover:translate-x-0.5 transition-all`} />
       </div>
+    </>
+  );
+
+  const className = `group text-left bg-white/70 backdrop-blur-md overflow-hidden rounded-2xl p-6 border border-white/80 shadow-[0_4px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(99,102,241,0.08)] hover:border-indigo-100 hover:-translate-y-1 transition-all duration-300 w-full flex flex-col justify-between h-full relative`;
+
+  if (onClick) {
+    return (
+      <button onClick={onClick} className={className}>
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Link to={path} className={className}>
+      {content}
     </Link>
   );
 }
-
-const getCardStyles = (path) => {
-  switch (path) {
-    case '/grants-portal':
-      return {
-        hoverBorder: 'hover:border-emerald-200',
-        hoverBg: 'hover:bg-emerald-50/30',
-        iconBg: 'bg-emerald-50 border border-emerald-100',
-        iconColor: 'text-emerald-600',
-        textColor: 'text-emerald-600',
-        footerText: 'Explore Grants'
-      };
-    case '/loans-portal':
-      return {
-        hoverBorder: 'hover:border-blue-200',
-        hoverBg: 'hover:bg-blue-50/30',
-        iconBg: 'bg-blue-50 border border-blue-100',
-        iconColor: 'text-blue-600',
-        textColor: 'text-blue-600',
-        footerText: 'Explore Loans'
-      };
-    case '/investment-matchmaker':
-      return {
-        hoverBorder: 'hover:border-purple-200',
-        hoverBg: 'hover:bg-purple-50/30',
-        iconBg: 'bg-purple-50 border border-purple-100',
-        iconColor: 'text-purple-600',
-        textColor: 'text-purple-600',
-        footerText: 'Match Investors'
-      };
-    default:
-      return {
-        hoverBorder: 'hover:border-indigo-200',
-        hoverBg: 'hover:bg-indigo-50/30',
-        iconBg: 'bg-indigo-50 border border-indigo-100',
-        iconColor: 'text-indigo-600',
-        textColor: 'text-indigo-600',
-        footerText: 'Explore'
-      };
-  }
-};
 
 export default function EngineView() {
   const { engineId } = useParams();
@@ -132,39 +139,9 @@ export default function EngineView() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {engineId === 'finance' ? (
-          modules.map(mod => {
-            const styles = getCardStyles(mod.path);
-            const Icon = mod.icon;
-            return (
-              <Link
-                key={mod.path}
-                to={mod.path}
-                className={`group text-left bg-white rounded-2xl p-6 border border-gray-100 ${styles.hoverBorder} ${styles.hoverBg} hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full w-full`}
-              >
-                <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 ${styles.iconBg} rounded-xl flex items-center justify-center shrink-0`}>
-                    <Icon className={`w-6 h-6 ${styles.iconColor}`} />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-gray-900 mb-1 leading-tight">{mod.name}</h2>
-                    <p className="text-gray-500 text-sm font-medium leading-relaxed">{mod.desc}</p>
-                  </div>
-                </div>
-                <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
-                  <span className={`${styles.textColor} font-bold text-xs uppercase tracking-wide`}>
-                    {styles.footerText}
-                  </span>
-                  <ChevronRight className={`w-4 h-4 text-gray-300 group-hover:${styles.iconColor} group-hover:translate-x-0.5 transition-all`} />
-                </div>
-              </Link>
-            );
-          })
-        ) : (
-          modules.map(mod => (
-            <ModuleCard key={mod.path} {...mod} />
-          ))
-        )}
+        {modules.map(mod => (
+          <ModuleCard key={mod.path} {...mod} />
+        ))}
       </div>
     </div>
   );

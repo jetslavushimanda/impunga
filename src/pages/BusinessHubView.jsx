@@ -65,57 +65,7 @@ const STARTUP_TOOLS = [
   }
 ];
 
-function StartupModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, badge }) {
-  const content = (
-    <>
-      {/* Decorative gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-indigo-50/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      
-      <div className="relative shrink-0 z-10">
-        {/* Glowing background */}
-        <div className={`absolute inset-0 opacity-20 blur-md rounded-full ${bg} group-hover:opacity-35 transition-opacity duration-300`} />
-        <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center shadow-md border border-white/50 group-hover:scale-105 transition-transform duration-300 ${bg}`}>
-          <Icon className={`w-6 h-6 ${text || 'text-gray-700'} drop-shadow-sm`} />
-        </div>
-      </div>
 
-      <div className="flex-1 min-w-0 relative z-10 text-left">
-        <div className="flex items-center justify-between mb-1 gap-2">
-          <h4 className="font-bold text-gray-900 text-sm group-hover:text-indigo-600 transition-colors truncate">
-            {name}
-          </h4>
-          {badge && (
-            <span className={`text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badge === 'Folder' ? 'bg-yellow-50/80 text-yellow-600 border-yellow-200/40 group-hover:bg-yellow-500 group-hover:text-white' : 'bg-indigo-50/80 text-indigo-600 border-indigo-100/40 group-hover:bg-indigo-600 group-hover:text-white'}`}>
-              {badge}
-            </span>
-          )}
-        </div>
-        <p className="text-gray-500 text-xs font-medium line-clamp-2 leading-relaxed">{desc}</p>
-      </div>
-      
-      {/* Subtle background icon */}
-      <div className="absolute -right-2 -bottom-2 w-16 h-16 opacity-[0.03] pointer-events-none group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 text-gray-900">
-        <Icon className="w-full h-full" />
-      </div>
-    </>
-  );
-
-  const className = "group relative bg-white/70 backdrop-blur-md overflow-hidden rounded-2xl p-4 flex items-center gap-4 border border-white/80 shadow-[0_4px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(99,102,241,0.08)] hover:border-indigo-100 hover:-translate-y-1 transition-all duration-300 w-full";
-
-  if (onClick) {
-    return (
-      <button onClick={onClick} className={className}>
-        {content}
-      </button>
-    );
-  }
-
-  return (
-    <Link to={path} className={className}>
-      {content}
-    </Link>
-  );
-}
 
 function SectionHeader({ title, description, icon: Icon, badge, gradient = "from-indigo-500 to-purple-600", rightAction }) {
   return (
@@ -347,7 +297,7 @@ export default function BusinessHubView() {
           <div className="animate-slide-up">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Validate New Idea */}
-              <StartupModuleCard 
+              <ModuleCard 
                 onClick={() => {
                   localStorage.removeItem('impunga_idea_pipeline');
                   navigate('/idea-validator');
@@ -361,7 +311,7 @@ export default function BusinessHubView() {
               />
 
               {/* Saved Blueprints Folder */}
-              <StartupModuleCard 
+              <ModuleCard 
                 onClick={() => setShowSavedBlueprints(true)}
                 icon={FolderOpen}
                 name="Saved Blueprints"
@@ -373,7 +323,7 @@ export default function BusinessHubView() {
 
               {/* Other Tools */}
               {STARTUP_TOOLS.map((tool) => (
-                <StartupModuleCard key={tool.path} {...tool} />
+                <ModuleCard key={tool.path} {...tool} />
               ))}
             </div>
           </div>
@@ -571,90 +521,15 @@ export default function BusinessHubView() {
             }
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {businessEngine.modules.map(mod => {
-              let hoverBorder = 'hover:border-green-200';
-              let hoverBg = 'hover:bg-green-50/30';
-              let iconBg = 'bg-green-50 border border-green-100';
-              let iconColor = 'text-green-600';
-              let footerText = 'Explore Tools';
-              
-              if (mod.path === '/social-media') {
-                hoverBorder = 'hover:border-purple-200';
-                hoverBg = 'hover:bg-purple-50/30';
-                iconBg = 'bg-purple-50 border border-purple-100';
-                iconColor = 'text-purple-600';
-                footerText = 'Create Content';
-              } else if (mod.path === '/business-ledger') {
-                footerText = 'Track Ledger';
-              } else if (mod.path === '/invoice-generator') {
-                footerText = 'Create Invoice';
-              } else if (mod.path === '/pricing-calculator') {
-                footerText = 'Calculate Prices';
-              }
-
-              const Icon = mod.icon;
-              return (
-                <Link
-                  key={mod.path}
-                  to={mod.path}
-                  className={`group text-left bg-white rounded-2xl p-6 border border-gray-100 ${hoverBorder} ${hoverBg} hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full w-full`}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 ${iconBg} rounded-xl flex items-center justify-center shrink-0`}>
-                      <Icon className={`w-6 h-6 ${iconColor}`} />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold text-gray-900 mb-1 leading-tight">{mod.name}</h2>
-                      <p className="text-gray-500 text-sm font-medium leading-relaxed">{mod.desc}</p>
-                    </div>
-                  </div>
-                  <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
-                    <span className={`${iconColor} font-bold text-xs uppercase tracking-wide`}>{footerText}</span>
-                    <ChevronRight className={`w-4 h-4 text-gray-300 group-hover:${iconColor} group-hover:translate-x-0.5 transition-all`} />
-                  </div>
-                </Link>
-              );
-            })}
+            {businessEngine.modules.map(mod => (
+              <ModuleCard key={mod.path} {...mod} />
+            ))}
             
             {/* Marketplace Card (replicated premium style) */}
-            <Link 
-              to="/market-directory"
-              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full w-full"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center shrink-0">
-                  <Handshake className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900 mb-1">Marketplace</h2>
-                  <p className="text-gray-500 text-sm font-medium leading-relaxed">Trade and connect in the verified directory.</p>
-                </div>
-              </div>
-              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
-                <span className="text-blue-600 font-bold text-xs uppercase tracking-wide">Enter Directory</span>
-                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
-              </div>
-            </Link>
+            <ModuleCard path="/market-directory" icon={Handshake} name="Marketplace" desc="Trade and connect in the verified directory." bg="bg-blue-50" text="text-blue-600" badge="COMMUNITY" badgeColor="blue" />
 
             {/* Funding & Finance Card (replicated premium style) */}
-            <Link 
-              to="/engine/finance"
-              className="group text-left bg-white rounded-2xl p-6 border border-gray-100 hover:border-emerald-200 hover:bg-emerald-50/30 hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full w-full"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
-                  <DollarSign className="w-6 h-6 text-emerald-600" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900 mb-1">Funding & Finance</h2>
-                  <p className="text-gray-500 text-sm font-medium leading-relaxed">Institutional Gateway for Grants, Loans & Investment.</p>
-                </div>
-              </div>
-              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4">
-                <span className="text-emerald-600 font-bold text-xs uppercase tracking-wide">Explore Funding</span>
-                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
-              </div>
-            </Link>
+            <ModuleCard path="/engine/finance" icon={DollarSign} name="Funding & Finance" desc="Institutional Gateway for Grants, Loans & Investment." bg="bg-emerald-50" text="text-emerald-600" badge="GATEWAY" badgeColor="emerald" />
           </div>
         </div>
       )}
