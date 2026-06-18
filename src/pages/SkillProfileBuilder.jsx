@@ -91,6 +91,78 @@ const ALL_SKILLS = [
   'Financial Management', 'Research'
 ];
 
+const QUIZ_QUESTIONS = [
+  {
+    id: 'customer',
+    q: '1. Customer & Sales Experience',
+    desc: 'Do you have experience communicating with customers, selling, or pitching?',
+    options: [
+      { label: 'Handling customer inquiries & complaints', skill: 'Customer Service' },
+      { label: 'Selling goods or promoting services', skill: 'Sales and Marketing' },
+      { label: 'Delivering public presentations or speeches', skill: 'Public Speaking' },
+      { label: 'Negotiating prices or local agreements', skill: 'Negotiation' }
+    ]
+  },
+  {
+    id: 'digital',
+    q: '2. Computer & Software Familiarity',
+    desc: 'Select the IT, design, or tech skills you have used before:',
+    options: [
+      { label: 'Writing computer programs or software', skill: 'Computer Programming' },
+      { label: 'Creating websites or online databases', skill: 'Web Development' },
+      { label: 'Designing graphics, logos, or posters', skill: 'Graphic Design' },
+      { label: 'Video editing or media creation', skill: 'Video Editing' },
+      { label: 'Managing business pages on Facebook/WhatsApp', skill: 'Social Media Management' },
+      { label: 'Troubleshooting network routers or computers', skill: 'Networking and IT Support' }
+    ]
+  },
+  {
+    id: 'trades',
+    q: '3. Technical Trades & Handiwork',
+    desc: 'Which hands-on trade skills do you have experience in?',
+    options: [
+      { label: 'Electrical wiring & installations', skill: 'Electrical Installation' },
+      { label: 'Plumbing & fixing pipes', skill: 'Plumbing' },
+      { label: 'Welding & structural metal works', skill: 'Welding' },
+      { label: 'Carpentry, wood joinery, or furniture making', skill: 'Carpentry and Joinery' },
+      { label: 'Solar panels, battery and inverter setups', skill: 'Solar Panel Installation' },
+      { label: 'Motor vehicle repairs & mechanics', skill: 'Motor Vehicle Mechanics' },
+      { label: 'AC and refrigeration maintenance', skill: 'Air Conditioning and Refrigeration' }
+    ]
+  },
+  {
+    id: 'vocational',
+    q: '4. Local Vocational Services',
+    desc: 'Select local services or vocational skills you possess:',
+    options: [
+      { label: 'Tailoring, dressmaking, or alterations', skill: 'Tailoring and Dressmaking' },
+      { label: 'Hairdressing, braiding, or beauty treatments', skill: 'Hairdressing and Beauty' },
+      { label: 'Bricklaying, plastering, or construction work', skill: 'Bricklaying and Plastering' },
+      { label: 'Professional catering, cooking, or food prep', skill: 'Catering and Cooking' },
+      { label: 'Baking bread or baking confectionery', skill: 'Baking and Confectionery' },
+      { label: 'Farming, gardening, or crop harvesting', skill: 'Farming and Agriculture' },
+      { label: 'Livestock management & poultry rearing', skill: 'Animal Husbandry' },
+      { label: 'Fish farming or pond construction', skill: 'Fish Farming' },
+      { label: 'Professional driving or transport delivery', skill: 'Driving and Transport' },
+      { label: 'Tutoring or teaching academic subjects', skill: 'Teaching and Tutoring' },
+      { label: 'First aid, nursing, or community healthcare', skill: 'Nursing and Healthcare' }
+    ]
+  },
+  {
+    id: 'business',
+    q: '5. Business & Leadership Skills',
+    desc: 'Select the operational or leadership skills you practice:',
+    options: [
+      { label: 'Leading groups, teams, or managing projects', skill: 'Leadership' },
+      { label: 'Planning project milestones and schedules', skill: 'Project Management' },
+      { label: 'Managing accounting records and books', skill: 'Accounting and Bookkeeping' },
+      { label: 'Budgeting and managing cash flow balances', skill: 'Financial Management' },
+      { label: 'Collaborating in teams and coordinating projects', skill: 'Teamwork' },
+      { label: 'Evaluating and solving complex problems', skill: 'Problem Solving' }
+    ]
+  }
+];
+
 export default function SkillProfileBuilder() {
   const { user, userProfile } = useAuthStore();
   const { extractSkillsFromDescription, loading: aiLoading } = useAI();
@@ -103,6 +175,7 @@ export default function SkillProfileBuilder() {
   const [aiSummary, setAiSummary] = useState('');
   const [aiSuggestions, setAiSuggestions] = useState([]);
   const [showAllSkills, setShowAllSkills] = useState(false);
+  const [skillsTab, setSkillsTab] = useState('quiz'); // 'quiz', 'catalog', 'ai'
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -380,64 +453,188 @@ export default function SkillProfileBuilder() {
           </div>
         )}
 
-        {/* STEP 2: AI-Powered Skills Extraction */}
+        {/* STEP 2: Skills Selection & Extraction */}
         {step === 2 && (
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-6">
             <div>
-              <h2 className="text-base font-bold text-gray-800">Step 2 — Skills Extraction</h2>
-              <p className="text-xs text-gray-400 mt-1">Describe your experience and let AI identify your skills automatically.</p>
+              <h2 className="text-base font-bold text-gray-800">Step 2 — Skills Profile</h2>
+              <p className="text-xs text-gray-400 mt-1">Select your skills using a quiz, a catalog, or let Gemini AI extract them from a description.</p>
             </div>
 
-            {/* AI Experience Description */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100 space-y-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-bold text-blue-800">AI Skill Extractor</span>
-                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Powered by Gemini</span>
-              </div>
-              <p className="text-xs text-blue-700">Describe your work experience, training, and what you can do — in your own words. The AI will identify your skills automatically.</p>
-              <textarea
-                className="input-field min-h-[100px] text-sm"
-                placeholder="e.g. I have been doing electrical wiring for 5 years. I can install solar panels and fix appliances. I also manage my own team of 3 workers and handle customer orders and payments..."
-                value={experienceDescription}
-                onChange={e => setExperienceDescription(e.target.value)}
-              />
+            {/* Sub Tabs */}
+            <div className="flex bg-gray-100 p-1 rounded-xl">
               <button
                 type="button"
-                onClick={handleAIExtract}
-                disabled={aiLoading || experienceDescription.trim().length < 30}
-                className="btn-primary gap-2 w-full"
+                onClick={() => setSkillsTab('quiz')}
+                className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${skillsTab === 'quiz' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
               >
-                {aiLoading ? (
-                  <><LoadingSpinner size="sm" /> Extracting Skills...</>
-                ) : (
-                  <><Sparkles className="w-4 h-4" /> Extract My Skills with AI</>
-                )}
+                📝 Skills Quiz
+              </button>
+              <button
+                type="button"
+                onClick={() => setSkillsTab('catalog')}
+                className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${skillsTab === 'catalog' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
+              >
+                🔍 Skill Catalog
+              </button>
+              <button
+                type="button"
+                onClick={() => setSkillsTab('ai')}
+                className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${skillsTab === 'ai' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
+              >
+                ✨ AI Extractor
               </button>
             </div>
 
-            {/* AI Result Summary */}
-            {aiExtractionDone && aiSummary && (
-              <div className="bg-green-50 border border-green-100 rounded-xl p-3">
-                <p className="text-xs font-bold text-green-700 mb-1">AI Profile Summary</p>
-                <p className="text-sm text-green-800">{aiSummary}</p>
-                {aiSuggestions.length > 0 && (
-                  <div className="mt-2">
-                    <p className="text-xs text-green-600 font-semibold">You might also have: {aiSuggestions.join(', ')}</p>
+            {/* TAB 1: QUIZ */}
+            {skillsTab === 'quiz' && (
+              <div className="space-y-5 animate-fade-in">
+                <p className="text-xs text-gray-500 font-medium">Select all statements that apply to you. Matching skills will be automatically added below.</p>
+                {QUIZ_QUESTIONS.map(group => (
+                  <div key={group.id} className="bg-gray-50 border border-gray-100 p-4 rounded-2xl">
+                    <h4 className="font-bold text-gray-800 text-sm mb-1">{group.q}</h4>
+                    <p className="text-[10px] text-gray-400 font-medium mb-3">{group.desc}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {group.options.map(opt => {
+                        const isChecked = formData.selectedSkills.includes(opt.skill);
+                        return (
+                          <label key={opt.label} className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-xs font-medium cursor-pointer transition-all ${isChecked ? 'bg-indigo-50 border-indigo-300 text-indigo-950 shadow-sm' : 'bg-white border-gray-200 hover:border-gray-300 text-gray-600'}`}>
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => handleSkillToggle(opt.skill)}
+                              className="text-indigo-600 focus:ring-indigo-500 h-3.5 w-3.5 rounded mt-0.5"
+                            />
+                            <span>{opt.label}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* TAB 2: CATALOG */}
+            {skillsTab === 'catalog' && (
+              <div className="space-y-6 animate-fade-in">
+                <p className="text-xs text-gray-500 font-medium">Click on any skill to add it directly to your profile.</p>
+                
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-2">Technical & Creative Skills</h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {CAT1_SKILLS.map(skill => {
+                        const isSelected = formData.selectedSkills.includes(skill);
+                        return (
+                          <button
+                            type="button"
+                            key={skill}
+                            onClick={() => handleSkillToggle(skill)}
+                            className={`text-xs font-semibold px-3 py-1.5 rounded-xl border transition-all ${isSelected ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'bg-white border-gray-200 text-gray-600 hover:border-indigo-300'}`}
+                          >
+                            {skill}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-2">Trade & Local Services</h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {CAT2_SKILLS.map(skill => {
+                        const isSelected = formData.selectedSkills.includes(skill);
+                        return (
+                          <button
+                            type="button"
+                            key={skill}
+                            onClick={() => handleSkillToggle(skill)}
+                            className={`text-xs font-semibold px-3 py-1.5 rounded-xl border transition-all ${isSelected ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-white border-gray-200 text-gray-600 hover:border-emerald-300'}`}
+                          >
+                            {skill}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-[10px] font-bold text-orange-600 uppercase tracking-widest mb-2">Business & Leadership</h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {CAT3_SKILLS.map(skill => {
+                        const isSelected = formData.selectedSkills.includes(skill);
+                        return (
+                          <button
+                            type="button"
+                            key={skill}
+                            onClick={() => handleSkillToggle(skill)}
+                            className={`text-xs font-semibold px-3 py-1.5 rounded-xl border transition-all ${isSelected ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white border-gray-200 text-gray-600 hover:border-orange-300'}`}
+                          >
+                            {skill}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: AI EXTRACTOR */}
+            {skillsTab === 'ai' && (
+              <div className="space-y-4 animate-fade-in">
+                <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-4 border border-indigo-100 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-indigo-600" />
+                    <span className="text-sm font-bold text-indigo-850">AI Skill Extractor</span>
+                    <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">Powered by Gemini</span>
+                  </div>
+                  <p className="text-xs text-indigo-700">Describe your work experience, training, and abilities in your own words. The AI will extract corresponding skills.</p>
+                  <textarea
+                    className="input-field min-h-[100px] text-xs"
+                    placeholder="e.g. I have been running a local shop for 3 years. I handle calculations of profit, buy stock in bulk, and manage three staff members. I am also fluent in Tonga..."
+                    value={experienceDescription}
+                    onChange={e => setExperienceDescription(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAIExtract}
+                    disabled={aiLoading || experienceDescription.trim().length < 30}
+                    className="btn-primary gap-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold"
+                  >
+                    {aiLoading ? (
+                      <><LoadingSpinner size="sm" /> Extracting Skills...</>
+                    ) : (
+                      <><Sparkles className="w-4 h-4" /> Extract My Skills with AI</>
+                    )}
+                  </button>
+                </div>
+
+                {/* AI Result Summary */}
+                {aiExtractionDone && aiSummary && (
+                  <div className="bg-green-50 border border-green-150 p-4 rounded-xl">
+                    <p className="text-xs font-bold text-green-700 mb-1">AI Profile Summary</p>
+                    <p className="text-xs text-green-800 leading-relaxed">{aiSummary}</p>
+                    {aiSuggestions.length > 0 && (
+                      <div className="mt-2">
+                        <p className="text-[10px] text-green-600 font-semibold">Suggested additions: {aiSuggestions.join(', ')}</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             )}
 
-            {/* Extracted / Selected Skills */}
+            {/* Extracted / Selected Skills (Always Visible) */}
             {formData.selectedSkills.length > 0 && (
-              <div>
-                <p className="text-sm font-bold text-gray-700 mb-2">Your Extracted Skills ({formData.selectedSkills.length})</p>
-                <div className="flex flex-wrap gap-2">
+              <div className="border-t border-gray-100 pt-4">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2.5">Your Selected Skills Profile ({formData.selectedSkills.length})</p>
+                <div className="flex flex-wrap gap-1.5">
                   {formData.selectedSkills.map(skill => (
-                    <span key={skill} className="flex items-center gap-1 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
+                    <span key={skill} className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-xl shadow-sm">
                       {skill}
-                      <button type="button" onClick={() => handleSkillToggle(skill)} className="ml-1 hover:text-red-500 transition-colors">
+                      <button type="button" onClick={() => handleSkillToggle(skill)} className="hover:text-red-500 transition-colors">
                         <X className="w-3 h-3" />
                       </button>
                     </span>
@@ -448,9 +645,10 @@ export default function SkillProfileBuilder() {
 
             {/* Languages */}
             <div>
-              <label className="label">Languages — specify which you speak</label>
+              <label className="label">Languages Spoken *</label>
               <input
                 type="text"
+                required
                 className="input-field"
                 placeholder="e.g. English, Bemba, Nyanja, Tonga"
                 value={formData.languages}
@@ -458,8 +656,9 @@ export default function SkillProfileBuilder() {
               />
             </div>
 
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
-              Selected skills: <span className="font-bold">{formData.selectedSkills.length}</span> (Minimum 3 required)
+            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-xs text-blue-700 font-semibold flex items-center justify-between">
+              <span>Selected skills count: <strong className="text-base text-blue-900">{formData.selectedSkills.length}</strong></span>
+              <span>(Minimum 3 required)</span>
             </div>
           </div>
         )}

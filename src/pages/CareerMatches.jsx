@@ -7,6 +7,7 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 import { Briefcase, ArrowRight, Map, Sparkles, Loader2, Bot } from 'lucide-react';
 
 import { CAREERS } from '../data/careers';
+import { ZAMBIAN_JOBS } from '../data/jobs';
 
 const RANKS = ['1st Match', '2nd Match', '3rd Match', '4th Match', '5th Match'];
 
@@ -236,6 +237,36 @@ export default function CareerMatches() {
               </div>
 
             </div>
+
+            {/* Matched active jobs on Gig Board */}
+            {(() => {
+              const matchedJobs = ZAMBIAN_JOBS.filter(job => job.sector === item.sector);
+              if (matchedJobs.length === 0) return null;
+              return (
+                <div className="pt-4 border-t border-gray-50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Matched Jobs on Gig Board ({matchedJobs.length})</h4>
+                    <Link to="/gig-board" className="text-xs text-blue-600 hover:text-blue-800 font-bold">Open Board</Link>
+                  </div>
+                  <div className="space-y-2">
+                    {matchedJobs.map(job => (
+                      <div key={job.id} className="bg-gray-50/50 border border-gray-100 p-3 rounded-xl flex items-center justify-between gap-3 text-xs">
+                        <div>
+                          <span className="font-bold text-gray-800 block leading-tight">{job.title}</span>
+                          <span className="text-[10px] text-gray-400 block mt-1">Client: {job.client} | Budget: {job.budget}</span>
+                        </div>
+                        <Link
+                          to={`/gig-board?search=${encodeURIComponent(job.title)}`}
+                          className="bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 text-blue-600 font-bold px-3 py-1.5 rounded-xl transition-all shadow-sm shrink-0"
+                        >
+                          Apply Now
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Predictive Roadmap Section */}
             <div className="pt-4 border-t border-gray-50">

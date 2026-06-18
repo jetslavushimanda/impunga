@@ -604,9 +604,7 @@ Return ONLY valid JSON.`;
     } finally {
       setLoading(false);
     }
-  }
-
-  async function generateCoverLetter(jobTitle, company, profileData) {
+  }  async function generateCoverLetter(jobTitle, company, profileData, details = {}) {
     setLoading(true);
     setError(null);
     try {
@@ -615,11 +613,37 @@ Return ONLY valid JSON.`;
 Job Title: ${jobTitle}
 Company: ${company}
 Applicant Name: ${profileData.fullName}
-Location: ${profileData.district}, ${profileData.province}
+Applicant Phone: ${details.phone || ''}
+Applicant Email: ${details.email || ''}
+Applicant Location: ${details.location || ''}
+Date: ${details.date || new Date().toLocaleDateString('en-GB')}
+Hiring Manager: ${details.hiringManager || 'Hiring Manager'}
+Company Address: ${details.companyAddress || ''}
 Applicant Skills: ${profileData.selectedSkills?.join(', ')}
 Education: ${profileData.educationLevel}
 
-Write a 3-4 paragraph cover letter. Keep it highly professional, tailored to the Zambian job market, and focused on how the applicant's specific skills make them a perfect fit for the role. Do not use placeholders like [Date] or [Address], just write the core letter content.`;
+Write a professional cover letter following this exact layout structure:
+${profileData.fullName}
+${details.phone || '[Phone Number]'} | ${details.email || '[Email Address]'}
+${details.location || '[City, Province]'}
+
+${details.date || '[Date]'}
+
+${details.hiringManager || 'Hiring Team'}
+${company}
+${details.companyAddress || '[Company Address]'}
+
+RE: Application for ${jobTitle} Position
+
+Dear ${details.hiringManager || 'Hiring Manager'},
+
+[Write 3-4 professional body paragraphs focusing on how the candidate's skills fit the role at ${company} in Zambia.]
+
+Sincerely,
+
+${profileData.fullName}
+
+Avoid generic placeholders inside the body paragraphs. Maintain high professional standards.`;
 
       const response = await callGemini(prompt, 'You are a Zambian cover letter writing assistant.');
       return response;
@@ -632,24 +656,23 @@ Write a 3-4 paragraph cover letter. Keep it highly professional, tailored to the
     }
   }
 
-  async function generateInterviewQuestions(careerName, province) {
+  async function generateInterviewQuestions(careerName, province, questionCount = 6) {
     setLoading(true);
     setError(null);
     try {
       const prompt = `You are a Zambian HR Manager interviewing a candidate for the role of ${careerName} in ${province || 'Zambia'}.
       
-Generate exactly 4 interview questions:
-1. A general introductory/behavioral question.
-2. A role-specific technical/skill question.
-3. A situational question specific to working in Zambia (e.g., dealing with power cuts, local supply chain issues, or Zambian customer service).
-4. A question about their career goals or teamwork.
+Generate exactly ${questionCount} interview questions:
+- Question 1: A general introductory/behavioral question.
+- Question 2: A role-specific technical/skill question.
+- Question 3: A situational question specific to working in Zambia (e.g. dealing with power load shedding, ZRA tax details, local supplier negotiations, local customer habits).
+- Questions 4 to ${questionCount}: General or situational questions testing team communication, reliability, and vocational excellence in this trade.
 
 Return ONLY a JSON array of strings. Example:
 [
   "Question 1...",
   "Question 2...",
-  "Question 3...",
-  "Question 4..."
+  ...
 ]`;
 
       const response = await callGemini(prompt, 'You are an HR Manager in Zambia. Return only a valid JSON array of strings.');

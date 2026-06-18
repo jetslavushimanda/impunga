@@ -21,6 +21,16 @@ export default function CoverLetterGenerator() {
   const [letterContent, setLetterContent] = useState('');
   const [copied, setCopied] = useState(false);
 
+  // Address and header particulars
+  const [details, setDetails] = useState({
+    phone: '',
+    email: '',
+    location: '',
+    date: new Date().toLocaleDateString('en-GB'),
+    hiringManager: 'Hiring Team',
+    companyAddress: 'Lusaka, Zambia'
+  });
+
   useEffect(() => {
     if (!user) return;
     async function loadProfile() {
@@ -28,6 +38,12 @@ export default function CoverLetterGenerator() {
         const data = await getDocument('skillProfiles', user.uid);
         if (data) {
           setProfile(data);
+          setDetails(prev => ({
+            ...prev,
+            email: data.email || user.email || '',
+            phone: data.phone || '',
+            location: data.district ? `${data.district}, ${data.province}` : ''
+          }));
         }
       } catch (err) {
         console.error('Failed to load profile:', err);
@@ -43,7 +59,7 @@ export default function CoverLetterGenerator() {
     if (!jobTitle || !company || !profile) return;
     
     try {
-      const result = await generateCoverLetter(jobTitle, company, profile);
+      const result = await generateCoverLetter(jobTitle, company, profile, details);
       setLetterContent(result);
       setCopied(false);
     } catch (err) {
@@ -84,7 +100,7 @@ export default function CoverLetterGenerator() {
   const lblClass = "block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide";
 
   return (
-    <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-4">
+    <div className="max-w-5xl mx-auto pb-24 animate-fade-in px-4">
       <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
@@ -95,40 +111,81 @@ export default function CoverLetterGenerator() {
         </div>
         <div>
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Cover Letter AI</h1>
-          <p className="text-gray-500 font-medium text-lg">Generate a professional, tailored cover letter instantly.</p>
+          <p className="text-gray-500 font-medium text-lg">Generate a professional, structured cover letter matching standard Zambian layouts.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Input Form */}
+        {/* Form Panel */}
         <div className="lg:col-span-5 space-y-6">
-          <form onSubmit={handleGenerate} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">Job Details</h2>
+          <form onSubmit={handleGenerate} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-5">
+            <h2 className="text-lg font-bold text-gray-800 border-b border-gray-50 pb-2">Letter Details</h2>
             
             <div className="space-y-4">
-              <div>
-                <label className={lblClass}>Job Title</label>
-                <input 
-                  type="text" 
-                  required
-                  className={inpClass} 
-                  placeholder="e.g. Sales Executive" 
-                  value={jobTitle} 
-                  onChange={e => setJobTitle(e.target.value)} 
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className={lblClass}>Your Phone</label>
+                  <input type="text" required className={inpClass + " !py-2.5"} placeholder="e.g. 0961234567" value={details.phone} onChange={e => setDetails({...details, phone: e.target.value})} />
+                </div>
+                <div>
+                  <label className={lblClass}>Your Email</label>
+                  <input type="email" required className={inpClass + " !py-2.5"} placeholder="e.g. name@domain.com" value={details.email} onChange={e => setDetails({...details, email: e.target.value})} />
+                </div>
               </div>
-              
+
               <div>
-                <label className={lblClass}>Company Name</label>
-                <input 
-                  type="text" 
-                  required
-                  className={inpClass} 
-                  placeholder="e.g. TradeKings Zambia" 
-                  value={company} 
-                  onChange={e => setCompany(e.target.value)} 
-                />
+                <label className={lblClass}>Your Location</label>
+                <input type="text" required className={inpClass + " !py-2.5"} placeholder="e.g. Lusaka, Lusaka Province" value={details.location} onChange={e => setDetails({...details, location: e.target.value})} />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className={lblClass}>Date</label>
+                  <input type="text" required className={inpClass + " !py-2.5"} placeholder="DD/MM/YYYY" value={details.date} onChange={e => setDetails({...details, date: e.target.value})} />
+                </div>
+                <div>
+                  <label className={lblClass}>Hiring Lead / Team</label>
+                  <input type="text" required className={inpClass + " !py-2.5"} placeholder="e.g. Hiring Manager" value={details.hiringManager} onChange={e => setDetails({...details, hiringManager: e.target.value})} />
+                </div>
+              </div>
+
+              <div className="border-t border-gray-50 pt-3 space-y-4">
+                <div>
+                  <label className={lblClass}>Target Job Title</label>
+                  <input 
+                    type="text" 
+                    required
+                    className={inpClass} 
+                    placeholder="e.g. Assistant Accountant" 
+                    value={jobTitle} 
+                    onChange={e => setJobTitle(e.target.value)} 
+                  />
+                </div>
+                
+                <div>
+                  <label className={lblClass}>Target Company Name</label>
+                  <input 
+                    type="text" 
+                    required
+                    className={inpClass} 
+                    placeholder="e.g. TradeKings Zambia" 
+                    value={company} 
+                    onChange={e => setCompany(e.target.value)} 
+                  />
+                </div>
+
+                <div>
+                  <label className={lblClass}>Company Address</label>
+                  <input 
+                    type="text" 
+                    required
+                    className={inpClass} 
+                    placeholder="e.g. Plot 1234, Industrial Area, Lusaka" 
+                    value={details.companyAddress} 
+                    onChange={e => setDetails({...details, companyAddress: e.target.value})} 
+                  />
+                </div>
               </div>
 
               {aiError && <ErrorMessage message={aiError} />}
@@ -136,7 +193,7 @@ export default function CoverLetterGenerator() {
               <button 
                 type="submit" 
                 disabled={aiLoading || !jobTitle || !company}
-                className="btn-primary w-full py-3 flex items-center justify-center gap-2 mt-4 bg-indigo-600 hover:bg-indigo-700"
+                className="btn-primary w-full py-3.5 flex items-center justify-center gap-2 mt-4 bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/10"
               >
                 {aiLoading ? (
                   <LoadingSpinner size="sm" text="Writing Letter..." />
@@ -146,19 +203,19 @@ export default function CoverLetterGenerator() {
               </button>
             </div>
             
-            <div className="mt-6 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-              <p className="text-xs text-indigo-800 leading-relaxed">
-                The AI will use your saved Skill Profile (<strong>{profile.selectedSkills?.length || 0} skills</strong>) to automatically customize this letter.
+            <div className="mt-4 p-4 bg-indigo-50/70 rounded-2xl border border-indigo-100">
+              <p className="text-xs text-indigo-800 leading-relaxed font-medium">
+                Gemini AI will structure a complete document matching your exact contact information and skill list.
               </p>
             </div>
           </form>
         </div>
 
-        {/* Output Section */}
+        {/* Output Panel */}
         <div className="lg:col-span-7">
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 h-full min-h-[400px] flex flex-col relative">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-gray-800">Your Generated Letter</h2>
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 h-full min-h-[500px] flex flex-col relative">
+            <div className="flex justify-between items-center mb-4 border-b border-gray-50 pb-3">
+              <h2 className="text-lg font-bold text-gray-800">Your Structured Letter</h2>
               {letterContent && (
                 <button 
                   onClick={handleCopy}
@@ -170,17 +227,17 @@ export default function CoverLetterGenerator() {
             </div>
 
             {letterContent ? (
-              <div className="flex-1">
+              <div className="flex-1 flex flex-col">
                 <textarea 
-                  className="w-full h-full min-h-[400px] p-4 text-sm text-gray-700 bg-gray-50 border border-gray-100 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  className="w-full flex-1 min-h-[450px] p-4 text-sm font-mono text-gray-700 bg-gray-50/50 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-indigo-100"
                   value={letterContent}
                   onChange={(e) => setLetterContent(e.target.value)}
                 />
               </div>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-center text-gray-400">
-                <PenTool className="w-12 h-12 mb-3 text-gray-200" />
-                <p className="text-sm">Enter the job details and click generate to see your letter here.</p>
+              <div className="flex-1 flex flex-col items-center justify-center text-center text-gray-400 py-20">
+                <PenTool className="w-12 h-12 mb-3 text-gray-200 animate-pulse" />
+                <p className="text-sm font-medium">Enter the details on the left and click generate to generate your cover letter.</p>
               </div>
             )}
           </div>

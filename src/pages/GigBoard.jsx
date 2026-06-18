@@ -1,48 +1,18 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Search, Filter, Briefcase, MapPin, DollarSign, Clock, CheckCircle2 } from 'lucide-react';
-
-const MOCK_GIGS = [
-  {
-    id: 'G-101',
-    title: 'Shopify Store Setup',
-    client: 'Nkhwazi Boutiques',
-    budget: 'K1,500 Fixed',
-    duration: '1 Week',
-    location: 'Remote',
-    category: 'Development',
-    description: 'Need an experienced developer to set up a Shopify store with 50 products and integrate local payment gateways (MTN MoMo, Airtel Money).'
-  },
-  {
-    id: 'G-102',
-    title: 'Financial Audit for Q2',
-    client: 'AgriCorp Zambia',
-    budget: 'K5,000 Fixed',
-    duration: '2 Weeks',
-    location: 'Lusaka (Hybrid)',
-    category: 'Finance',
-    description: 'Looking for a certified accountant to review our Q2 financial statements and ensure compliance with ZRA requirements before tax filing.'
-  },
-  {
-    id: 'G-103',
-    title: 'Social Media Management',
-    client: 'QuickBite Restaurants',
-    budget: 'K2,000/month',
-    duration: 'Ongoing',
-    location: 'Remote',
-    category: 'Marketing',
-    description: 'Require a creative manager to handle our Facebook and Instagram accounts, post 3 times a week, and manage customer inquiries.'
-  }
-];
+import { ZAMBIAN_JOBS } from '../data/jobs';
 
 export default function GigBoard() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchParams] = useSearchParams();
+  const initialSearch = searchParams.get('search') || '';
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [filterCategory, setFilterCategory] = useState('All');
   const navigate = useNavigate();
 
-  const categories = ['All', 'Development', 'Design', 'Finance', 'Marketing', 'Writing'];
+  const categories = ['All', 'Development', 'Design', 'Finance', 'Marketing', 'Trade', 'Agriculture'];
 
-  const filteredGigs = MOCK_GIGS.filter(gig => {
+  const filteredGigs = ZAMBIAN_JOBS.filter(gig => {
     const matchesSearch = gig.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           gig.client.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === 'All' || gig.category === filterCategory;
@@ -60,8 +30,8 @@ export default function GigBoard() {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
             Engine 4: Community
           </div>
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Gig & Freelance Board</h1>
-          <p className="text-gray-500 font-medium text-lg max-w-2xl">Find short-term projects and freelance opportunities matched to your skills.</p>
+          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">Piece-Work & Gigs Board</h1>
+          <p className="text-gray-500 font-medium text-lg max-w-2xl">Find short-term tasks, casual labor projects, and piece-work contracts matched to your skills.</p>
         </div>
         
         <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap">

@@ -55,8 +55,8 @@ export default function FreelanceCalculator() {
           <Calculator className="w-8 h-8 text-white" />
         </div>
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Freelance Rate Calculator</h1>
-          <p className="text-gray-500 font-medium text-lg">Calculate exactly how much you need to charge to hit your income goals and stay profitable.</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Piece-Work & Gigs Rate Calculator</h1>
+          <p className="text-gray-500 font-medium text-lg">Calculate exactly how much you need to charge for your casual labor or consulting services to hit your income goals.</p>
         </div>
       </div>
 
