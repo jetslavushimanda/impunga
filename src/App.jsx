@@ -35,7 +35,6 @@ import DataPrivacy from './pages/DataPrivacy';
 import ComplianceTracker from './pages/ComplianceTracker';
 import PlaceholderPage from './pages/PlaceholderPage';
 import EngineView from './pages/EngineView';
-import FreelanceCalculator from './pages/FreelanceCalculator';
 import CVGenerator from './pages/CVGenerator';
 import CoverLetterGenerator from './pages/CoverLetterGenerator';
 import InterviewPrep from './pages/InterviewPrep';
@@ -116,7 +115,6 @@ export default function App() {
           <Route path="/cv-generator" element={<CVGenerator />} />
           <Route path="/cover-letter-generator" element={<CoverLetterGenerator />} />
           <Route path="/interview-prep" element={<InterviewPrep />} />
-          <Route path="/freelance-calculator" element={<FreelanceCalculator />} />
           <Route path="/skill-gap-closer" element={<SkillGapCloser />} />
           <Route path="/portfolio-showcase" element={<PortfolioShowcase />} />
           <Route path="/b2b-tenders" element={<B2BTenders />} />

@@ -52,7 +52,8 @@ export default function CoverLetterGenerator() {
       }
     }
     loadProfile();
-  }, [user, getDocument]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handleGenerate = async (e) => {
     e.preventDefault();

@@ -67,7 +67,8 @@ export default function CVGenerator() {
       }
     }
     loadProfile();
-  }, [user, getDocument]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handleAddEducation = () => {
     setEducationList(prev => [...prev, { qualification: '', school: '', location: '', startDate: '', endDate: '' }]);
@@ -147,7 +148,7 @@ export default function CVGenerator() {
     yPos += 2;
     yPos = addText(`* Sex: ${personalDetails.gender}`, 20, yPos, 11);
     yPos += 2;
-    yPos = addText(`* Identification Number (NRC): ${personalDetails.nrc || 'N/A'}`, 20, yPos, 11);
+    yPos = addText(`* Identification (NRC/Passport): ${personalDetails.nrc || 'N/A'}`, 20, yPos, 11);
     yPos += 2;
     yPos = addText(`* Phone Number: ${personalDetails.phone || 'N/A'}`, 20, yPos, 11);
     yPos += 2;
@@ -305,7 +306,7 @@ export default function CVGenerator() {
           </div>
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight mb-1">CV Generator</h1>
-            <p className="text-sm text-gray-500 font-medium">Auto-generate a standard NRC-compliant Zambian PDF CV using your profile details.</p>
+            <p className="text-sm text-gray-500 font-medium">Auto-generate a standard Zambian PDF CV using your profile details.</p>
           </div>
         </div>
         <button onClick={generatePDF} className="btn-primary py-3 px-6 shadow-xl flex items-center gap-2 whitespace-nowrap bg-emerald-600 hover:bg-emerald-700">
@@ -330,8 +331,8 @@ export default function CVGenerator() {
                 </select>
               </div>
               <div>
-                <label className={lblClass}>Identification (NRC Number)</label>
-                <input type="text" className={inpClass} placeholder="e.g. 123456/11/1" value={personalDetails.nrc} onChange={e => setPersonalDetails({...personalDetails, nrc: e.target.value})} />
+                <label className={lblClass}>Identification (NRC or Passport)</label>
+                <input type="text" className={inpClass} placeholder="e.g. 123456/11/1 or Passport Z123456" value={personalDetails.nrc} onChange={e => setPersonalDetails({...personalDetails, nrc: e.target.value})} />
               </div>
               <div>
                 <label className={lblClass}>Phone Number</label>
@@ -516,7 +517,7 @@ export default function CVGenerator() {
               <div className="font-bold border-b border-gray-300 pb-0.5 mb-1.5 uppercase">PERSONAL DETAILS</div>
               <div>* Name: {profile.fullName}</div>
               <div>* Sex: {personalDetails.gender}</div>
-              <div>* NRC: {personalDetails.nrc || '[NRC Number]'}</div>
+              <div>* Identification (NRC/Passport): {personalDetails.nrc || '[NRC or Passport Number]'}</div>
               <div>* Phone: {personalDetails.phone || '[Phone Number]'}</div>
               <div>* Email: {personalDetails.email || '[Email Address]'}</div>
               <div>* Languages: {personalDetails.languages || 'English'}</div>
