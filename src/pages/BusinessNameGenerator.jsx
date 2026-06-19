@@ -8,7 +8,6 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import { BUSINESS_SECTORS } from '../data/businessSectors';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function BusinessNameGenerator() {
   const [description, setDescription] = useState('');
@@ -47,15 +46,7 @@ export default function BusinessNameGenerator() {
     <div className="max-w-3xl mx-auto animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <PageHeaderCard 
-        title="Business Name Generator"
-        description="AI generates unique Zambian business names for your idea"
-        icon={Sparkles}
-        bg="bg-purple-50"
-        text="text-purple-600"
-        badge="AI GENERATOR"
-        badgeColor="purple"
-      />
+      
 
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-purple-200/20 rounded-full blur-3xl pointer-events-none" />

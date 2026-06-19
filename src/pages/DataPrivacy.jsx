@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const PRIVACY_PILLARS = [
   { key: 'encryption', label: 'Data Encryption', description: 'AES-256 at rest + TLS 1.3 in transit', icon: Lock, color: 'text-green-600', bg: 'bg-green-50' },
@@ -58,16 +57,7 @@ export default function DataPrivacy() {
   const totalDocuments = Object.values(docCounts).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="max-w-3xl mx-auto pb-24 animate-fade-in text-left">
-      <PageHeaderCard
-        title="Data Governance Dashboard"
-        description="See exactly what data IMPUNGA holds about you, how it is protected, and our core privacy standards."
-        icon={Shield}
-        bg="bg-blue-50"
-        text="text-blue-600"
-        badge="Platform Governance"
-        badgeColor="indigo"
-      />
+    <div className="max-w-3xl mx-auto pb-24 animate-fade-in text-left mt-2">
 
       {/* Privacy Pillars Grid */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">

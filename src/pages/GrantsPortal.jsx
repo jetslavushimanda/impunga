@@ -4,7 +4,6 @@ import { ArrowLeft, Globe, Filter, CheckCircle2, Bookmark, BookmarkCheck, Extern
 import { FUNDING_SOURCES } from '../data/fundingSources';
 import { formatKwachaSimple } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 // Filter for only grants, competitions, and NGOs (exclude loans)
 const GRANT_SOURCES = FUNDING_SOURCES.filter(s => s.fundingType !== 'loan');
@@ -49,15 +48,7 @@ export default function GrantsPortal() {
     <div className="max-w-6xl mx-auto pb-24 animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <PageHeaderCard 
-        title="Grants & Subsidies"
-        description="Discover genuine, non-dilutive government and international grants available in Zambia."
-        icon={Globe}
-        bg="bg-green-50"
-        text="text-green-600"
-        badge="NON-DILUTIVE"
-        badgeColor="emerald"
-      />
+      
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         

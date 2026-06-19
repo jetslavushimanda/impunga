@@ -5,7 +5,6 @@ import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { Target, ArrowLeft, Sparkles, Map, Calendar, ExternalLink } from 'lucide-react';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function SkillGapCloser() {
   const { userProfile } = useAuthStore();
@@ -31,15 +30,7 @@ export default function SkillGapCloser() {
   
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-4">
-      <PageHeaderCard
-        title="Skill Gap Closer"
-        description="Generate a personalized 4-week learning plan to master a new skill in Zambia."
-        icon={Target}
-        bg="bg-cyan-50"
-        text="text-cyan-600"
-        badge="Career Connect"
-        badgeColor="purple"
-      />
+      
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         

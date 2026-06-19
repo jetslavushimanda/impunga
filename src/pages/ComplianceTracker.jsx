@@ -5,7 +5,6 @@ import { useFirestore } from '../hooks/useFirestore';
 import useAuthStore from '../store/authStore';
 import AIResponse from '../components/shared/AIResponse';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 // Static known deadlines that apply to ALL registered Zambian businesses
 const STATIC_DEADLINES = [
@@ -177,34 +176,23 @@ export default function ComplianceTracker() {
 
   return (
     <div className="max-w-3xl mx-auto pb-24 animate-fade-in text-left">
-      <PageHeaderCard
-        title="Compliance Tracker"
-        description="Stay compliant with Zambian law. Never miss a tax or regulatory deadline."
-        icon={ShieldCheck}
-        bg="bg-purple-50"
-        text="text-purple-600"
-        badge="Platform Governance"
-        badgeColor="indigo"
-        rightElement={
-          <div className="flex gap-2 flex-wrap sm:justify-end">
-            {overdueCount > 0 && (
-              <span className="text-xs bg-red-50 text-red-600 border border-red-100 font-extrabold px-3.5 py-1 rounded-full shadow-sm">
-                {overdueCount} Overdue
-              </span>
-            )}
-            {dueSoonCount > 0 && (
-              <span className="text-xs bg-amber-50 text-amber-700 border border-amber-100 font-extrabold px-3.5 py-1 rounded-full shadow-sm">
-                {dueSoonCount} Due Soon
-              </span>
-            )}
-            {overdueCount === 0 && dueSoonCount === 0 && (
-              <span className="text-xs bg-green-50 text-green-700 border border-green-100 font-extrabold px-3.5 py-1 rounded-full shadow-sm">
-                ✓ All Clear
-              </span>
-            )}
-          </div>
-        }
-      />
+      <div className="flex justify-end gap-2 mb-6 mt-2">
+        {overdueCount > 0 && (
+          <span className="text-xs bg-red-50 text-red-600 border border-red-100 font-extrabold px-3.5 py-1.5 rounded-full shadow-sm">
+            {overdueCount} Overdue
+          </span>
+        )}
+        {dueSoonCount > 0 && (
+          <span className="text-xs bg-amber-50 text-amber-700 border border-amber-100 font-extrabold px-3.5 py-1.5 rounded-full shadow-sm">
+            {dueSoonCount} Due Soon
+          </span>
+        )}
+        {overdueCount === 0 && dueSoonCount === 0 && (
+          <span className="text-xs bg-green-50 text-green-700 border border-green-100 font-extrabold px-3.5 py-1.5 rounded-full shadow-sm">
+            ✓ All Clear
+          </span>
+        )}
+      </div>
 
       {/* Compliance Calendar */}
       <div className="mb-6">

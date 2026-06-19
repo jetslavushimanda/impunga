@@ -14,7 +14,6 @@ import { Toast, useToast } from '../components/shared/SuccessToast';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const EXPENSE_CATEGORIES = [
   'Stock/Inventory', 'Transport', 'Rent', 'Airtime/Data',
@@ -694,20 +693,7 @@ export default function BusinessLedger() {
   }, [activeTab, setCustomBack]);
 
   return (
-    <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
-      {/* Menu Header */}
-      {activeTab === 'menu' && (
-        <PageHeaderCard 
-          title="Business Ledger"
-          description="Manage your financial books and track business health"
-          icon={BookOpen}
-          bg="bg-green-50"
-          text="text-green-600"
-          badge="FINANCIALS"
-          badgeColor="green"
-        />
-      )}
-
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in mt-2">
       {/* Menu Grid */}
       {activeTab === 'menu' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">

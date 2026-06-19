@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Search, Filter, FileText, Calendar, Building, DollarSign, ChevronRight, X } from 'lucide-react';
 import { Toast, useToast } from '../components/shared/SuccessToast';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const MOCK_TENDERS = [
   {
@@ -121,23 +120,14 @@ export default function B2BTenders() {
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fade-in text-left">
-      <PageHeaderCard
-        title="B2B Tenders"
-        description="Access verified corporate procurement notices, requests for proposals, and government tenders."
-        icon={FileText}
-        bg="bg-orange-50"
-        text="text-orange-600"
-        badge="Community"
-        badgeColor="orange"
-        rightElement={
+      <div className="flex justify-end gap-2 mb-6 mt-2 shrink-0">
           <button 
             onClick={() => setShowPostModal(true)}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap cursor-pointer"
           >
             Post a Tender
           </button>
-        }
-      />
+        </div>
 
       <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8">
         <div className="flex flex-col md:flex-row gap-4 mb-8">

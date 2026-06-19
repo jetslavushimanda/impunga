@@ -5,7 +5,6 @@ import {
   ExternalLink, Globe, Sparkles, Calendar, Clock, AlertTriangle, 
   CheckCircle, Copy, Check, Info, Trash2, ArrowLeft 
 } from 'lucide-react';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 import { useAI } from '../hooks/useAI';
 import { BUSINESS_TYPES } from '../data/businessTypes';
 import { PACRA_STEPS, ZRA_STEPS, BANK_ACCOUNT_STEPS } from '../data/pacraSteps';
@@ -198,15 +197,7 @@ export default function RegistrationGuide() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-2 sm:px-4 text-left">
-      <PageHeaderCard
-        title="Compliance & Registration Guide"
-        description="Formally launch your business with PACRA, ZRA and licensing authorities."
-        icon={Building2}
-        bg="bg-indigo-50"
-        text="text-indigo-600"
-        badge="Business Space"
-        badgeColor="indigo"
-        rightElement={
+      <div className="flex justify-end gap-2 mb-6 mt-2 shrink-0">
           <div className="flex bg-gray-100 p-1 rounded-xl shrink-0">
             <button 
               onClick={() => setActiveTab('ai-journey')}
@@ -221,8 +212,7 @@ export default function RegistrationGuide() {
               📋 PACRA Comparison Guide
             </button>
           </div>
-        }
-      />
+        </div>
 
       {/* Official Links */}
       <div className="bg-white rounded-2xl p-6 border border-gray-150 shadow-[0_4px_15px_rgb(0,0,0,0.02)] mb-8">

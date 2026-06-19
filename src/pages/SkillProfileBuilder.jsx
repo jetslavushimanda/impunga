@@ -8,7 +8,6 @@ import ErrorMessage from '../components/shared/ErrorMessage';
 import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, X, Plus, ArrowLeft } from 'lucide-react';
 import { getProvinces, getDistricts } from '../data/provinces';
 import { useAI } from '../hooks/useAI';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const EDUCATION_LEVELS = [
   'Primary School Certificate',
@@ -326,15 +325,7 @@ export default function SkillProfileBuilder() {
 
   return (
     <div className="max-w-2xl mx-auto pb-24 animate-fade-in px-4">
-      <PageHeaderCard
-        title="Skill Profile Builder"
-        description="Build your professional skills and profile"
-        icon={CheckCircle}
-        bg="bg-blue-50"
-        text="text-blue-600"
-        badge="Career Connect"
-        badgeColor="blue"
-      />
+      
 
       {/* Progress Bar & Steps indicator */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6">

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Calculator, Building2, TrendingUp, AlertTriangle, CheckCircle, Percent, Clock, DollarSign, Wallet, Globe, ArrowRight, HelpCircle } from 'lucide-react';
 import { formatKwachaSimple } from '../lib/utils';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const LENDERS = {
   commercial: [
@@ -131,15 +130,7 @@ export default function LoansPortal() {
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fade-in px-4">
-      <PageHeaderCard 
-        title="Loans & Credit"
-        description="Calculate loan affordability, check debt capacity, and connect directly with verified lending institutions in Zambia."
-        icon={Calculator}
-        bg="bg-blue-50"
-        text="text-blue-600"
-        badge="DEBT FINANCE"
-        badgeColor="blue"
-      />
+      
 
       {/* Personal vs Business Toggle */}
       <div className="flex bg-gray-100 p-1.5 rounded-2xl max-w-sm mb-8">

@@ -5,7 +5,6 @@ import { useAI } from '../hooks/useAI';
 import { jsPDF } from 'jspdf';
 import pptxgen from 'pptxgenjs';
 import { stripMarkdown } from '../lib/stripMarkdown';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import AIResponse from '../components/shared/AIResponse';
@@ -117,15 +116,7 @@ export default function PitchDeckGenerator() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in text-left">
-      <PageHeaderCard
-        title="Pitch Deck Generator"
-        description="10-slide investor presentation tailored to your business"
-        icon={Presentation}
-        bg="bg-indigo-50"
-        text="text-indigo-600"
-        badge="Business Space"
-        badgeColor="indigo"
-      />
+      
 
       <div className="bg-white/85 border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 relative overflow-hidden">
         {loading ? (

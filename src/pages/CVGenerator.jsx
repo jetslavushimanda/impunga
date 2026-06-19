@@ -5,7 +5,6 @@ import useAuthStore from '../store/authStore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import { FileText, ArrowLeft, Download, Plus, Trash2, User, HelpCircle } from 'lucide-react';
 import jsPDF from 'jspdf';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function CVGenerator() {
   const { user } = useAuthStore();
@@ -296,20 +295,11 @@ export default function CVGenerator() {
 
   return (
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-4">
-      <PageHeaderCard
-        title="CV Generator"
-        description="Auto-generate a standard Zambian PDF CV using your profile details."
-        icon={FileText}
-        bg="bg-green-50"
-        text="text-green-600"
-        badge="Career Connect"
-        badgeColor="green"
-        rightElement={
-          <button onClick={generatePDF} className="btn-primary py-3 px-6 shadow-xl flex items-center gap-2 whitespace-nowrap bg-emerald-600 hover:bg-emerald-700">
-            <Download className="w-5 h-5" /> Download Standard CV
-          </button>
-        }
-      />
+      <div className="flex justify-end mb-6 mt-2">
+        <button onClick={generatePDF} className="btn-primary py-2.5 px-5 shadow-sm flex items-center gap-2 whitespace-nowrap bg-emerald-600 hover:bg-emerald-700 text-sm font-bold rounded-xl transition-all active:scale-95 text-white">
+          <Download className="w-4 h-4" /> Download Standard CV
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         

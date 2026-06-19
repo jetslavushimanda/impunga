@@ -9,7 +9,6 @@ import { stripMarkdown } from '../lib/stripMarkdown';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import { Toast, useToast } from '../components/shared/SuccessToast';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const BUSINESS_TYPES = [
   { value: 'agriculture', label: 'Agriculture & Farming' },
@@ -449,15 +448,7 @@ export default function IdeaValidator() {
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in text-left">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <PageHeaderCard
-        title="Startup Studio"
-        description="Validate your idea and generate a strategic blueprint."
-        icon={Sparkles}
-        bg="bg-indigo-50"
-        text="text-indigo-600"
-        badge="Business Space"
-        badgeColor="indigo"
-      />
+      
 
       {!result && (
         <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">

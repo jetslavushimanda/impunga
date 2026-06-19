@@ -12,7 +12,6 @@ import { stripMarkdown } from '../lib/stripMarkdown';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import useAuthStore from '../store/authStore';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const SECTIONS = ['Business Basics', 'Business Description', 'Market Analysis', 'Products & Services', 'Marketing Plan', 'Operations', 'Financial Plan', 'Review & Generate'];
 
@@ -211,15 +210,7 @@ export default function BusinessPlanBuilder() {
         </div>
       )}
 
-      <PageHeaderCard 
-        title="Business Plan Builder"
-        description="Build a professional business plan — step by step"
-        icon={FileText}
-        bg="bg-green-50"
-        text="text-green-600"
-        badge="BUSINESS PLAN"
-        badgeColor="green"
-      />
+      
 
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 relative overflow-hidden mb-8">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-green-200/20 rounded-full blur-3xl pointer-events-none" />

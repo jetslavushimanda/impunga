@@ -13,7 +13,6 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import AIResponse from '../components/shared/AIResponse';
 import { Toast, useToast } from '../components/shared/SuccessToast';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const DEFAULT_KPIS = [
   { id: 'kpi-1', name: 'Monthly Sales Target', target: 15000, current: 8500, unit: 'ZMW', timeframe: 'Monthly' },
@@ -204,16 +203,7 @@ Write in clear, simple English. Avoid empty placeholder text.`;
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-2 sm:px-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <PageHeaderCard 
-        title="KPI & Summaries"
-        description="Evaluate monthly business performance, configure KPI targets, and run AI critiques."
-        icon={TrendingUp}
-        bg="bg-blue-50"
-        text="text-blue-600"
-        badge="MONITORING"
-        badgeColor="blue"
-        rightElement={(
-          <div className="flex bg-gray-100 p-1 rounded-xl shrink-0">
+      <div className="flex justify-end gap-2 mb-6 mt-2 shrink-0"><div className="flex bg-gray-100 p-1 rounded-xl shrink-0">
             <button 
               onClick={() => setActiveTab('summary')}
               className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'summary' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-505 hover:text-gray-800'}`}
@@ -226,9 +216,7 @@ Write in clear, simple English. Avoid empty placeholder text.`;
             >
               🎯 KPI Target Tracker
             </button>
-          </div>
-        )}
-      />
+          </div></div>
 
       {/* SUMMARIES TAB */}
       {activeTab === 'summary' && (

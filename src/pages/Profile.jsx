@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User, LogOut, Trash2, Edit2, Save, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 import { deleteUser } from 'firebase/auth';
 import { doc, deleteDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
@@ -82,18 +81,8 @@ export default function Profile() {
   const daysSince = getDaysSince(userProfile?.createdAt);
 
   return (
-    <div className="max-w-2xl mx-auto animate-fade-in text-left">
+    <div className="max-w-2xl mx-auto animate-fade-in text-left mt-2">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
-
-      <PageHeaderCard
-        title="My Profile"
-        description="Manage your account details, workspace parameters, and data security settings."
-        icon={User}
-        bg="bg-indigo-50"
-        text="text-indigo-600"
-        badge="Account"
-        badgeColor="indigo"
-      />
 
       {/* Profile card */}
       <div className="card mb-4">

@@ -5,12 +5,62 @@ import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
 import { getGreeting, getFirstName, getInitials } from '../../lib/utils';
 import SemanticSearch from '../shared/SemanticSearch';
+import { ENGINE_MODULES } from '../../data/engineModules';
+
+const ROUTE_TITLES = {
+  '/dashboard': 'IMPUNGA',
+  '/idea-validator': 'Idea Validator',
+  '/registration-guide': 'Registration Guide',
+  '/business-plan': 'Business Plan Builder',
+  '/pitch-deck': 'Pitch Deck Generator',
+  '/investment-matchmaker': 'Investment Matchmaker',
+  '/pricing-calculator': 'Pricing Calculator',
+  '/grants-portal': 'Grants & Subsidies',
+  '/loans-portal': 'Loans & Credit',
+  '/ai-advisor': 'AI Assistant',
+  '/profile': 'My Profile',
+  '/name-generator': 'Business Name Generator',
+  '/invoice-generator': 'Invoice Generator',
+  '/market-prices': 'Market Prices',
+  '/whatsapp-templates': 'WhatsApp Templates',
+  '/swot-analysis': 'SWOT Analysis',
+  '/social-media': 'Marketing Tools',
+  '/market-directory': 'Verified Directory',
+  '/business-ledger': 'Business Ledger',
+  '/skill-profile-builder': 'Skill Profile Builder',
+  '/career-matches': 'Career Matches',
+  '/zambian-jobs': 'Zambian Jobs',
+  '/compliance-tracker': 'Compliance Tracker',
+  '/data-privacy': 'Data Privacy',
+  '/cv-generator': 'CV Generator',
+  '/cover-letter-generator': 'Cover Letter AI',
+  '/interview-prep': 'Interview Prep Wizard',
+  '/skill-gap-closer': 'Skill Gap Closer',
+  '/portfolio-showcase': 'Portfolio Showcase',
+  '/b2b-tenders': 'B2B Tenders',
+  '/gig-board': 'Piece-Work Board',
+  '/asset-sharing': 'Asset Rentals',
+  '/kpi-tracker': 'KPI & Summaries',
+  '/savings-module': 'Savings Tracker',
+  '/verified-directory': 'Verified Service Directory',
+  '/learning-insights': 'Learning Insight Cards',
+  '/regulatory-gateway': 'Regulatory Gateway',
+  '/agreement': 'Platform Governance & Disclaimers',
+};
+
+const getPageTitle = (path) => {
+  if (path.startsWith('/engine/')) {
+    const engineId = path.split('/')[2];
+    return ENGINE_MODULES[engineId]?.title || 'Module';
+  }
+  return ROUTE_TITLES[path] || 'IMPUNGA';
+};
 
 export default function Header({ onMenuToggle }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { logout } = useAuth();
-  const { userProfile, customBack } = useAuthStore();
+  const { userProfile, customBack, customTitle } = useAuthStore();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -56,10 +106,16 @@ export default function Header({ onMenuToggle }) {
 
           {/* Center Column */}
           <div className="flex items-center justify-center">
-            <Link to="/dashboard" className="flex items-center gap-2 select-none pointer-events-auto">
-              <Sprout className="w-5 h-5 text-accent-gold logo-sprout shrink-0" />
-              <span className="text-xl font-black text-primary tracking-tight">IMPUNGA</span>
-            </Link>
+            {isHome ? (
+              <Link to="/dashboard" className="flex items-center gap-2 select-none pointer-events-auto">
+                <Sprout className="w-5 h-5 text-accent-green logo-sprout shrink-0" />
+                <span className="text-xl font-black text-primary tracking-tight">IMPUNGA</span>
+              </Link>
+            ) : (
+              <span className="text-base sm:text-lg font-extrabold text-gray-800 tracking-tight block truncate text-center max-w-[200px] sm:max-w-xs md:max-w-md">
+                {customTitle || getPageTitle(pathname)}
+              </span>
+            )}
           </div>
 
           {/* Right Column */}

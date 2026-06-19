@@ -7,7 +7,6 @@ import ErrorMessage from '../components/shared/ErrorMessage';
 import AIResponse from '../components/shared/AIResponse';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import useAuthStore from '../store/authStore';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const PLATFORMS = [
   { id: 'facebook', label: 'Facebook', icon: <ThumbsUp className="w-5 h-5 text-blue-600" />, char: 500 },
@@ -105,15 +104,7 @@ Return ONLY valid JSON:
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <PageHeaderCard 
-        title="Marketing Tools"
-        description="AI writes marketing posts for Facebook, WhatsApp, TikTok and Instagram"
-        icon={Share2}
-        bg="bg-purple-50"
-        text="text-purple-600"
-        badge="AI CONTENT"
-        badgeColor="purple"
-      />
+      
 
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-pink-200/20 rounded-full blur-3xl pointer-events-none" />

@@ -7,7 +7,6 @@ import { useAuth } from '../hooks/useAuth';
 import { useFirestore } from '../hooks/useFirestore';
 import { ModuleCard } from './EngineView'; 
 import LoadingSpinner from '../components/shared/LoadingSpinner';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const STARTUP_TOOLS = [
   {
@@ -106,7 +105,7 @@ function SectionHeader({ title, description, icon: Icon, badge, gradient = "from
 }
 
 export default function BusinessHubView() {
-  const { userProfile, user, setCustomBack } = useAuthStore();
+  const { userProfile, user, setCustomBack, setCustomTitle } = useAuthStore();
   const { updateProfile } = useAuth();
   const { getUserDocuments, deleteDocument } = useFirestore();
   const navigate = useNavigate();
@@ -130,6 +129,20 @@ export default function BusinessHubView() {
     return () => setCustomBack(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view]);
+
+  // Wire up custom title so the global centered navbar heading matches the active view
+  useEffect(() => {
+    if (view === 'paths') {
+      setCustomTitle('Business Space');
+    } else if (view === 'ideation') {
+      setCustomTitle('Start a Business');
+    } else if (view === 'operations') {
+      setCustomTitle(userProfile?.businessProfile?.businessName || 'Business Workspace');
+    } else if (view === 'registration') {
+      setCustomTitle('Register Workspace');
+    }
+    return () => setCustomTitle(null);
+  }, [view, userProfile, setCustomTitle]);
 
   useEffect(() => {
     if (view === 'ideation' || showSavedBlueprints) {
@@ -266,17 +279,7 @@ export default function BusinessHubView() {
     <div className="max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto pb-24 animate-fade-in px-2 sm:px-4">
 
       {view === 'paths' && (
-        <div className="animate-slide-up">
-          <PageHeaderCard
-            title="Business Space"
-            description="Choose your path. Whether you are just starting out with an idea or managing an existing operation, we have the tools for you."
-            icon={Building2}
-            bg="bg-blue-50"
-            text="text-blue-600"
-            badge="Business Space"
-            badgeColor="blue"
-          />
-
+        <div className="animate-slide-up mt-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
             {/* Path A */}
             <button 
@@ -322,17 +325,7 @@ export default function BusinessHubView() {
       )}
 
       {view === 'ideation' && (
-        <div className="animate-fade-in relative z-0">
-          <PageHeaderCard
-            title="Start a Business"
-            description="Everything you need to validate your idea, structure a plan, and prepare for launch."
-            icon={Rocket}
-            bg="bg-blue-50"
-            text="text-blue-600"
-            badge="Business Space"
-            badgeColor="blue"
-          />
-
+        <div className="animate-fade-in relative z-0 mt-2">
           {/* Startup Planning Modules Grid */}
           <div className="animate-slide-up">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -754,24 +747,15 @@ export default function BusinessHubView() {
       )}
 
       {view === 'operations' && (
-        <div className="animate-fade-in">
-          <PageHeaderCard
-            title={userProfile?.businessProfile?.businessName || 'Business Workspace'}
-            description="Your operational tools for running and scaling your business."
-            icon={Briefcase}
-            bg="bg-indigo-50"
-            text="text-indigo-600"
-            badge="Platform Verified"
-            badgeColor="indigo"
-            rightElement={
-              <button 
-                onClick={() => setView('registration')}
-                className="bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center text-sm"
-              >
-                Edit Profile
-              </button>
-            }
-          />
+        <div className="animate-fade-in mt-2">
+          <div className="flex justify-end mb-4">
+            <button 
+              onClick={() => setView('registration')}
+              className="bg-white hover:bg-gray-50 border border-gray-250 text-gray-700 font-bold px-4 py-2 rounded-xl transition-all shadow-sm text-xs"
+            >
+              Edit Profile
+            </button>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {businessEngine.modules.map(mod => (
               <ModuleCard key={mod.path} {...mod} />

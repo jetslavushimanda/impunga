@@ -6,12 +6,14 @@ const useAuthStore = create((set) => ({
   selectedPath: null,
   loading: true,
   customBack: null,
+  customTitle: null,
 
   setUser: (user) => set({ user, loading: false }),
   setUserProfile: (userProfile) => set({ userProfile }),
   setSelectedPath: (selectedPath) => set({ selectedPath }),
   setCustomBack: (customBack) => set({ customBack }),
-  clearUser: () => set({ user: null, userProfile: null, selectedPath: null, customBack: null, loading: false }),
+  setCustomTitle: (customTitle) => set({ customTitle }),
+  clearUser: () => set({ user: null, userProfile: null, selectedPath: null, customBack: null, customTitle: null, loading: false }),
   setLoading: (loading) => set({ loading }),
 }));
 

@@ -4,7 +4,6 @@ import { useAI } from '../hooks/useAI';
 import useAuthStore from '../store/authStore';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import AIResponse from '../components/shared/AIResponse';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const SUGGESTED_QUESTIONS = [
   'How do I test my business idea using the Idea Validator?',
@@ -108,23 +107,14 @@ export default function AIAdvisor() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-130px)] animate-fade-in text-left">
-      <PageHeaderCard
-        title="AI Assistant"
-        description="Your intelligent platform guide. Get tailored advice on business, skills, and how to use IMPUNGA."
-        icon={Bot}
-        bg="bg-slate-800"
-        text="text-white"
-        badge="Universal Guide"
-        badgeColor="slate"
-        rightElement={
-          messages.length > 0 && (
-            <button onClick={newConversation} className="btn-secondary gap-2 text-sm py-2 px-4 shadow-sm">
-              <RotateCcw className="w-4 h-4" /> New Chat
-            </button>
-          )
-        }
-      />
+    <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-90px)] lg:h-[calc(100vh-100px)] animate-fade-in text-left mt-2">
+      {messages.length > 0 && (
+        <div className="flex justify-end mb-4 shrink-0">
+          <button onClick={newConversation} className="btn-secondary gap-2 text-xs py-2 px-3.5 shadow-sm bg-white border border-gray-200 rounded-xl hover:bg-gray-50 flex items-center transition-all active:scale-95 text-gray-700 font-bold">
+            <RotateCcw className="w-3.5 h-3.5" /> New Chat
+          </button>
+        </div>
+      )}
 
       {/* Chat window */}
       <div className="flex-1 overflow-y-auto space-y-6 pb-4">

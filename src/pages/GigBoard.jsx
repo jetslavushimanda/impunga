@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Search, Filter, Briefcase, MapPin, DollarSign, Clock, CheckCircle2, X } from 'lucide-react';
 import { ZAMBIAN_JOBS } from '../data/jobs';
 import { Toast, useToast } from '../components/shared/SuccessToast';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function GigBoard() {
   const [searchParams] = useSearchParams();
@@ -96,23 +95,14 @@ export default function GigBoard() {
     <div className="max-w-6xl mx-auto pb-24 animate-fade-in text-left">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <PageHeaderCard
-        title="Piece-Work Board"
-        description="Find short-term tasks, casual labor projects, and piece-work contracts matched to your skills."
-        icon={Briefcase}
-        bg="bg-indigo-50"
-        text="text-indigo-600"
-        badge="Community"
-        badgeColor="green"
-        rightElement={
+      <div className="flex justify-end gap-2 mb-6 mt-2 shrink-0">
           <button 
             onClick={() => setShowPostModal(true)}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 whitespace-nowrap cursor-pointer font-sans"
           >
             Post a Piece-Work
           </button>
-        }
-      />
+        </div>
 
       <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8">
         <div className="flex flex-col md:flex-row gap-4 mb-8">

@@ -9,7 +9,6 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 import AIResponse from '../components/shared/AIResponse';
 import { formatKwachaSimple } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 // Pre-seeded genuine/realistic Zambian ecosystem players
 const SEEDED_PROFILES = [
@@ -199,15 +198,7 @@ export default function InvestmentMatchmaker() {
     <div className="max-w-6xl mx-auto pb-24 animate-fade-in px-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <PageHeaderCard 
-        title="Investment Matchmaker"
-        description="Scan Venture Capital matches for your business model or register to connect directly in the Zambian Funding Ecosystem."
-        icon={Target}
-        bg="bg-purple-50"
-        text="text-purple-600"
-        badge="AI MATCH"
-        badgeColor="purple"
-      />
+      
 
 
       {/* Tabs */}

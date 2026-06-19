@@ -8,7 +8,6 @@ import { Briefcase, ArrowRight, Map, Sparkles, Loader2, Bot, ArrowLeft } from 'l
 
 import { CAREERS } from '../data/careers';
 import { ZAMBIAN_JOBS } from '../data/jobs';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const RANKS = ['1st Match', '2nd Match', '3rd Match', '4th Match', '5th Match'];
 
@@ -132,23 +131,14 @@ export default function CareerMatches() {
 
   return (
     <div className="max-w-2xl mx-auto pb-24 px-4 animate-fade-in">
-      <PageHeaderCard
-        title="Your Career Matches"
-        description="Based on your skill profile"
-        icon={Briefcase}
-        bg="bg-purple-50"
-        text="text-purple-600"
-        badge="Career Connect"
-        badgeColor="purple"
-        rightElement={
+      <div className="flex justify-end gap-2 mb-6 mt-2 shrink-0">
           <button
             onClick={() => navigate('/skill-profile-builder')}
             className="btn-secondary text-xs py-2.5 px-4 font-bold shadow-sm whitespace-nowrap"
           >
             Update My Profile
           </button>
-        }
-      />
+        </div>
 
       {/* Info Banner */}
       <div className="bg-primary text-white rounded-2xl p-4 shadow-sm mb-6 flex flex-col sm:flex-row justify-between gap-2">

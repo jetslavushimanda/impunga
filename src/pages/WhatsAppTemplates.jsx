@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { MessageCircle, Copy, Check, Search, DollarSign, Package, CreditCard, Star, Megaphone } from 'lucide-react';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const CATEGORY_ICONS = {
   'Quotations & Pricing': DollarSign,
@@ -86,15 +85,7 @@ export default function WhatsAppTemplates() {
 
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
-      <PageHeaderCard 
-        title="WhatsApp Message Templates"
-        description="Professional templates for every business situation — copy and send"
-        icon={MessageCircle}
-        bg="bg-green-50"
-        text="text-green-600"
-        badge="COMMUNICATION"
-        badgeColor="green"
-      />
+      
 
       <div className="card mb-4">
         <div className="flex gap-3">

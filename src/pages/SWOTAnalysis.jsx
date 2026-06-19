@@ -4,7 +4,6 @@ import { Target, Download, Save, RefreshCw, Zap, AlertTriangle, TrendingUp, Shie
 import { useFirestore } from '../hooks/useFirestore';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import AIResponse from '../components/shared/AIResponse';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import { callAI } from '../lib/gemini';
@@ -163,15 +162,7 @@ Make each point specific to Zambia — reference PACRA, ZRA, load shedding, mobi
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in text-left">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <PageHeaderCard
-        title="SWOT Analysis"
-        description="Auto-generated strategic analysis based on your validated idea"
-        icon={Target}
-        bg="bg-cyan-50"
-        text="text-cyan-600"
-        badge="Business Space"
-        badgeColor="indigo"
-      />
+      
 
       <div className="bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl pointer-events-none" />

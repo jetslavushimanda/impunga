@@ -2,20 +2,9 @@ import {
   Shield, AlertTriangle, Wallet, Percent, BookOpen, 
   Award, Users, ArrowLeft, Scale, Info 
 } from 'lucide-react';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
-
 export default function Agreement() {
   return (
-    <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-4 text-left">
-      <PageHeaderCard
-        title="Platform Governance & Disclaimers"
-        description="IMPUNGA operates purely as an educational simulator and directory service. By using the platform or creating an account, you acknowledge and agree to the following guidelines and boundaries."
-        icon={Scale}
-        bg="bg-slate-50"
-        text="text-slate-700"
-        badge="Platform Governance"
-        badgeColor="slate"
-      />
+    <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-4 text-left mt-2">
 
       <div className="space-y-6">
         {/* Core Declarations Cards */}

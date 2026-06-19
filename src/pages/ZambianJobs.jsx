@@ -6,7 +6,6 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 import { Briefcase, Sparkles, MapPin, DollarSign, Clock, CheckCircle2, X, Search, Filter, ArrowLeft } from 'lucide-react';
 import { Toast, useToast } from '../components/shared/SuccessToast';
 import { ZAMBIAN_JOBS } from '../data/jobs';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 export default function ZambianJobs() {
   const { user } = useAuthStore();
@@ -149,15 +148,7 @@ export default function ZambianJobs() {
 
   return (
     <div className="max-w-6xl mx-auto pb-24 px-4 animate-fade-in text-left">
-      <PageHeaderCard
-        title="Zambian Jobs"
-        description="Find work listings matched to your expertise or browse all available jobs across Zambia."
-        icon={Briefcase}
-        bg="bg-rose-50"
-        text="text-rose-600"
-        badge="Community"
-        badgeColor="purple"
-      />
+      
 
       {/* Tabs Switcher */}
       <div className="flex border-b border-gray-200 mb-8 bg-white p-1 rounded-2xl shadow-sm border border-gray-100 max-w-md">

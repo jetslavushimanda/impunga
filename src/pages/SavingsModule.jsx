@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import { formatKwacha } from '../lib/utils';
 import { Toast, useToast } from '../components/shared/SuccessToast';
-import PageHeaderCard from '../components/shared/PageHeaderCard';
 
 const DEFAULT_GOALS = [
   { id: 'goal-1', name: 'Emergency Working Capital Buffer', target: 5000, current: 2400, dueDate: '2026-08-30' },
@@ -145,21 +144,10 @@ export default function SavingsModule() {
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in px-2 sm:px-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
-      <PageHeaderCard 
-        title="Savings Tracker"
-        description="Define target vaults, simulate Kwacha deposits, and evaluate savings target speeds."
-        icon={Wallet}
-        bg="bg-amber-50"
-        text="text-amber-600"
-        badge="SAVINGS ZMW"
-        badgeColor="orange"
-        rightElement={(
-          <div className="bg-white border border-gray-150 px-5 py-3 rounded-2xl shadow-sm text-right shrink-0">
+      <div className="flex justify-end gap-2 mb-6 mt-2 shrink-0"><div className="bg-white border border-gray-150 px-5 py-3 rounded-2xl shadow-sm text-right shrink-0">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-0.5">Total Savings Balance</span>
             <span className="text-2xl font-black text-amber-600">{formatKwacha(totalBalance)}</span>
-          </div>
-        )}
-      />
+          </div></div>
 
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
