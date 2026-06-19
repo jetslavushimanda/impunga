@@ -17,54 +17,62 @@ export default function Sidebar({ isOpen, onClose }) {
       )}
 
       <aside className={`
-        fixed top-0 left-0 h-screen w-[280px] bg-surface-light border-r border-gray-200/50 z-40
-        flex flex-col
-        transform transition-transform duration-400 cubic-bezier(0.16, 1, 0.3, 1)
-        lg:static lg:translate-x-0 lg:z-auto lg:h-full lg:bg-surface-light
-        ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
+        fixed top-0 left-0 h-screen bg-white border-r border-gray-200/50 z-40
+        flex flex-col w-[280px]
+        transform transition-all duration-300 ease-in-out
+        lg:static lg:z-auto lg:h-full
+        ${isOpen
+          ? 'translate-x-0 shadow-2xl lg:w-[280px]'
+          : '-translate-x-full lg:translate-x-0 lg:w-[72px]'}
       `}>
-        {/* Header with Logo — visible on both desktop & mobile */}
-        <div className="flex items-center justify-between p-5 border-b border-gray-200/50 shrink-0">
-          <Link to="/dashboard" className="flex items-center gap-2 select-none pointer-events-auto" onClick={onClose}>
+        {/* Logo */}
+        <div className={`flex items-center border-b border-gray-200/50 shrink-0 transition-all duration-300 ${isOpen ? 'justify-between p-5' : 'justify-center p-4'}`}>
+          <Link to="/dashboard" className="flex items-center gap-2 select-none" onClick={onClose}>
             <Sprout className="w-5.5 h-5.5 text-accent-gold logo-sprout shrink-0" />
-            <span className="font-black text-primary text-xl tracking-tight">IMPUNGA</span>
+            {isOpen && <span className="font-black text-primary text-xl tracking-tight">IMPUNGA</span>}
           </Link>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 lg:hidden" aria-label="Close sidebar">
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
+          {isOpen && (
+            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 lg:hidden" aria-label="Close sidebar">
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+          )}
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-2">
+        <nav className="flex-1 overflow-y-auto py-6 space-y-2 px-2">
           {SIDEBAR_ITEMS.map(({ path, icon: Icon, label }) => (
             <NavLink
               key={path}
               to={path}
               onClick={onClose}
+              title={!isOpen ? label : undefined}
               className={({ isActive }) => `
-                flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200
-                ${isActive 
-                  ? 'bg-surface-blue text-primary font-bold shadow-sm border border-blue-200/50' 
+                flex items-center rounded-2xl transition-all duration-200
+                ${isOpen ? 'gap-3 px-4 py-3' : 'justify-center py-3 px-2'}
+                ${isActive
+                  ? 'bg-surface-blue text-primary font-bold shadow-sm border border-blue-200/50'
                   : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100/60 font-medium border border-transparent'}
               `}
             >
               {({ isActive }) => (
                 <>
                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-colors ${
-                    isActive ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200'
+                    isActive ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'
                   }`}>
                     <Icon className="w-4 h-4" />
                   </div>
-                  <span className="text-[15px]">{label}</span>
+                  {isOpen && <span className="text-[15px]">{label}</span>}
                 </>
               )}
             </NavLink>
           ))}
         </nav>
 
-        <div className="shrink-0 p-4 border-t border-gray-100 flex flex-col gap-2 bg-white/40">
-          <p className="text-[10px] text-gray-400 text-center font-medium">IMPUNGA © JETS 2026 · Zambia</p>
-        </div>
+        {isOpen && (
+          <div className="shrink-0 p-4 border-t border-gray-100 bg-white/40">
+            <p className="text-[10px] text-gray-400 text-center font-medium">IMPUNGA © JETS 2026 · Zambia</p>
+          </div>
+        )}
       </aside>
     </>
   );

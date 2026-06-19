@@ -1,5 +1,5 @@
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { ENGINE_MODULES } from '../data/engineModules';
 
 import BusinessHubView from './BusinessHubView';
@@ -15,8 +15,23 @@ const badgeColorMap = {
   indigo: 'bg-indigo-50/80 text-indigo-600 border-indigo-100/40 group-hover:bg-indigo-600 group-hover:text-white',
 };
 
+const tintMap = {
+  blue: 'rgba(59,130,246,0.06)',
+  green: 'rgba(34,197,94,0.06)',
+  purple: 'rgba(168,85,247,0.06)',
+  orange: 'rgba(249,115,22,0.06)',
+  amber: 'rgba(245,158,11,0.06)',
+  teal: 'rgba(20,184,166,0.06)',
+  cyan: 'rgba(6,182,212,0.06)',
+  indigo: 'rgba(99,102,241,0.06)',
+  fuchsia: 'rgba(217,70,239,0.06)',
+  rose: 'rgba(244,63,94,0.06)',
+  red: 'rgba(239,68,68,0.06)',
+  yellow: 'rgba(234,179,8,0.06)',
+  emerald: 'rgba(16,185,129,0.06)',
+};
+
 export function ModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, badge, badgeColor }) {
-  // Extract color key from bg or text prop (e.g. "bg-green-50" -> "green")
   let color = 'indigo';
   if (text) {
     const match = text.match(/text-([a-z]+)-/);
@@ -25,67 +40,35 @@ export function ModuleCard({ path, onClick, icon: Icon, name, desc, bg, text, ba
     const match = bg.match(/bg-([a-z]+)-/);
     if (match) color = match[1];
   }
-  if (color === 'emerald') color = 'green';
 
-  const hoverBorder = `hover:border-${color}-200`;
-  const hoverBg = `hover:bg-${color}-50/30`;
   const iconBg = `${bg || `bg-${color}-50`} border border-${color}-100`;
   const iconColor = text || `text-${color}-600`;
-
-  // Determine an appropriate footer action text based on path or name
-  let footerText = 'Explore Tools';
-  const checkText = (path || name || '').toLowerCase();
-  if (checkText.includes('ledger')) footerText = 'Track Ledger';
-  else if (checkText.includes('invoice')) footerText = 'Create Invoice';
-  else if (checkText.includes('pricing') || checkText.includes('calculator')) footerText = 'Calculate';
-  else if (checkText.includes('profile')) footerText = 'Build Profile';
-  else if (checkText.includes('career') || checkText.includes('match')) footerText = 'Match Careers';
-  else if (checkText.includes('cv')) footerText = 'Generate CV';
-  else if (checkText.includes('cover')) footerText = 'Generate Cover Letter';
-  else if (checkText.includes('prep') || checkText.includes('interview')) footerText = 'Start Prep';
-  else if (checkText.includes('gap') || checkText.includes('closer')) footerText = 'Close Gaps';
-  else if (checkText.includes('grant')) footerText = 'Explore Grants';
-  else if (checkText.includes('loan')) footerText = 'Explore Loans';
-  else if (checkText.includes('directory') || checkText.includes('marketplace')) footerText = 'Enter Directory';
-  else if (checkText.includes('showcase')) footerText = 'View Showcase';
-  else if (checkText.includes('tender')) footerText = 'View Tenders';
-  else if (checkText.includes('gig') || checkText.includes('piece')) footerText = 'View Piece-Works';
-  else if (checkText.includes('asset') || checkText.includes('sharing') || checkText.includes('rental')) footerText = 'Explore Rentals';
-  else if (checkText.includes('name-generator') || checkText.includes('name')) footerText = 'Generate Names';
-  else if (checkText.includes('swot')) footerText = 'Perform SWOT';
-  else if (checkText.includes('plan')) footerText = 'Build Plan';
-  else if (checkText.includes('pitch')) footerText = 'Generate Pitch';
-  else if (checkText.includes('validate')) footerText = 'Validate Now';
-  else if (checkText.includes('blueprints') || checkText.includes('folder')) footerText = 'Open Blueprints';
+  const bgTint = tintMap[color] || 'rgba(99,102,241,0.04)';
 
   const content = (
-    <>
-      <div className="flex items-start gap-4 w-full">
-        <div className={`w-12 h-12 ${iconBg} rounded-xl flex items-center justify-center shrink-0`}>
-          <Icon className={`w-6 h-6 ${iconColor}`} />
-        </div>
-        <div className="flex-1 min-w-0">
-          {badge && (
-            <div className="mb-2">
-              <span className={`text-[9px] md:text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badgeColorMap[badgeColor] || (badge === 'Folder' ? badgeColorMap.yellow : badgeColorMap.indigo)}`}>
-                {badge}
-              </span>
-            </div>
-          )}
-          <h4 className="font-bold text-gray-900 text-sm md:text-base group-hover:text-indigo-600 transition-colors leading-snug mb-1">
-            {name}
-          </h4>
-          <p className="text-gray-500 text-xs md:text-sm font-medium leading-relaxed">{desc}</p>
-        </div>
+    <div className="flex items-start gap-4 w-full">
+      <div className={`w-12 h-12 ${iconBg} rounded-xl flex items-center justify-center shrink-0`}>
+        <Icon className={`w-6 h-6 ${iconColor}`} />
       </div>
-      <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4 w-full">
-        <span className={`${iconColor} font-bold text-xs uppercase tracking-wide`}>{footerText}</span>
-        <ChevronRight className={`w-4 h-4 text-gray-300 group-hover:${iconColor} group-hover:translate-x-0.5 transition-all`} />
+      <div className="flex-1 min-w-0">
+        {badge && (
+          <div className="mb-2">
+            <span className={`text-[9px] md:text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full border shrink-0 transition-all duration-300 ${badgeColorMap[badgeColor] || badgeColorMap.indigo}`}>
+              {badge}
+            </span>
+          </div>
+        )}
+        <h4 className="font-bold text-gray-900 text-sm md:text-base leading-snug mb-1">{name}</h4>
+        <p className="text-gray-500 text-xs md:text-sm font-medium leading-relaxed">{desc}</p>
       </div>
-    </>
+      {/* Arrow — hidden at rest, visible on hover */}
+      <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${iconBg}`}>
+        <ChevronRight className={`w-3.5 h-3.5 ${iconColor}`} />
+      </div>
+    </div>
   );
 
-  const className = `group text-left bg-white overflow-hidden rounded-2xl p-5 md:p-6 border border-gray-200/60 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:border-${color}-300 hover:bg-${color}-50/10 hover:-translate-y-1.5 active:scale-[0.98] transition-all duration-300 w-full flex flex-col justify-between h-full relative cursor-pointer`;
+  const className = 'group text-left bg-white overflow-hidden rounded-2xl p-5 lg:px-7 lg:py-5 border border-gray-300 shadow-sm shadow-[0_4px_14px_rgba(0,0,0,0.07)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.15)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 w-full cursor-pointer';
 
   if (onClick) {
     return (
@@ -106,19 +89,14 @@ export default function EngineView() {
   const { engineId } = useParams();
   const engine = ENGINE_MODULES[engineId];
 
-  if (!engine) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  if (engineId === 'business') {
-    return <BusinessHubView />;
-  }
+  if (!engine) return <Navigate to="/dashboard" replace />;
+  if (engineId === 'business') return <BusinessHubView />;
 
   const { modules } = engine;
 
   return (
-    <div className="max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto pb-24 animate-fade-in relative px-2 sm:px-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-2">
+    <div className="max-w-2xl mx-auto lg:max-w-none pb-24 animate-fade-in px-2 sm:px-4">
+      <div className="flex flex-col gap-4 lg:gap-5 mt-2">
         {modules.map(mod => (
           <ModuleCard key={mod.path} {...mod} />
         ))}

@@ -130,7 +130,7 @@ export default function GrowthTracker() {
 
       {/* Summary */}
       {reports.length > 0 && (
-        <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-3 sm:grid-cols-3 gap-2 sm:gap-3 mb-6">
           <div className="stat-card"><p className="text-xl font-bold text-primary">{formatKwachaSimple(totalRevenue)}</p><p className="text-xs text-gray-500">Total Revenue</p></div>
           <div className="stat-card"><p className={`text-xl font-bold ${totalProfit >= 0 ? 'text-accent-green' : 'text-accent-red'}`}>{formatKwachaSimple(totalProfit)}</p><p className="text-xs text-gray-500">Total Profit</p></div>
           <div className="stat-card"><p className="text-xl font-bold text-primary">{reports.length}</p><p className="text-xs text-gray-500">Months Tracked</p></div>

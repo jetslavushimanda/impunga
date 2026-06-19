@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Navigate, NavLink, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Handshake, Bot, TrendingUp, GraduationCap, DollarSign } from 'lucide-react';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import AIChatPanel from './AIChatPanel';
 import OfflineBanner from '../shared/OfflineBanner';
 import useAuthStore from '../../store/authStore';
 import { PageLoader } from '../shared/LoadingSpinner';
@@ -15,10 +16,38 @@ const BOTTOM_NAV = [
   { path: '/engine/connect', icon: Handshake, label: 'Community' },
 ];
 
+const BUSINESS_PATHS = new Set(['/business-ledger', '/invoice-generator', '/pricing-calculator', '/social-media', '/kpi-tracker', '/savings-module']);
+const SKILLS_PATHS = new Set(['/skill-profile-builder', '/career-matches', '/zambian-jobs', '/cv-generator', '/cover-letter-generator', '/interview-prep', '/skill-gap-closer']);
+const FINANCE_PATHS = new Set(['/grants-portal', '/loans-portal', '/investment-matchmaker']);
+
+function trackRoute(pathname) {
+  if (pathname === '/dashboard') return;
+  try {
+    localStorage.setItem('impunga_last_route', JSON.stringify({ path: pathname, time: Date.now() }));
+  } catch {}
+  const buckets = [
+    { key: 'impunga_visited_business', set: BUSINESS_PATHS },
+    { key: 'impunga_visited_skills', set: SKILLS_PATHS },
+    { key: 'impunga_visited_finance', set: FINANCE_PATHS },
+  ];
+  for (const { key, set } of buckets) {
+    if (!set.has(pathname)) continue;
+    try {
+      const existing = new Set(JSON.parse(localStorage.getItem(key) || '[]'));
+      existing.add(pathname);
+      localStorage.setItem(key, JSON.stringify([...existing]));
+    } catch {}
+    break;
+  }
+}
+
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const { user, loading } = useAuthStore();
   const { pathname } = useLocation();
+
+  useEffect(() => { trackRoute(pathname); }, [pathname]);
 
   if (loading) return <PageLoader />;
   if (!user) return <Navigate to="/login" replace />;
@@ -26,29 +55,52 @@ export default function Layout() {
   const isAIAdvisor = pathname === '/ai-advisor';
 
   return (
-    <div className="min-h-screen bg-surface-light relative">
+    <div className="min-h-screen bg-slate-100 relative">
       <OfflineBanner />
-      <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
+      <Header onMenuToggle={() => setSidebarOpen(prev => !prev)} />
       <div className="flex h-[calc(100vh-57px)]">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 lg:pb-6 relative">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 lg:p-6 pb-24 lg:pb-6 relative">
           <Outlet />
         </main>
       </div>
 
-      {/* Floating AI Assistant Button */}
+      {/* Floating AI Card — Grok style */}
       {!isAIAdvisor && (
-        <Link
-          to="/ai-advisor"
-          className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 w-14 h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 flex items-center justify-center transition-all duration-200 z-40 border border-white/10"
-          aria-label="Ask AI Assistant"
-        >
-          <Bot className="w-6 h-6 text-accent-gold" />
-        </Link>
+        <>
+          {/* Mobile: circle button — sits above bottom nav (h-16 = 64px) */}
+          <Link
+            to="/ai-advisor"
+            className="lg:hidden fixed bottom-[80px] right-4 w-12 h-12 bg-primary rounded-full shadow-xl shadow-primary/30 flex items-center justify-center z-40 hover:bg-primary-dark hover:scale-[1.06] active:scale-[0.95] transition-all duration-200"
+            aria-label="Ask AI Assistant"
+          >
+            <Bot className="w-5 h-5 text-white" />
+          </Link>
+
+          {/* Desktop: circle button */}
+          <button
+            onClick={() => setChatOpen(prev => !prev)}
+            className="hidden lg:flex fixed bottom-5 right-5 w-14 h-14 bg-primary rounded-full shadow-xl shadow-primary/30 items-center justify-center z-40 hover:bg-primary-dark hover:scale-[1.06] active:scale-[0.95] transition-all duration-200"
+            aria-label="Ask AI Assistant"
+          >
+            <Bot className="w-6 h-6 text-white" />
+          </button>
+        </>
+      )}
+
+      {/* Desktop chat panel + backdrop */}
+      {chatOpen && (
+        <>
+          <div
+            className="hidden lg:block fixed inset-0 bg-black/20 z-40"
+            onClick={() => setChatOpen(false)}
+          />
+          <AIChatPanel onClose={() => setChatOpen(false)} />
+        </>
       )}
 
       {/* Bottom navigation — mobile only */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30 safe-area-pb">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 safe-area-pb">
         <div className="grid grid-cols-5 h-16">
           {BOTTOM_NAV.map(({ path, icon: Icon, label }) => (
             <NavLink
@@ -62,10 +114,10 @@ export default function Layout() {
             >
               {({ isActive }) => (
                 <>
-                  <div className={`w-8 h-8 flex items-center justify-center rounded-xl transition-colors ${isActive ? 'bg-surface-blue text-primary' : ''}`}>
+                  <div className={`w-8 h-8 flex items-center justify-center rounded-xl transition-colors ${isActive ? 'bg-primary/10 text-primary' : ''}`}>
                     <Icon className="w-5 h-5" />
                   </div>
-                  <span className="text-[10px] font-bold tracking-wide">{label}</span>
+                  <span className={`text-[10px] tracking-wide ${isActive ? 'font-bold' : 'font-medium'}`}>{label}</span>
                 </>
               )}
             </NavLink>

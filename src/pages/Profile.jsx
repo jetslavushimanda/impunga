@@ -148,7 +148,7 @@ export default function Profile() {
       </div>
 
       {/* Activity stats */}
-      <div className="grid grid-cols-4 gap-3 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
         {[
           { label: 'Ideas', value: counts.ideas },
           { label: 'Plans', value: counts.plans },

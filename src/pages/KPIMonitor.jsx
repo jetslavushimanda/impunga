@@ -240,7 +240,7 @@ Write in clear, simple English. Avoid empty placeholder text.`;
           {loading ? (
             <div className="py-20 flex justify-center"><LoadingSpinner size="lg" /></div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {/* Sales card */}
               <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Total Sales</span>

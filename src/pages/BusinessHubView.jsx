@@ -276,11 +276,11 @@ export default function BusinessHubView() {
   }
 
   return (
-    <div className="max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto pb-24 animate-fade-in px-2 sm:px-4">
+    <div className="max-w-4xl xl:max-w-5xl 2xl:max-w-none lg:max-w-none mx-auto pb-24 animate-fade-in px-2 sm:px-4">
 
       {view === 'paths' && (
         <div className="animate-slide-up mt-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
+          <div className="flex flex-col gap-4 lg:gap-5">
             {/* Path A */}
             <button 
               onClick={() => setView('ideation')}
@@ -328,7 +328,7 @@ export default function BusinessHubView() {
         <div className="animate-fade-in relative z-0 mt-2">
           {/* Startup Planning Modules Grid */}
           <div className="animate-slide-up">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-4 lg:gap-5">
               {/* Validate New Idea */}
               <ModuleCard 
                 onClick={() => {
@@ -448,7 +448,7 @@ export default function BusinessHubView() {
       )}
 
       {view === 'registration' && (
-        <div className="max-w-xl mx-auto bg-white/95 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[2rem] p-8 sm:p-10 relative overflow-hidden animate-slide-up mt-8">
+        <div className="max-w-xl mx-auto bg-white/95 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[2rem] p-5 sm:p-8 relative overflow-hidden animate-slide-up mt-4 sm:mt-8">
           <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-100 rounded-full pointer-events-none" />
           
           {registrationStep === 1 ? (
@@ -756,7 +756,7 @@ export default function BusinessHubView() {
               Edit Profile
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="flex flex-col gap-4 lg:gap-5">
             {businessEngine.modules.map(mod => (
               <ModuleCard key={mod.path} {...mod} />
             ))}

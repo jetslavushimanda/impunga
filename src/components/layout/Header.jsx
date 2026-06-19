@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Bell, LogOut, User, ChevronDown, Menu, Search, Sprout, ArrowLeft } from 'lucide-react';
+import { Bell, LogOut, User, ChevronDown, Search, Sprout, ArrowLeft, Menu } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
-import { getGreeting, getFirstName, getInitials } from '../../lib/utils';
+import { getInitials } from '../../lib/utils';
 import SemanticSearch from '../shared/SemanticSearch';
 import { ENGINE_MODULES } from '../../data/engineModules';
 
@@ -43,8 +43,6 @@ const ROUTE_TITLES = {
   '/kpi-tracker': 'KPI & Summaries',
   '/savings-module': 'Savings Tracker',
   '/verified-directory': 'Verified Service Directory',
-  '/learning-insights': 'Learning Insight Cards',
-  '/regulatory-gateway': 'Regulatory Gateway',
   '/agreement': 'Platform Governance & Disclaimers',
 };
 
@@ -64,122 +62,100 @@ export default function Header({ onMenuToggle }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  async function handleLogout() {
-    await logout();
-    navigate('/');
-  }
-
-  const firstName = getFirstName(userProfile?.fullName || '');
   const initials = getInitials(userProfile?.fullName || '?');
   const isHome = pathname === '/dashboard';
 
   return (
     <>
-      <header className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 select-none">
-        <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
-          {/* Left Column */}
-          <div className="flex items-center shrink-0 min-w-[48px] justify-start">
+      <header className="bg-white border-b border-gray-100 px-4 py-3 sticky top-0 z-30 select-none">
+        <div className="flex items-center w-full max-w-7xl mx-auto gap-2">
+
+          {/* Left: hamburger (home) or back arrow (sub-pages) */}
+          <div className="shrink-0 flex items-center min-w-[40px]">
             {isHome ? (
-              <button 
-                onClick={onMenuToggle} 
-                className="p-2 rounded-xl hover:bg-surface-light active:scale-95 transition-all text-gray-600" 
+              <button
+                onClick={onMenuToggle}
+                className="p-2 rounded-xl hover:bg-gray-100 active:scale-95 transition-all text-gray-600"
                 aria-label="Toggle menu"
               >
-                <Menu className="w-5.5 h-5.5" />
+                <Menu className="w-5 h-5" />
               </button>
             ) : (
-              <button 
-                onClick={() => {
-                  if (customBack) {
-                    customBack();
-                  } else {
-                    navigate(-1);
-                  }
-                }} 
-                className="p-2 rounded-xl hover:bg-surface-light active:scale-95 transition-all text-gray-600" 
+              <button
+                onClick={() => customBack ? customBack() : navigate(-1)}
+                className="p-2 rounded-xl hover:bg-gray-100 active:scale-95 transition-all text-gray-600"
                 aria-label="Go back"
               >
-                <ArrowLeft className="w-5.5 h-5.5" />
+                <ArrowLeft className="w-5 h-5" />
               </button>
             )}
           </div>
 
-          {/* Center Column */}
-          <div className="flex-1 min-w-0 px-2 flex items-center justify-center">
+          {/* Center: logo on home, page title on sub-pages */}
+          <div className="flex-1 min-w-0 flex items-center justify-center px-2">
             {isHome ? (
-              <Link to="/dashboard" className="flex items-center gap-2 select-none pointer-events-auto">
+              <Link to="/dashboard" className="flex items-center gap-2 select-none">
                 <Sprout className="w-5 h-5 text-accent-gold logo-sprout shrink-0" />
-                <span className="text-xl font-black text-primary tracking-tight">IMPUNGA</span>
+                <span className="text-xl font-black text-gray-900 tracking-tight">IMPUNGA</span>
               </Link>
             ) : (
-              <span className="text-sm xs:text-base sm:text-lg font-extrabold text-gray-800 tracking-tight block truncate text-center w-full">
+              <span className="text-sm sm:text-base font-extrabold text-gray-800 tracking-tight truncate text-center block w-full max-w-sm">
                 {customTitle || getPageTitle(pathname)}
               </span>
             )}
           </div>
 
-          {/* Right Column */}
-          <div className="flex items-center shrink-0 min-w-[48px] justify-end gap-1.5 sm:gap-2.5">
-            {isHome ? (
-              <>
-                {/* Search Button */}
-                <button
-                  onClick={() => setSearchOpen(true)}
-                  className="flex items-center justify-center w-9 h-9 sm:w-auto sm:h-auto bg-gray-100/80 hover:bg-gray-200/80 text-gray-500 hover:text-gray-700 transition-all rounded-full sm:px-3 sm:py-1.5 text-xs font-bold border border-gray-200/30 sm:gap-2"
-                  aria-label="Smart search"
-                >
-                  <Search className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-gray-400 shrink-0" />
-                  <span className="hidden sm:block font-normal">Search...</span>
-                </button>
+          {/* Right: search, bell, avatar — always visible */}
+          <div className="shrink-0 flex items-center gap-1 sm:gap-2">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="flex items-center justify-center w-9 h-9 sm:w-auto sm:h-auto bg-gray-100/80 hover:bg-gray-200/80 text-gray-500 hover:text-gray-700 transition-all rounded-full sm:px-3 sm:py-1.5 text-xs border border-gray-200/50 sm:gap-1.5"
+              aria-label="Search"
+            >
+              <Search className="w-4 h-4 sm:w-3.5 sm:h-3.5 shrink-0" />
+              <span className="hidden sm:block font-normal text-gray-400 text-xs">Search...</span>
+            </button>
 
-                <button className="p-2 rounded-xl hover:bg-surface-light text-gray-600 relative active:scale-95 transition-all" aria-label="Notifications">
-                  <Bell className="w-5 h-5" />
-                </button>
+            <button
+              className="p-2 rounded-xl hover:bg-gray-100 text-gray-500 active:scale-95 transition-all"
+              aria-label="Notifications"
+            >
+              <Bell className="w-5 h-5" />
+            </button>
 
-                <div className="relative">
-                  <button
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="flex items-center gap-2 p-1 rounded-xl hover:bg-surface-light transition-all active:scale-95"
-                  >
-                    <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs font-black shadow-sm">
-                      {initials}
-                    </div>
-                    <ChevronDown className="w-4 h-4 text-gray-500 hidden sm:block shrink-0" />
-                  </button>
-
-                  {dropdownOpen && (
-                    <div className="absolute right-0 top-full mt-1.5 w-48 bg-white rounded-xl shadow-lg border border-gray-150 z-40 animate-fade-in">
-                      <Link
-                        to="/profile"
-                        className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-surface-light rounded-t-xl"
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        <User className="w-4 h-4" /> My Profile
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-2 px-4 py-3 text-sm text-accent-red hover:bg-red-50 w-full text-left rounded-b-xl"
-                      >
-                        <LogOut className="w-4 h-4" /> Logout
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <button 
-                onClick={onMenuToggle} 
-                className="p-2 rounded-xl hover:bg-surface-light active:scale-95 transition-all text-gray-600" 
-                aria-label="Toggle menu"
+            <div className="relative">
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center gap-1.5 p-1 rounded-xl hover:bg-gray-100 transition-all active:scale-95"
               >
-                <Menu className="w-5.5 h-5.5" />
+                <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs font-black shadow-sm">
+                  {initials}
+                </div>
+                <ChevronDown className="w-3.5 h-3.5 text-gray-400 hidden sm:block shrink-0" />
               </button>
-            )}
+
+              {dropdownOpen && (
+                <div className="absolute right-0 top-full mt-1.5 w-48 bg-white rounded-xl shadow-lg border border-gray-100 z-40">
+                  <Link
+                    to="/profile"
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-t-xl"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    <User className="w-4 h-4" /> My Profile
+                  </Link>
+                  <button
+                    onClick={async () => { await logout(); navigate('/'); }}
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-accent-red hover:bg-red-50 w-full text-left rounded-b-xl"
+                  >
+                    <LogOut className="w-4 h-4" /> Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Semantic Search Modal */}
       <SemanticSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
