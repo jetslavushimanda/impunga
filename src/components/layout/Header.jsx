@@ -76,9 +76,9 @@ export default function Header({ onMenuToggle }) {
   return (
     <>
       <header className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 select-none">
-        <div className="grid grid-cols-3 items-center w-full max-w-7xl mx-auto">
+        <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
           {/* Left Column */}
-          <div className="flex items-center justify-start">
+          <div className="flex items-center shrink-0 min-w-[48px] justify-start">
             {isHome ? (
               <button 
                 onClick={onMenuToggle} 
@@ -105,30 +105,30 @@ export default function Header({ onMenuToggle }) {
           </div>
 
           {/* Center Column */}
-          <div className="flex items-center justify-center">
+          <div className="flex-1 min-w-0 px-2 flex items-center justify-center">
             {isHome ? (
               <Link to="/dashboard" className="flex items-center gap-2 select-none pointer-events-auto">
-                <Sprout className="w-5 h-5 text-accent-green logo-sprout shrink-0" />
+                <Sprout className="w-5 h-5 text-primary-light logo-sprout shrink-0" />
                 <span className="text-xl font-black text-primary tracking-tight">IMPUNGA</span>
               </Link>
             ) : (
-              <span className="text-base sm:text-lg font-extrabold text-gray-800 tracking-tight block truncate text-center max-w-[200px] sm:max-w-xs md:max-w-md">
+              <span className="text-sm xs:text-base sm:text-lg font-extrabold text-gray-800 tracking-tight block truncate text-center w-full">
                 {customTitle || getPageTitle(pathname)}
               </span>
             )}
           </div>
 
           {/* Right Column */}
-          <div className="flex items-center justify-end gap-2.5">
+          <div className="flex items-center shrink-0 min-w-[48px] justify-end gap-1.5 sm:gap-2.5">
             {isHome ? (
               <>
                 {/* Search Button */}
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="flex items-center gap-2 bg-gray-100/80 hover:bg-gray-200/80 text-gray-500 hover:text-gray-700 transition-all rounded-full px-3 py-1.5 text-xs font-bold border border-gray-200/30"
+                  className="flex items-center justify-center w-9 h-9 sm:w-auto sm:h-auto bg-gray-100/80 hover:bg-gray-200/80 text-gray-500 hover:text-gray-700 transition-all rounded-full sm:px-3 sm:py-1.5 text-xs font-bold border border-gray-200/30 sm:gap-2"
                   aria-label="Smart search"
                 >
-                  <Search className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                  <Search className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-gray-400 shrink-0" />
                   <span className="hidden sm:block font-normal">Search...</span>
                 </button>
 

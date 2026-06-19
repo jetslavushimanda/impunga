@@ -43,7 +43,7 @@ export default function Layout() {
           className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 w-14 h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 flex items-center justify-center transition-all duration-200 z-40 border border-white/10"
           aria-label="Ask AI Assistant"
         >
-          <Bot className="w-6 h-6 text-green-400" />
+          <Bot className="w-6 h-6 text-primary-light" />
         </Link>
       )}
 
@@ -56,13 +56,13 @@ export default function Layout() {
               to={path}
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center gap-0.5 transition-colors ${
-                  isActive ? 'text-green-600' : 'text-gray-400 hover:text-gray-600'
+                  isActive ? 'text-primary' : 'text-gray-400 hover:text-gray-600'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <div className={`w-8 h-8 flex items-center justify-center rounded-xl transition-colors ${isActive ? 'bg-green-50 text-green-600' : ''}`}>
+                  <div className={`w-8 h-8 flex items-center justify-center rounded-xl transition-colors ${isActive ? 'bg-surface-blue text-primary' : ''}`}>
                     <Icon className="w-5 h-5" />
                   </div>
                   <span className="text-[10px] font-bold tracking-wide">{label}</span>

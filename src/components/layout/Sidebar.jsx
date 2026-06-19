@@ -26,7 +26,7 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* Header with Logo — visible on both desktop & mobile */}
         <div className="flex items-center justify-between p-5 border-b border-gray-200/50 shrink-0">
           <Link to="/dashboard" className="flex items-center gap-2 select-none pointer-events-auto" onClick={onClose}>
-            <Sprout className="w-5.5 h-5.5 text-accent-green logo-sprout shrink-0" />
+            <Sprout className="w-5.5 h-5.5 text-primary-light logo-sprout shrink-0" />
             <span className="font-black text-primary text-xl tracking-tight">IMPUNGA</span>
           </Link>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 lg:hidden" aria-label="Close sidebar">
@@ -44,14 +44,14 @@ export default function Sidebar({ isOpen, onClose }) {
               className={({ isActive }) => `
                 flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200
                 ${isActive 
-                  ? 'bg-green-50 text-green-700 font-bold shadow-sm border border-green-100/50' 
+                  ? 'bg-surface-blue text-primary font-bold shadow-sm border border-blue-200/50' 
                   : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100/60 font-medium border border-transparent'}
               `}
             >
               {({ isActive }) => (
                 <>
                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-colors ${
-                    isActive ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200'
+                    isActive ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200'
                   }`}>
                     <Icon className="w-4 h-4" />
                   </div>
