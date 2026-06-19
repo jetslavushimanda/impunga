@@ -12,7 +12,7 @@ export default defineConfig({
         name: 'IMPUNGA - Business Advisor',
         short_name: 'IMPUNGA',
         description: 'Start a business. Match your skills. Build Zambia.',
-        theme_color: '#1B4F72',
+        theme_color: '#FFFFFF',
         background_color: '#F4F6F7',
         display: 'standalone',
         start_url: '/',

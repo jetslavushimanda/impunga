@@ -108,7 +108,7 @@ export default function Header({ onMenuToggle }) {
           <div className="flex-1 min-w-0 px-2 flex items-center justify-center">
             {isHome ? (
               <Link to="/dashboard" className="flex items-center gap-2 select-none pointer-events-auto">
-                <Sprout className="w-5 h-5 text-primary-light logo-sprout shrink-0" />
+                <Sprout className="w-5 h-5 text-accent-gold logo-sprout shrink-0" />
                 <span className="text-xl font-black text-primary tracking-tight">IMPUNGA</span>
               </Link>
             ) : (

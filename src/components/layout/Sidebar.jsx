@@ -26,7 +26,7 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* Header with Logo — visible on both desktop & mobile */}
         <div className="flex items-center justify-between p-5 border-b border-gray-200/50 shrink-0">
           <Link to="/dashboard" className="flex items-center gap-2 select-none pointer-events-auto" onClick={onClose}>
-            <Sprout className="w-5.5 h-5.5 text-primary-light logo-sprout shrink-0" />
+            <Sprout className="w-5.5 h-5.5 text-accent-gold logo-sprout shrink-0" />
             <span className="font-black text-primary text-xl tracking-tight">IMPUNGA</span>
           </Link>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 lg:hidden" aria-label="Close sidebar">

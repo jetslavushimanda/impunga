@@ -43,7 +43,7 @@ export default function Layout() {
           className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 w-14 h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 flex items-center justify-center transition-all duration-200 z-40 border border-white/10"
           aria-label="Ask AI Assistant"
         >
-          <Bot className="w-6 h-6 text-primary-light" />
+          <Bot className="w-6 h-6 text-accent-gold" />
         </Link>
       )}
 
