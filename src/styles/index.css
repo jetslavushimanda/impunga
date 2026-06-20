@@ -1,6 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 @import './aiResponse.css';
+
+/* Class-based dark mode — applies when <html> has .dark */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-primary: #1B4F72;
@@ -29,14 +32,49 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-surface-light);
+  background-color: #f1f5f9;
   color: #1f2937;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+html.dark body {
+  background-color: #0f1117;
+  color: #e8eaed;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 h1, h2, h3, h4 {
   font-weight: 700;
   letter-spacing: -0.025em;
 }
+
+/* Dark mode for legacy CSS utility classes */
+html.dark .card {
+  background-color: #1e2128;
+  border-color: #2d3139;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+}
+html.dark .stat-card {
+  background-color: #1e2128;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+}
+html.dark .card-hover {
+  background-color: #1e2128;
+  border-color: #2d3139;
+}
+html.dark .input-field,
+html.dark .textarea-field,
+html.dark .select-field {
+  background-color: #252830;
+  border-color: #2d3139;
+  color: #e8eaed;
+}
+html.dark .label { color: #9aa0a6; }
+html.dark .module-card { background-color: #1e2128; }
+html.dark .offline-banner { background-color: #252830; color: #e8eaed; }
 
 /* Buttons */
 .btn-primary {

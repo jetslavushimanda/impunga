@@ -282,43 +282,33 @@ export default function BusinessHubView() {
         <div className="animate-slide-up mt-2">
           <div className="flex flex-col gap-4 lg:gap-5">
             {/* Path A */}
-            <button 
+            <button
               onClick={() => setView('ideation')}
-              className="group text-left bg-white rounded-2xl p-6 border border-gray-200/60 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:border-blue-300 hover:bg-blue-50/10 hover:-translate-y-1.5 active:scale-[0.98] transition-all duration-300 flex flex-col justify-between cursor-pointer w-full"
+              className="group text-left bg-white dark:bg-[#1e2128] rounded-2xl p-5 border border-gray-200/60 dark:border-[#2d3139] shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 flex items-center gap-4 cursor-pointer w-full"
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center shrink-0">
-                  <Rocket className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900 mb-1">Start a Business</h2>
-                  <p className="text-gray-500 text-sm font-medium leading-relaxed">I have an idea or need guidance on how to start a business in Zambia.</p>
-                </div>
+              <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800/30 rounded-xl flex items-center justify-center shrink-0">
+                <Rocket className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4 w-full">
-                <span className="text-blue-600 font-bold text-xs uppercase tracking-wide">Explore Tools</span>
-                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+              <div className="flex-1 min-w-0 text-left">
+                <h2 className="text-base font-bold text-gray-900 dark:text-[#e8eaed] mb-0.5">Start a Business</h2>
+                <p className="text-gray-500 dark:text-[#9aa0a6] text-sm font-medium leading-relaxed">I have an idea or need guidance on how to start a business in Zambia.</p>
               </div>
+              <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-blue-500 group-hover:translate-x-0.5 shrink-0 transition-all" />
             </button>
 
             {/* Path B */}
-            <button 
+            <button
               onClick={handlePathBClick}
-              className="group text-left bg-white rounded-2xl p-6 border border-gray-200/60 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:border-indigo-300 hover:bg-indigo-50/10 hover:-translate-y-1.5 active:scale-[0.98] transition-all duration-300 flex flex-col justify-between cursor-pointer w-full"
+              className="group text-left bg-white dark:bg-[#1e2128] rounded-2xl p-5 border border-gray-200/60 dark:border-[#2d3139] shadow-sm hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700 hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 flex items-center gap-4 cursor-pointer w-full"
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center shrink-0">
-                  <Briefcase className="w-6 h-6 text-indigo-600" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900 mb-1">Manage my Business</h2>
-                  <p className="text-gray-500 text-sm font-medium leading-relaxed">I already have a business and need operational tools to run it.</p>
-                </div>
+              <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/30 rounded-xl flex items-center justify-center shrink-0">
+                <Briefcase className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
               </div>
-              <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4 w-full">
-                <span className="text-indigo-600 font-bold text-xs uppercase tracking-wide">Enter Workspace</span>
-                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+              <div className="flex-1 min-w-0 text-left">
+                <h2 className="text-base font-bold text-gray-900 dark:text-[#e8eaed] mb-0.5">Business Operations</h2>
+                <p className="text-gray-500 dark:text-[#9aa0a6] text-sm font-medium leading-relaxed">I already have a business and need operational tools to run it.</p>
               </div>
+              <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-indigo-500 group-hover:translate-x-0.5 shrink-0 transition-all" />
             </button>
           </div>
         </div>

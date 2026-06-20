@@ -671,6 +671,33 @@ export default function BusinessLedger() {
     downloadExcel(data, 'Debtors_Book');
   }
 
+  function exportAllExcel() {
+    const wb = XLSX.utils.book_new();
+
+    const salesRows = sales.length ? sales.map(s => ({
+      Date: getDateKey(s.createdAt), Item: s.item,
+      Quantity: s.quantity, 'Price (K)': s.pricePerUnit, 'Total (K)': s.total,
+      Method: s.paymentMethod, Customer: s.customerName || '', Note: s.note || '',
+    })) : [{ Note: 'No sales recorded' }];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(salesRows), 'Sales');
+
+    const expRows = expenses.length ? expenses.map(e => ({
+      Date: e.date || getDateKey(e.createdAt), Category: e.category,
+      Description: e.description, 'Amount (K)': e.amount, Note: e.note || '',
+    })) : [{ Note: 'No expenses recorded' }];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(expRows), 'Expenses');
+
+    const debtRows = debtors.length ? debtors.map(d => ({
+      Customer: d.customerName, Description: d.description || '',
+      'Amount (K)': d.amount, 'Date Credited': d.dateCredited,
+      'Due Date': d.dueDate || '', Status: d.status, Note: d.note || '',
+    })) : [{ Note: 'No debtors recorded' }];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(debtRows), 'Debtors');
+
+    XLSX.writeFile(wb, `IMPUNGA_Ledger_${new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}.xlsx`);
+    show('Full ledger exported!');
+  }
+
   const inp = 'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white';
   const lbl = 'block text-xs font-semibold text-gray-500 mb-1.5';
 
@@ -696,20 +723,28 @@ export default function BusinessLedger() {
     <div className="max-w-4xl mx-auto pb-24 animate-fade-in mt-2">
       {/* Menu Grid */}
       {activeTab === 'menu' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
-          {TABS.map(({ id, label, Icon, desc, bg, text }) => (
-            <button
-              key={id}
-              onClick={() => setActiveTab(id)}
-              className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 text-left hover:shadow-lg transition-all hover:-translate-y-1 group active:scale-95"
-            >
-              <div className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center ${bg} ${text}`}>
-                <Icon className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-800 mb-1 group-hover:text-blue-600 transition-colors">{label}</h3>
-              <p className="text-sm text-gray-500 font-medium leading-relaxed">{desc}</p>
-            </button>
-          ))}
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
+            {TABS.map(({ id, label, Icon, desc, bg, text }) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                className="bg-white dark:bg-[#1e2128] border border-gray-200 dark:border-[#2d3139] rounded-2xl p-6 text-left hover:shadow-lg transition-all hover:-translate-y-1 group active:scale-95"
+              >
+                <div className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center ${bg} ${text}`}>
+                  <Icon className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 dark:text-[#e8eaed] mb-1 group-hover:text-blue-600 transition-colors">{label}</h3>
+                <p className="text-sm text-gray-500 dark:text-[#9aa0a6] font-medium leading-relaxed">{desc}</p>
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={exportAllExcel}
+            className="w-full flex items-center justify-center gap-2 bg-white dark:bg-[#1e2128] border border-gray-200 dark:border-[#2d3139] hover:border-primary/40 dark:hover:border-primary/40 rounded-2xl px-5 py-4 text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary-light hover:shadow-md transition-all"
+          >
+            <Download className="w-4 h-4" /> Export All Ledger Data (Excel)
+          </button>
         </div>
       )}
 

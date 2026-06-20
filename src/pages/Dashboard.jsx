@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import { getGreeting, getFirstName } from '../lib/utils';
-import { PageLoader } from '../components/shared/LoadingSpinner';
+import { Skeleton } from '../components/shared/Skeleton';
 
 const ROUTE_LABELS = {
   '/idea-validator': 'Idea Validator',
@@ -44,36 +44,9 @@ const ROUTE_LABELS = {
 };
 
 const ECONOMIC_INTEL = [
-  {
-    id: 1,
-    icon: TrendingUp,
-    color: 'text-emerald-600',
-    bg: 'bg-emerald-50',
-    title: 'Copper prices rise 2.3%',
-    body: 'LME copper hit $9,420/tonne, boosting Zambia\'s export outlook for Q3 2026.',
-    tag: 'Markets',
-    time: '2h ago',
-  },
-  {
-    id: 2,
-    icon: Newspaper,
-    color: 'text-blue-600',
-    bg: 'bg-blue-50',
-    title: 'PACRA eases registration fees',
-    body: 'Business name reservation now K150 for youth entrepreneurs under 35 — valid until Dec 2026.',
-    tag: 'Policy',
-    time: '5h ago',
-  },
-  {
-    id: 3,
-    icon: TrendingDown,
-    color: 'text-amber-600',
-    bg: 'bg-amber-50',
-    title: 'ZMW strengthens vs USD',
-    body: 'Rate at K26.8/USD today. Good window to lock in import contracts.',
-    tag: 'Exchange',
-    time: '8h ago',
-  },
+  { id: 1, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', title: 'Copper prices rise 2.3%', body: "LME copper hit $9,420/tonne, boosting Zambia's export outlook for Q3 2026.", tag: 'Markets', time: '2h ago' },
+  { id: 2, icon: Newspaper, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', title: 'PACRA eases registration fees', body: 'Business name reservation now K150 for youth entrepreneurs under 35 — valid until Dec 2026.', tag: 'Policy', time: '5h ago' },
+  { id: 3, icon: TrendingDown, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', title: 'ZMW strengthens vs USD', body: 'Rate at K26.8/USD today. Good window to lock in import contracts.', tag: 'Exchange', time: '8h ago' },
 ];
 
 const ALERTS = [
@@ -83,45 +56,15 @@ const ALERTS = [
 ];
 
 const NEXT_STEPS = [
-  {
-    id: 1,
-    path: '/registration-guide',
-    icon: CheckCircle2,
-    color: 'text-blue-600',
-    bg: 'bg-blue-50',
-    border: 'border-blue-100',
-    label: 'Formalise Your Business',
-    desc: 'Follow the PACRA step-by-step guide to register your business name.',
-    tag: 'Business',
-  },
-  {
-    id: 2,
-    path: '/skill-profile-builder',
-    icon: Star,
-    color: 'text-purple-600',
-    bg: 'bg-purple-50',
-    border: 'border-purple-100',
-    label: 'Build Your Skill Profile',
-    desc: 'Map your strengths to unlock career matches and job opportunities.',
-    tag: 'Career',
-  },
-  {
-    id: 3,
-    path: '/grants-portal',
-    icon: Lightbulb,
-    color: 'text-emerald-600',
-    bg: 'bg-emerald-50',
-    border: 'border-emerald-100',
-    label: 'Find Available Grants',
-    desc: 'K3.2M in Zambian grants are open for applications right now.',
-    tag: 'Funding',
-  },
+  { id: 1, path: '/registration-guide', icon: CheckCircle2, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', label: 'Formalise Your Business', desc: 'Follow the PACRA step-by-step guide to register your business name.', tag: 'Business' },
+  { id: 2, path: '/skill-profile-builder', icon: Star, color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-900/20', label: 'Build Your Skill Profile', desc: 'Map your strengths to unlock career matches and job opportunities.', tag: 'Career' },
+  { id: 3, path: '/grants-portal', icon: Lightbulb, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', label: 'Find Available Grants', desc: 'K3.2M in Zambian grants are open for applications right now.', tag: 'Funding' },
 ];
 
 const JOURNEY_ENGINES = [
-  { key: 'business', label: 'Business', icon: TrendingUp, barColor: 'bg-blue-500', trackColor: 'bg-blue-100', textColor: 'text-blue-600', path: '/engine/business', totalModules: 6, storageKey: 'impunga_visited_business' },
-  { key: 'skills', label: 'Career', icon: GraduationCap, barColor: 'bg-purple-500', trackColor: 'bg-purple-100', textColor: 'text-purple-600', path: '/engine/skills', totalModules: 7, storageKey: 'impunga_visited_skills' },
-  { key: 'finance', label: 'Funding', icon: DollarSign, barColor: 'bg-emerald-500', trackColor: 'bg-emerald-100', textColor: 'text-emerald-600', path: '/engine/finance', totalModules: 3, storageKey: 'impunga_visited_finance' },
+  { key: 'business', label: 'Business', icon: TrendingUp, barColor: 'bg-blue-500', trackColor: 'bg-blue-100 dark:bg-blue-900/30', textColor: 'text-blue-600 dark:text-blue-400', path: '/engine/business', totalModules: 6, storageKey: 'impunga_visited_business' },
+  { key: 'skills', label: 'Career', icon: GraduationCap, barColor: 'bg-purple-500', trackColor: 'bg-purple-100 dark:bg-purple-900/30', textColor: 'text-purple-600 dark:text-purple-400', path: '/engine/skills', totalModules: 7, storageKey: 'impunga_visited_skills' },
+  { key: 'finance', label: 'Funding', icon: DollarSign, barColor: 'bg-emerald-500', trackColor: 'bg-emerald-100 dark:bg-emerald-900/30', textColor: 'text-emerald-600 dark:text-emerald-400', path: '/engine/finance', totalModules: 3, storageKey: 'impunga_visited_finance' },
 ];
 
 function timeAgo(timestamp) {
@@ -134,12 +77,16 @@ function timeAgo(timestamp) {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
+const card = 'bg-white dark:bg-[#1e2128] border border-gray-100 dark:border-[#2d3139] rounded-2xl shadow-sm';
+
 export default function Dashboard() {
   const { userProfile, loading } = useAuthStore();
   const [recentRoute, setRecentRoute] = useState(null);
   const [journeyProgress, setJourneyProgress] = useState({ business: 0, skills: 0, finance: 0 });
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // Load all data from localStorage (instant — no async needed)
     try {
       const stored = localStorage.getItem('impunga_last_route');
       if (stored) {
@@ -154,69 +101,77 @@ export default function Dashboard() {
       try {
         const visited = JSON.parse(localStorage.getItem(storageKey) || '[]');
         progress[key] = Math.min(100, Math.round((visited.length / totalModules) * 100));
-      } catch {
-        progress[key] = 0;
-      }
+      } catch { progress[key] = 0; }
     });
     setJourneyProgress(progress);
+    setReady(true);
   }, []);
-
-  if (loading) return <PageLoader />;
 
   const firstName = getFirstName(userProfile?.fullName || '');
 
+  if (!ready || loading) {
+    return (
+      <div className="pb-28 space-y-4 px-1 sm:px-2 pt-2">
+        <div className="space-y-1">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-32 mt-1" />
+        </div>
+        <Skeleton className="h-16 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-48 rounded-2xl" />
+      </div>
+    );
+  }
+
   return (
-    <div className="pb-28 space-y-5 px-1 sm:px-2 pt-2">
+    <div className="pb-28 space-y-4 px-1 sm:px-2 pt-2">
 
       {/* Greeting */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-[#e8eaed] tracking-tight">
           {getGreeting()}, {firstName || 'there'}!
         </h1>
-        <p className="text-gray-400 text-sm mt-1 font-medium">Here's your briefing for today.</p>
+        <p className="text-gray-400 dark:text-[#9aa0a6] text-sm mt-1 font-medium">Here's your briefing for today.</p>
       </div>
 
       {/* Recent Activity */}
       {recentRoute ? (
-        <Link
-          to={recentRoute.path}
-          className="flex items-center gap-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md hover:border-primary/20 transition-all group"
-        >
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+        <Link to={recentRoute.path} className={`flex items-center gap-4 ${card} p-4 hover:shadow-md hover:border-primary/20 dark:hover:border-primary/40 transition-all group`}>
+          <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center shrink-0">
             <Clock className="w-5 h-5 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Continue where you left off</p>
-            <p className="text-sm font-bold text-gray-800 truncate">{recentRoute.title}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{timeAgo(recentRoute.time)}</p>
+            <p className="text-[11px] font-bold text-gray-400 dark:text-[#9aa0a6] uppercase tracking-wider mb-0.5">Continue where you left off</p>
+            <p className="text-sm font-bold text-gray-800 dark:text-[#e8eaed] truncate">{recentRoute.title}</p>
+            <p className="text-xs text-gray-400 dark:text-[#9aa0a6] mt-0.5">{timeAgo(recentRoute.time)}</p>
           </div>
-          <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-primary transition-colors shrink-0" />
+          <ArrowRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-primary transition-colors shrink-0" />
         </Link>
       ) : (
-        <div className="flex items-center gap-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0">
-            <Clock className="w-5 h-5 text-gray-300" />
+        <div className={`flex items-center gap-4 ${card} p-4`}>
+          <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#252830] flex items-center justify-center shrink-0">
+            <Clock className="w-5 h-5 text-gray-300 dark:text-gray-600" />
           </div>
           <div>
-            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Recent Activity</p>
-            <p className="text-sm text-gray-500">Start exploring a module — it'll show here next time.</p>
+            <p className="text-[11px] font-bold text-gray-400 dark:text-[#9aa0a6] uppercase tracking-wider mb-0.5">Recent Activity</p>
+            <p className="text-sm text-gray-500 dark:text-[#9aa0a6]">Start exploring a module — it'll show here next time.</p>
           </div>
         </div>
       )}
 
       {/* Alerts */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className={`${card} overflow-hidden`}>
         <div className="px-4 pt-4 pb-2 flex items-center justify-between">
-          <h2 className="text-[11px] font-extrabold text-gray-500 uppercase tracking-wider">Alerts</h2>
-          <span className="text-[11px] bg-amber-100 text-amber-700 font-extrabold px-2 py-0.5 rounded-full">{ALERTS.length} new</span>
+          <h2 className="text-[11px] font-extrabold text-gray-500 dark:text-[#9aa0a6] uppercase tracking-wider">Alerts</h2>
+          <span className="text-[11px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-extrabold px-2 py-0.5 rounded-full">{ALERTS.length} new</span>
         </div>
-        <ul className="divide-y divide-gray-50">
+        <ul className="divide-y divide-gray-50 dark:divide-[#252830]">
           {ALERTS.map(({ id, icon: Icon, color, text, path }) => (
             <li key={id}>
-              <Link to={path} className="flex items-center gap-3 px-4 py-3 hover:bg-surface-light transition-colors group">
+              <Link to={path} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-[#252830] transition-colors group">
                 <Icon className={`w-4 h-4 shrink-0 ${color}`} />
-                <span className="text-sm text-gray-700 flex-1 leading-snug">{text}</span>
-                <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 transition-colors shrink-0" />
+                <span className="text-sm text-gray-700 dark:text-gray-300 flex-1 leading-snug">{text}</span>
+                <ChevronRight className="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 group-hover:text-gray-500 transition-colors shrink-0" />
               </Link>
             </li>
           ))}
@@ -225,18 +180,18 @@ export default function Dashboard() {
 
       {/* Zambia Economic Intelligence */}
       <div>
-        <h2 className="text-[11px] font-extrabold text-gray-500 uppercase tracking-wider mb-3 px-1">Zambia Economic Intelligence</h2>
+        <h2 className="text-[11px] font-extrabold text-gray-500 dark:text-[#9aa0a6] uppercase tracking-wider mb-3 px-1">Zambia Economic Intelligence</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {ECONOMIC_INTEL.map(({ id, icon: Icon, color, bg, title, body, tag, time }) => (
-            <div key={id} className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col gap-2">
+            <div key={id} className={`${card} p-4 flex flex-col gap-2`}>
               <div className="flex items-center justify-between">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${bg}`}>
                   <Icon className={`w-4 h-4 ${color}`} />
                 </div>
-                <span className="text-[10px] font-bold text-gray-400 uppercase">{time}</span>
+                <span className="text-[10px] font-bold text-gray-400 dark:text-[#9aa0a6] uppercase">{time}</span>
               </div>
-              <p className="text-sm font-bold text-gray-800 leading-snug">{title}</p>
-              <p className="text-xs text-gray-500 leading-relaxed flex-1">{body}</p>
+              <p className="text-sm font-bold text-gray-800 dark:text-[#e8eaed] leading-snug">{title}</p>
+              <p className="text-xs text-gray-500 dark:text-[#9aa0a6] leading-relaxed flex-1">{body}</p>
               <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full self-start ${bg} ${color}`}>{tag}</span>
             </div>
           ))}
@@ -244,8 +199,8 @@ export default function Dashboard() {
       </div>
 
       {/* Journey Progress */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-        <h2 className="text-[11px] font-extrabold text-gray-500 uppercase tracking-wider mb-4">Your Journey Progress</h2>
+      <div className={`${card} p-4`}>
+        <h2 className="text-[11px] font-extrabold text-gray-500 dark:text-[#9aa0a6] uppercase tracking-wider mb-4">Your Journey Progress</h2>
         <div className="space-y-4">
           {JOURNEY_ENGINES.map(({ key, label, icon: Icon, barColor, trackColor, textColor, path, totalModules }) => {
             const pct = journeyProgress[key] ?? 0;
@@ -255,15 +210,12 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
                     <Icon className={`w-4 h-4 ${textColor}`} />
-                    <span className="text-sm font-bold text-gray-700">{label}</span>
+                    <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{label}</span>
                   </div>
-                  <span className="text-xs text-gray-400 font-semibold">{visited}/{totalModules} modules</span>
+                  <span className="text-xs text-gray-400 dark:text-[#9aa0a6] font-semibold">{visited}/{totalModules} modules</span>
                 </div>
                 <div className={`h-2 rounded-full ${trackColor} overflow-hidden`}>
-                  <div
-                    className={`h-full rounded-full ${barColor} transition-all duration-700`}
-                    style={{ width: pct === 0 ? '3%' : `${pct}%` }}
-                  />
+                  <div className={`h-full rounded-full ${barColor} transition-all duration-700`} style={{ width: pct === 0 ? '3%' : `${pct}%` }} />
                 </div>
               </Link>
             );
@@ -273,25 +225,18 @@ export default function Dashboard() {
 
       {/* Recommended Next Steps */}
       <div>
-        <h2 className="text-[11px] font-extrabold text-gray-500 uppercase tracking-wider mb-3 px-1">Recommended Next Steps</h2>
+        <h2 className="text-[11px] font-extrabold text-gray-500 dark:text-[#9aa0a6] uppercase tracking-wider mb-3 px-1">Recommended Next Steps</h2>
         <div className="space-y-3">
-          {NEXT_STEPS.map(({ id, path, icon: Icon, color, bg, border, label, desc, tag }) => (
-            <Link
-              key={id}
-              to={path}
-              className={`flex items-center gap-4 bg-white rounded-2xl p-4 border ${border} shadow-sm hover:shadow-md transition-all group`}
-            >
+          {NEXT_STEPS.map(({ id, path, icon: Icon, color, bg, label, desc }) => (
+            <Link key={id} to={path} className={`flex items-center gap-4 ${card} p-4 hover:shadow-md transition-all group`}>
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${bg}`}>
                 <Icon className={`w-5 h-5 ${color}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                  <p className="text-sm font-bold text-gray-800">{label}</p>
-                  <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full hidden sm:inline ${bg} ${color}`}>{tag}</span>
-                </div>
-                <p className="text-xs text-gray-500 leading-snug">{desc}</p>
+                <p className="text-sm font-bold text-gray-800 dark:text-[#e8eaed]">{label}</p>
+                <p className="text-xs text-gray-500 dark:text-[#9aa0a6] leading-snug mt-0.5">{desc}</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-600 transition-colors shrink-0" />
+              <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors shrink-0" />
             </Link>
           ))}
         </div>

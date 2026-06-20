@@ -23,13 +23,6 @@ function saveToHistory(messages) {
   } catch {}
 }
 
-const QUICK_PROMPTS = [
-  'How do I validate a business idea?',
-  'What grants exist for Zambian youth?',
-  'Help me write a business plan',
-  'How do I register with PACRA?',
-];
-
 export default function AIChatPanel({ onClose }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -71,24 +64,24 @@ export default function AIChatPanel({ onClose }) {
 
   return (
     <div
-      className="hidden lg:flex flex-col fixed right-4 xl:right-6 bottom-4 xl:bottom-6 w-95 xl:w-105 max-w-[calc(100vw-2rem)] z-50 bg-white rounded-3xl overflow-hidden"
-      style={{ top: '68px', boxShadow: '0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08)', border: '1px solid #e5e7eb' }}
+      className="hidden lg:flex flex-col fixed right-4 xl:right-6 bottom-4 xl:bottom-6 w-95 xl:w-105 max-w-[calc(100vw-2rem)] z-50 bg-white dark:bg-[#1e2128] rounded-3xl overflow-hidden"
+      style={{ top: '68px', boxShadow: '0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08)' }}
     >
       {/* Header */}
-      <div className="shrink-0 border-b border-gray-100">
-        {/* Top row — title + collapse */}
+      <div className="shrink-0 border-b border-gray-100 dark:border-[#2d3139]">
+        {/* Top row */}
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center shrink-0">
               <Bot className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="text-gray-900 font-bold text-sm">IMPUNGA AI</span>
+            <span className="text-gray-900 dark:text-[#e8eaed] font-bold text-sm">IMPUNGA AI</span>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           </div>
           <button
             onClick={onClose}
             title="Collapse"
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all"
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#252830] transition-all"
           >
             <PanelRightClose className="w-4 h-4" />
           </button>
@@ -97,46 +90,35 @@ export default function AIChatPanel({ onClose }) {
         {/* Action row */}
         <div className="flex items-center gap-1 px-4 pb-3">
           <button
-            title="History"
             onClick={() => { saveToHistory(messages); navigate('/ai-advisor', { state: { openHistory: true } }); onClose(); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#252830] transition-all"
           >
-            <Clock className="w-3.5 h-3.5" />
-            History
+            <Clock className="w-3.5 h-3.5" /> History
           </button>
           <button
-            title="Open full conversation"
             onClick={() => { navigate('/ai-advisor'); onClose(); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#252830] transition-all"
           >
-            <ExternalLink className="w-3.5 h-3.5" />
-            Open
+            <ExternalLink className="w-3.5 h-3.5" /> Open
           </button>
           <button
-            title="New chat"
             onClick={() => { saveToHistory(messages); setMessages([]); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#252830] transition-all"
           >
-            <SquarePen className="w-3.5 h-3.5" />
-            New chat
+            <SquarePen className="w-3.5 h-3.5" /> New chat
           </button>
         </div>
       </div>
 
       {/* Conversation */}
-      <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 bg-gray-50/50">
-
-        {/* Welcome */}
+      <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 bg-gray-50/50 dark:bg-[#0f1117]">
         {messages.length === 0 && (
-          <div className="space-y-6">
-            <div>
-              <p className="text-gray-400 text-xs font-medium mb-1">{greeting}{firstName ? `, ${firstName}` : ''}</p>
-              <h2 className="text-gray-900 text-xl font-bold leading-snug">How may I help you today?</h2>
-            </div>
+          <div className="space-y-2">
+            <p className="text-gray-400 dark:text-[#9aa0a6] text-xs font-medium">{greeting}{firstName ? `, ${firstName}` : ''}</p>
+            <h2 className="text-gray-900 dark:text-[#e8eaed] text-xl font-bold leading-snug">How may I help you today?</h2>
           </div>
         )}
 
-        {/* Messages */}
         {messages.map(msg => (
           <div key={msg.id}>
             {msg.role === 'user' ? (
@@ -150,15 +132,14 @@ export default function AIChatPanel({ onClose }) {
                 <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
                   <Bot className="w-3.5 h-3.5 text-white" />
                 </div>
-                <div className="flex-1 text-sm text-gray-700 leading-relaxed">
-                  <AIResponse content={msg.content} className="text-sm text-gray-700 leading-relaxed" />
+                <div className="flex-1 text-sm text-gray-700 dark:text-[#e8eaed] leading-relaxed">
+                  <AIResponse content={msg.content} className="text-sm text-gray-700 dark:text-[#e8eaed] leading-relaxed" />
                 </div>
               </div>
             )}
           </div>
         ))}
 
-        {/* Typing */}
         {loading && (
           <div className="flex items-start gap-3">
             <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0">
@@ -166,7 +147,7 @@ export default function AIChatPanel({ onClose }) {
             </div>
             <div className="flex gap-1.5 pt-2">
               {[0, 160, 320].map(d => (
-                <span key={d} className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: `${d}ms` }} />
+                <span key={d} className="w-1.5 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: `${d}ms` }} />
               ))}
             </div>
           </div>
@@ -176,8 +157,8 @@ export default function AIChatPanel({ onClose }) {
       </div>
 
       {/* Input */}
-      <div className="shrink-0 px-4 py-4 bg-white border-t border-gray-100">
-        <div className="flex items-end gap-3 bg-gray-100 rounded-2xl px-4 py-3 border border-gray-200 focus-within:border-primary/40 focus-within:bg-white transition-all">
+      <div className="shrink-0 px-4 py-4 bg-white dark:bg-[#1e2128] border-t border-gray-100 dark:border-[#2d3139]">
+        <div className="flex items-end gap-3 bg-gray-100 dark:bg-[#252830] rounded-2xl px-4 py-3 border border-gray-200 dark:border-[#2d3139] focus-within:border-primary/40 focus-within:bg-white dark:focus-within:bg-[#1e2128] transition-all">
           <textarea
             ref={textareaRef}
             value={input}
@@ -185,15 +166,15 @@ export default function AIChatPanel({ onClose }) {
             onChange={e => { setInput(e.target.value); autoResize(e.target); }}
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Ask anything..."
-            className="flex-1 text-sm bg-transparent outline-none resize-none leading-relaxed font-medium text-gray-800 placeholder-gray-400"
+            className="flex-1 text-sm bg-transparent outline-none resize-none leading-relaxed font-medium text-gray-800 dark:text-[#e8eaed] placeholder-gray-400 dark:placeholder-gray-600"
             style={{ minHeight: '22px' }}
           />
           <button
             onClick={() => handleSend()}
             disabled={!input.trim() || loading}
-            className="w-8 h-8 bg-primary hover:bg-primary-dark disabled:bg-gray-200 rounded-xl flex items-center justify-center transition-all active:scale-95 shrink-0"
+            className="w-8 h-8 bg-primary hover:bg-primary-dark disabled:bg-gray-200 dark:disabled:bg-[#2d3139] rounded-xl flex items-center justify-center transition-all active:scale-95 shrink-0"
           >
-            <ArrowUp className="w-4 h-4 text-white" />
+            <ArrowUp className="w-4 h-4 text-white dark:disabled:text-gray-500" />
           </button>
         </div>
       </div>
