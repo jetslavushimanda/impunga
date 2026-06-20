@@ -78,38 +78,37 @@ export default function Header({ onMenuToggle }) {
       <header className="bg-white dark:bg-[#1e2128] border-b border-gray-100 dark:border-[#2d3139] px-4 py-3 sticky top-0 z-30 select-none">
         <div className="flex items-center w-full gap-2">
 
-          {/* Left: hamburger on home (mobile), back arrow on sub-pages */}
+          {/* Left: hamburger always — on all pages, all screen sizes */}
           <div className="shrink-0 w-9">
-            {isHome ? (
-              <button
-                onClick={onMenuToggle}
-                className="lg:hidden p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-[#252830] active:scale-95 transition-all text-gray-600 dark:text-gray-300"
-                aria-label="Open menu"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-            ) : (
-              <button
-                onClick={() => customBack ? customBack() : navigate(-1)}
-                className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-[#252830] active:scale-95 transition-all text-gray-600 dark:text-gray-300"
-                aria-label="Go back"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-            )}
+            <button
+              onClick={onMenuToggle}
+              className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-[#252830] active:scale-95 transition-all text-gray-600 dark:text-gray-300"
+              aria-label="Toggle sidebar"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* Center: logo on home, page title elsewhere */}
-          <div className="flex-1 min-w-0 flex items-center justify-center">
+          {/* Center: logo on home; back arrow + title on sub-pages */}
+          <div className="flex-1 min-w-0 flex items-center justify-center gap-1">
             {isHome ? (
               <Link to="/dashboard" className="flex items-center gap-2 select-none">
                 <Sprout className="w-5 h-5 text-accent-gold logo-sprout shrink-0" />
                 <span className="text-xl font-black text-gray-900 dark:text-[#e8eaed] tracking-tight">IMPUNGA</span>
               </Link>
             ) : (
-              <span className="text-sm sm:text-base font-extrabold text-gray-800 dark:text-[#e8eaed] tracking-tight truncate text-center">
-                {customTitle || getPageTitle(pathname)}
-              </span>
+              <>
+                <button
+                  onClick={() => customBack ? customBack() : navigate(-1)}
+                  className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-[#252830] transition-all text-gray-500 dark:text-gray-400 shrink-0"
+                  aria-label="Go back"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+                <span className="text-sm sm:text-base font-extrabold text-gray-800 dark:text-[#e8eaed] tracking-tight truncate">
+                  {customTitle || getPageTitle(pathname)}
+                </span>
+              </>
             )}
           </div>
 

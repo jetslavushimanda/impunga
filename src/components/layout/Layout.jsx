@@ -50,13 +50,14 @@ function ScrollToTop() {
 
 export default function Layout() {
   const [chatOpen, setChatOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Desktop starts expanded, mobile starts closed
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
   const { user, loading } = useAuthStore();
   const { pathname } = useLocation();
 
   useEffect(() => { trackRoute(pathname); }, [pathname]);
-  // Close sidebar on route change
-  useEffect(() => { setSidebarOpen(false); }, [pathname]);
+  // On mobile, close the sidebar drawer when navigating to a new page
+  useEffect(() => { if (window.innerWidth < 1024) setSidebarOpen(false); }, [pathname]);
 
   if (loading) return <PageLoader />;
   if (!user) return <Navigate to="/login" replace />;
@@ -82,7 +83,7 @@ export default function Layout() {
           {/* Mobile */}
           <Link
             to="/ai-advisor"
-            className="lg:hidden fixed bottom-[80px] right-4 w-12 h-12 bg-primary rounded-full shadow-xl shadow-primary/30 flex items-center justify-center z-40 hover:bg-primary-dark hover:scale-[1.06] active:scale-[0.95] transition-all duration-200"
+            className="lg:hidden fixed bottom-20 right-4 w-12 h-12 bg-primary rounded-full shadow-xl shadow-primary/30 flex items-center justify-center z-40 hover:bg-primary-dark hover:scale-[1.06] active:scale-[0.95] transition-all duration-200"
             aria-label="AI Assistant"
           >
             <Bot className="w-5 h-5 text-white" />
