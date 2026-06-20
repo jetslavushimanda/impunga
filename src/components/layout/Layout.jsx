@@ -50,10 +50,13 @@ function ScrollToTop() {
 
 export default function Layout() {
   const [chatOpen, setChatOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, loading } = useAuthStore();
   const { pathname } = useLocation();
 
   useEffect(() => { trackRoute(pathname); }, [pathname]);
+  // Close sidebar on route change
+  useEffect(() => { setSidebarOpen(false); }, [pathname]);
 
   if (loading) return <PageLoader />;
   if (!user) return <Navigate to="/login" replace />;
@@ -64,10 +67,10 @@ export default function Layout() {
     <div className="min-h-screen bg-slate-100 dark:bg-[#0f1117] relative">
       <ScrollToTop />
       <OfflineBanner />
-      <Header />
+      <Header onMenuToggle={() => setSidebarOpen(o => !o)} />
 
       <div className="flex h-[calc(100vh-57px)]">
-        <Sidebar />
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 lg:p-6 pb-24 lg:pb-6 relative">
           <Outlet />
         </main>

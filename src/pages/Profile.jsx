@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { User, LogOut, Trash2, Edit2, Save, X, Star, KeyRound, Shield, Settings } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { User, LogOut, Trash2, Edit2, Save, X, Star, KeyRound, Shield, Settings, ChevronRight } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { deleteUser } from 'firebase/auth';
 import { doc, deleteDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
@@ -263,6 +263,19 @@ export default function Profile() {
       <div>
         <SectionTitle icon={Shield} label="Data Privacy" />
         <div className={`${card} overflow-hidden`}>
+          {/* Navigate to full Data Privacy module */}
+          <Link
+            to="/data-privacy"
+            className="flex items-center gap-3 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#252830] transition-colors border-b border-gray-50 dark:border-[#2d3139] group"
+          >
+            <Shield className="w-4 h-4 text-blue-500 shrink-0" />
+            <div className="flex-1">
+              <p className="font-semibold">Privacy & Your Data</p>
+              <p className="text-xs text-gray-400 dark:text-[#9aa0a6] mt-0.5">View what data is stored, your rights, and deletion options</p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-primary transition-colors shrink-0" />
+          </Link>
+
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-5 py-4 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left border-b border-gray-50 dark:border-[#2d3139]"
@@ -273,6 +286,7 @@ export default function Profile() {
               <p className="text-xs text-gray-400 dark:text-[#9aa0a6] mt-0.5">Sign out of your IMPUNGA account</p>
             </div>
           </button>
+
           <button
             onClick={handleDeleteAccount}
             className="w-full flex items-center gap-3 px-5 py-4 text-sm text-gray-400 dark:text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Bell, LogOut, User, ChevronDown, Search, Sprout, ArrowLeft, Sun, Moon, Monitor } from 'lucide-react';
+import { Bell, LogOut, User, ChevronDown, Search, Sprout, ArrowLeft, Sun, Moon, Monitor, Menu } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
 import useThemeStore from '../../store/themeStore';
@@ -55,7 +55,7 @@ const getPageTitle = (path) => {
   return ROUTE_TITLES[path] || 'IMPUNGA';
 };
 
-export default function Header() {
+export default function Header({ onMenuToggle }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { logout } = useAuth();
@@ -78,9 +78,17 @@ export default function Header() {
       <header className="bg-white dark:bg-[#1e2128] border-b border-gray-100 dark:border-[#2d3139] px-4 py-3 sticky top-0 z-30 select-none">
         <div className="flex items-center w-full gap-2">
 
-          {/* Left: back arrow on sub-pages, nothing on home */}
+          {/* Left: hamburger on home (mobile), back arrow on sub-pages */}
           <div className="shrink-0 w-9">
-            {!isHome && (
+            {isHome ? (
+              <button
+                onClick={onMenuToggle}
+                className="lg:hidden p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-[#252830] active:scale-95 transition-all text-gray-600 dark:text-gray-300"
+                aria-label="Open menu"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            ) : (
               <button
                 onClick={() => customBack ? customBack() : navigate(-1)}
                 className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-[#252830] active:scale-95 transition-all text-gray-600 dark:text-gray-300"
