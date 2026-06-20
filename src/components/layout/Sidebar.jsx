@@ -85,9 +85,6 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
           </button>
         </div>
         <NavItems expanded={true} onNav={onClose} />
-        <div className="px-5 py-4 shrink-0">
-          <p className="text-[10px] text-gray-300 dark:text-[#2d3139] font-medium">IMPUNGA © JETS 2026 · Zambia</p>
-        </div>
       </div>
 
       {/* ══════════════════════════════════════
@@ -113,11 +110,6 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
 
         <NavItems expanded={isOpen} onNav={() => {}} />
 
-        {isOpen && (
-          <div className="px-4 py-4 shrink-0">
-            <p className="text-[10px] text-gray-300 dark:text-[#2d3139] font-medium whitespace-nowrap">IMPUNGA © JETS 2026 · Zambia</p>
-          </div>
-        )}
       </aside>
     </>
   );
