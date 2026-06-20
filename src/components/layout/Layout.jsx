@@ -50,8 +50,8 @@ function ScrollToTop() {
 
 export default function Layout() {
   const [chatOpen, setChatOpen] = useState(false);
-  // Desktop starts expanded, mobile starts closed
-  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
+  // Starts collapsed/closed — hamburger tap expands on desktop, opens drawer on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, loading } = useAuthStore();
   const { pathname } = useLocation();
 
