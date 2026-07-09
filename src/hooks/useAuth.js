@@ -13,13 +13,14 @@ import { auth, googleProvider, db } from '../lib/firebase';
 import useAuthStore from '../store/authStore';
 
 export function useAuth() {
-  const { user, userProfile, loading, setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
+  const { user, userProfile, loading, setUser, setUserProfile, clearUser, setSelectedPath, setLoading } = useAuthStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
         await loadUserProfile(firebaseUser.uid);
+        setLoading(false);
       } else {
         clearUser();
       }
@@ -125,7 +126,7 @@ export function useAuth() {
   async function updateProfile(updates) {
     if (!user) return;
     const docRef = doc(db, 'users', user.uid);
-    await updateDoc(docRef, { ...updates, lastActive: serverTimestamp() });
+    await setDoc(docRef, { ...updates, lastActive: serverTimestamp() }, { merge: true });
     setUserProfile({ ...userProfile, ...updates });
   }
 

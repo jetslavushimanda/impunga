@@ -211,6 +211,7 @@ export default function BusinessHubView() {
     }
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // Registration form state
   const [formData, setFormData] = useState({
@@ -232,16 +233,26 @@ export default function BusinessHubView() {
   async function handleStep1Submit(e) {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError('');
     try {
-      await updateProfile({
-        businessProfile: {
-          ...formData,
-          subscriptionActive: true
-        }
-      });
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000));
+      await Promise.race([
+        updateProfile({
+          businessProfile: {
+            ...formData,
+            subscriptionActive: true
+          }
+        }),
+        timeout
+      ]);
       setView('operations');
     } catch (error) {
       console.error('Failed to register business profile:', error);
+      setSubmitError(
+        error?.message === 'timeout'
+          ? 'This is taking too long — your connection may be blocking the request. Check your internet and try again.'
+          : 'Something went wrong setting up your workspace. Please check your connection and try again.'
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -428,6 +439,11 @@ export default function BusinessHubView() {
             </div>
           ) : (
             <form onSubmit={handleStep1Submit} className="space-y-6 relative z-10">
+              {submitError && (
+                <div className="bg-red-50 border border-red-200 text-red-600 text-sm font-semibold rounded-2xl px-4 py-3">
+                  {submitError}
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Business or Project Name</label>
                 <input
