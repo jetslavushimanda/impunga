@@ -1,50 +1,23 @@
-import { useEffect } from 'react';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  onAuthStateChanged,
   sendPasswordResetEmail,
   OAuthProvider
 } from 'firebase/auth';
-import { doc, setDoc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../lib/firebase';
 import useAuthStore from '../store/authStore';
 
+// Auth-state syncing (onAuthStateChanged -> user/userProfile/loading) lives
+// solely in App.jsx's top-level listener, which runs unconditionally on
+// every load. This hook used to run a second, identical listener of its own
+// (extra Firestore getDoc + updateDoc) that fired every time Header mounted,
+// i.e. on every authenticated page — doubling auth/profile round-trips on
+// every refresh for no benefit. Don't re-add a listener here.
 export function useAuth() {
-  const { user, userProfile, loading, setUser, setUserProfile, clearUser, setSelectedPath, setLoading } = useAuthStore();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-        await loadUserProfile(firebaseUser.uid);
-        setLoading(false);
-      } else {
-        clearUser();
-      }
-    });
-    return unsubscribe;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function loadUserProfile(uid) {
-    try {
-      const docRef = doc(db, 'users', uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setUserProfile(data);
-        if (data.selectedPath) {
-          setSelectedPath(data.selectedPath);
-        }
-        await updateDoc(docRef, { lastActive: serverTimestamp() });
-      }
-    } catch {
-      // Profile may not exist yet for new users
-    }
-  }
+  const { user, userProfile, loading, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
 
   async function login(email, password) {
     const result = await signInWithEmailAndPassword(auth, email, password);
@@ -130,5 +103,5 @@ export function useAuth() {
     setUserProfile({ ...userProfile, ...updates });
   }
 
-  return { user, userProfile, loading, login, loginWithGoogle, loginWithApple, register, logout, resetPassword, updateProfile, loadUserProfile };
+  return { user, userProfile, loading, login, loginWithGoogle, loginWithApple, register, logout, resetPassword, updateProfile };
 }

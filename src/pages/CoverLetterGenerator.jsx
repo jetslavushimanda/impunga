@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { useFirestore } from '../hooks/useFirestore';
 import { useGemini } from '../hooks/useGemini';
 import useAuthStore from '../store/authStore';
@@ -21,40 +22,28 @@ export default function CoverLetterGenerator() {
   const [letterContent, setLetterContent] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const downloadDOCX = () => {
+  const downloadDOCX = async () => {
     if (!letterContent || !profile) return;
-    
-    const formattedContent = letterContent
-      .split('\n')
-      .map(line => {
-        const trimmed = line.trim();
-        if (!trimmed) {
-          return '<p style="margin: 0; min-height: 12pt;">&nbsp;</p>';
-        }
-        return `<p style="font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; margin: 0 0 10pt 0; text-align: left;">${trimmed}</p>`;
-      })
-      .join('');
 
-    const html = `
-      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
-      <head>
-        <title>Cover Letter</title>
-        <!--[if gte mso 9]>
-        <xml>
-          <w:WordDocument>
-            <w:View>Print</w:View>
-            <w:Zoom>100</w:Zoom>
-          </w:WordDocument>
-        </xml>
-        <![endif]-->
-      </head>
-      <body style="font-family: Arial, sans-serif; padding: 1in; max-width: 6.5in; margin: auto;">
-        ${formattedContent}
-      </body>
-      </html>
-    `;
+    const paragraphs = letterContent.split('\n').map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) {
+        return new Paragraph({ spacing: { after: 200 } });
+      }
+      return new Paragraph({
+        spacing: { after: 200 },
+        children: [new TextRun({ text: trimmed, font: 'Arial', size: 22 })],
+      });
+    });
 
-    const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+    const doc = new Document({
+      sections: [{
+        properties: {},
+        children: paragraphs,
+      }],
+    });
+
+    const blob = await Packer.toBlob(doc);
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

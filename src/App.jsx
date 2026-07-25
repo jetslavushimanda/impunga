@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect, lazy, Suspense } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from './lib/firebase';
 import useAuthStore from './store/authStore';
 
@@ -84,13 +84,13 @@ export default function App() {
           }
         } catch {}
         // This top-level listener always runs regardless of what's mounted
-        // below it, unlike useAuth()'s copy of this same listener (which
-        // only runs inside Header, itself gated behind `loading`). Layout
-        // blocks all rendering — including Header — while loading is true,
-        // so if Header were the only thing clearing it, a cold refresh on
-        // any Layout-wrapped route would deadlock forever. Resolving it
-        // here, unconditionally, is what breaks that deadlock.
+        // below it. Layout blocks all rendering — including Header — while
+        // loading is true, so resolving it here, unconditionally, is what
+        // prevents a cold refresh on any Layout-wrapped route from
+        // deadlocking forever.
         setLoading(false);
+        // Fire-and-forget: don't hold up rendering for an analytics write.
+        updateDoc(doc(db, 'users', firebaseUser.uid), { lastActive: serverTimestamp() }).catch(() => {});
       } else {
         clearUser();
       }

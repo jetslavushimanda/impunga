@@ -81,6 +81,9 @@ export default defineConfig({
           // PDF — only loaded on pages that export PDFs (lazy)
           if (id.includes('jspdf')) return 'vendor-pdf';
 
+          // DOCX — only loaded on Cover Letter Generator (lazy)
+          if (id.includes('/docx/')) return 'vendor-docx';
+
           // Excel — only loaded on BusinessLedger export (lazy)
           if (id.includes('/xlsx/')) return 'vendor-excel';
 
