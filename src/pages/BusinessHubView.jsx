@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2, Lightbulb, Sparkles, Trash2, Target, FileText, Presentation, Share2, Calculator, Building2, FolderOpen, X, Handshake, DollarSign } from 'lucide-react';
+import { ArrowLeft, Rocket, Briefcase, ChevronRight, CheckCircle2, Lightbulb, Sparkles, ArrowRight, Trash2, Target, FileText, Presentation, Share2, Calculator, Building2, FolderOpen, X, Handshake, DollarSign } from 'lucide-react';
 import { ENGINE_MODULES } from '../data/engineModules';
 import useAuthStore from '../store/authStore';
+import { useAuth } from '../hooks/useAuth';
 import { useFirestore } from '../hooks/useFirestore';
 import { ModuleCard } from './EngineView';
+import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 const STARTUP_TOOLS = [
   {
@@ -104,6 +106,7 @@ function SectionHeader({ title, description, icon: Icon, badge, gradient = "from
 
 export default function BusinessHubView() {
   const { userProfile, user, setCustomBack, setCustomTitle } = useAuthStore();
+  const { updateProfile } = useAuth();
   const { getUserDocuments, deleteDocument } = useFirestore();
   const navigate = useNavigate();
   
@@ -135,6 +138,8 @@ export default function BusinessHubView() {
       setCustomTitle('Start a Business');
     } else if (view === 'operations') {
       setCustomTitle(userProfile?.businessProfile?.businessName || 'Business Workspace');
+    } else if (view === 'registration') {
+      setCustomTitle('Register Workspace');
     }
     return () => setCustomTitle(null);
   }, [view, userProfile, setCustomTitle]);
@@ -205,7 +210,59 @@ export default function BusinessHubView() {
       setSearchParams({ view: v });
     }
   };
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  // Registration form state
+  const [formData, setFormData] = useState({
+    businessName: '',
+    sector: '',
+    isRegistered: 'no'
+  });
+
   const businessEngine = ENGINE_MODULES.business;
+
+  function handlePathBClick() {
+    if (userProfile?.businessProfile) {
+      setView('operations');
+    } else {
+      setView('registration');
+    }
+  }
+
+  function handleEditProfile() {
+    if (userProfile?.businessProfile) {
+      setFormData({
+        businessName: userProfile.businessProfile.businessName || '',
+        sector: userProfile.businessProfile.sector || '',
+        isRegistered: userProfile.businessProfile.isRegistered || 'no'
+      });
+    }
+    setView('registration');
+  }
+
+  async function handleStep1Submit(e) {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError('');
+    try {
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000));
+      await Promise.race([
+        updateProfile({ businessProfile: { ...formData } }),
+        timeout
+      ]);
+      setView('operations');
+    } catch (error) {
+      console.error('Failed to register business profile:', error);
+      setSubmitError(
+        error?.message === 'timeout'
+          ? 'This is taking too long — your connection may be blocking the request. Check your internet and try again.'
+          : 'Something went wrong setting up your workspace. Please check your connection and try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <div className="max-w-4xl xl:max-w-5xl 2xl:max-w-none lg:max-w-none mx-auto pb-24 animate-fade-in px-2 sm:px-4">
@@ -230,7 +287,7 @@ export default function BusinessHubView() {
 
             {/* Path B */}
             <button
-              onClick={() => setView('operations')}
+              onClick={handlePathBClick}
               className="group text-left bg-white dark:bg-[#1e2128] rounded-2xl p-5 border border-gray-200/60 dark:border-[#2d3139] shadow-sm hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700 hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 flex items-center gap-4 cursor-pointer w-full"
             >
               <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/30 rounded-xl flex items-center justify-center shrink-0">
@@ -369,8 +426,114 @@ export default function BusinessHubView() {
         </div>
       )}
 
+      {view === 'registration' && (
+        <div className="max-w-xl mx-auto bg-white dark:bg-[#1e2128] border border-gray-200/60 dark:border-[#2d3139] shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[2rem] p-5 sm:p-8 relative overflow-hidden animate-slide-up mt-4 sm:mt-8">
+          <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-100 dark:bg-indigo-900/20 rounded-full pointer-events-none" />
+
+          <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20 relative z-10">
+            <Briefcase className="w-10 h-10 text-white" />
+          </div>
+          <h2 className="text-3xl font-extrabold text-center text-gray-900 dark:text-[#e8eaed] mb-3 relative z-10">Workspace Profile</h2>
+          <p className="text-center text-gray-500 dark:text-[#9aa0a6] font-medium mb-10 relative z-10">
+            Tell us about your business to set up your operational workspace.
+          </p>
+
+          {isSubmitting ? (
+            <div className="py-12 flex flex-col items-center justify-center relative z-10 text-indigo-600 animate-fade-in">
+              <LoadingSpinner size="lg" />
+              <p className="mt-4 font-bold text-gray-800 dark:text-[#e8eaed] animate-pulse text-center">Setting up your operational tools...</p>
+            </div>
+          ) : (
+            <form onSubmit={handleStep1Submit} className="space-y-6 relative z-10">
+              {submitError && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 text-red-600 dark:text-red-400 text-sm font-semibold rounded-2xl px-4 py-3">
+                  {submitError}
+                </div>
+              )}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Business or Project Name</label>
+                <input
+                  required
+                  type="text"
+                  value={formData.businessName}
+                  onChange={e => setFormData({...formData, businessName: e.target.value})}
+                  className="w-full bg-white/50 dark:bg-[#252830] backdrop-blur-sm border border-gray-200 dark:border-[#2d3139] rounded-2xl px-5 py-4 text-gray-800 dark:text-[#e8eaed] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm"
+                  placeholder="e.g. Kalulu Farms"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Primary Sector</label>
+                <select
+                  required
+                  value={formData.sector}
+                  onChange={e => setFormData({...formData, sector: e.target.value})}
+                  className="w-full bg-white/50 dark:bg-[#252830] backdrop-blur-sm border border-gray-200 dark:border-[#2d3139] rounded-2xl px-5 py-4 text-gray-800 dark:text-[#e8eaed] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm appearance-none cursor-pointer"
+                >
+                  <option value="" disabled>Select a sector...</option>
+                  <option value="agriculture">Agriculture & Farming</option>
+                  <option value="retail">Retail & Trade</option>
+                  <option value="services">Professional Services</option>
+                  <option value="manufacturing">Manufacturing</option>
+                  <option value="tech">Technology</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div className="pt-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Is it registered with PACRA?</label>
+                <div className="flex gap-4">
+                  <label className="flex-1 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="registered"
+                      value="yes"
+                      checked={formData.isRegistered === 'yes'}
+                      onChange={e => setFormData({...formData, isRegistered: e.target.value})}
+                      className="sr-only peer"
+                    />
+                    <div className="text-center py-4 border border-gray-200 dark:border-[#2d3139] bg-white/50 dark:bg-[#252830] backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-indigo-500 peer-checked:to-purple-500 peer-checked:text-white font-bold text-gray-600 dark:text-gray-300 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-indigo-500/30">
+                      Yes, Registered
+                    </div>
+                  </label>
+                  <label className="flex-1 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="registered"
+                      value="no"
+                      checked={formData.isRegistered === 'no'}
+                      onChange={e => setFormData({...formData, isRegistered: e.target.value})}
+                      className="sr-only peer"
+                    />
+                    <div className="text-center py-4 border border-gray-200 dark:border-[#2d3139] bg-white/50 dark:bg-[#252830] backdrop-blur-sm rounded-2xl peer-checked:border-transparent peer-checked:bg-gradient-to-r peer-checked:from-gray-600 peer-checked:to-gray-800 peer-checked:text-white font-bold text-gray-600 dark:text-gray-300 transition-all shadow-sm peer-checked:shadow-lg peer-checked:shadow-gray-900/30">
+                      Not Yet
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={!formData.businessName || !formData.sector}
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-2xl disabled:opacity-50 transition-all mt-6 shadow-lg shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
+              >
+                Enter Workspace <ArrowRight className="w-5 h-5" />
+              </button>
+            </form>
+          )}
+        </div>
+      )}
+
       {view === 'operations' && (
         <div className="animate-fade-in mt-2">
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={handleEditProfile}
+              className="bg-white dark:bg-[#1e2128] hover:bg-gray-50 dark:hover:bg-[#252830] border border-gray-250 dark:border-[#2d3139] text-gray-700 dark:text-gray-300 font-bold px-4 py-2 rounded-xl transition-all shadow-sm text-xs"
+            >
+              Edit Profile
+            </button>
+          </div>
           <div className="flex flex-col gap-4 lg:gap-5">
             {businessEngine.modules.map(mod => (
               <ModuleCard key={mod.path} {...mod} />
