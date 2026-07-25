@@ -67,7 +67,7 @@ function ScrollToTop() {
 }
 
 export default function App() {
-  const { setUser, setUserProfile, clearUser, setSelectedPath } = useAuthStore();
+  const { setUser, setUserProfile, clearUser, setSelectedPath, setLoading } = useAuthStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -83,6 +83,14 @@ export default function App() {
             }
           }
         } catch {}
+        // This top-level listener always runs regardless of what's mounted
+        // below it, unlike useAuth()'s copy of this same listener (which
+        // only runs inside Header, itself gated behind `loading`). Layout
+        // blocks all rendering — including Header — while loading is true,
+        // so if Header were the only thing clearing it, a cold refresh on
+        // any Layout-wrapped route would deadlock forever. Resolving it
+        // here, unconditionally, is what breaks that deadlock.
+        setLoading(false);
       } else {
         clearUser();
       }
