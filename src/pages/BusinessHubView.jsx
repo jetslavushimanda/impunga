@@ -105,7 +105,7 @@ function SectionHeader({ title, description, icon: Icon, badge, gradient = "from
 }
 
 export default function BusinessHubView() {
-  const { userProfile, user, setCustomBack, setCustomTitle } = useAuthStore();
+  const { userProfile, user, loading: profileLoading, setCustomBack, setCustomTitle } = useAuthStore();
   const { updateProfile } = useAuth();
   const { getUserDocuments, deleteDocument } = useFirestore();
   const navigate = useNavigate();
@@ -223,6 +223,12 @@ export default function BusinessHubView() {
   const businessEngine = ENGINE_MODULES.business;
 
   function handlePathBClick() {
+    // Guard against the profile fetch still being in flight: deciding
+    // registration-vs-operations off a userProfile that hasn't loaded yet
+    // would wrongly send an existing user back through registration.
+    // The button itself is disabled while profileLoading is true, so this
+    // is a belt-and-braces check, not the primary guard.
+    if (profileLoading) return;
     if (userProfile?.businessProfile) {
       setView('operations');
     } else {
@@ -288,16 +294,24 @@ export default function BusinessHubView() {
             {/* Path B */}
             <button
               onClick={handlePathBClick}
-              className="group text-left bg-white dark:bg-[#1e2128] rounded-2xl p-5 border border-gray-200/60 dark:border-[#2d3139] shadow-sm hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700 hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 flex items-center gap-4 cursor-pointer w-full"
+              disabled={profileLoading}
+              aria-busy={profileLoading}
+              className="group text-left bg-white dark:bg-[#1e2128] rounded-2xl p-5 border border-gray-200/60 dark:border-[#2d3139] shadow-sm hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700 hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 flex items-center gap-4 cursor-pointer w-full disabled:opacity-60 disabled:cursor-wait disabled:hover:translate-y-0"
             >
               <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/30 rounded-xl flex items-center justify-center shrink-0">
                 <Briefcase className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <h2 className="text-base font-bold text-gray-900 dark:text-[#e8eaed] mb-0.5">Business Operations</h2>
-                <p className="text-gray-500 dark:text-[#9aa0a6] text-sm font-medium leading-relaxed">I already have a business and need operational tools to run it.</p>
+                <p className="text-gray-500 dark:text-[#9aa0a6] text-sm font-medium leading-relaxed">
+                  {profileLoading ? 'Checking your workspace...' : 'I already have a business and need operational tools to run it.'}
+                </p>
               </div>
-              <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-indigo-500 group-hover:translate-x-0.5 shrink-0 transition-all" />
+              {profileLoading ? (
+                <div className="w-4 h-4 border-2 border-indigo-300 border-t-indigo-600 rounded-full animate-spin shrink-0" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-indigo-500 group-hover:translate-x-0.5 shrink-0 transition-all" />
+              )}
             </button>
           </div>
         </div>
