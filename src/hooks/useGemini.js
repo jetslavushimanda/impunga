@@ -583,6 +583,45 @@ Base your critique on realistic costs, revenue expectations, and market dynamics
     }
   }
 
+  async function generateFullBusinessPlan(planData) {
+    setLoading(true);
+    setError(null);
+    try {
+      const prompt = `You are an expert Zambian business plan consultant who writes bankable, investor-ready business plans for entrepreneurs. An entrepreneur has filled in raw notes and figures for their business below. Rewrite and expand this into a complete, professional, standard-structure business plan — the way an experienced consultant would deliver it to a client, not a copy-paste of their notes.
+
+Raw entrepreneur input (facts, figures, and rough notes — treat all numbers, names, and locations as ground truth, do not invent different ones):
+${JSON.stringify(planData, null, 2)}
+
+Write full, polished prose paragraphs for each section — expand thin or vague notes into proper business-plan-quality writing, fill obvious logical gaps sensibly (e.g. infer standard operating hours, typical staffing structure, standard risk factors for this sector in Zambia), and correct nothing about the user's actual figures. Use Kwacha (K) for all monetary references. Ground every section in ${planData.province || 'Zambia'} and the ${planData.sector || 'business'} sector specifically — reference real dynamics, costs, and customer behaviour typical of that sector in Zambia rather than generic filler.
+
+You may use **bold** for key terms or figures and *italics* for emphasis sparingly within the prose — these will be rendered as real formatting, not shown as literal asterisks. Do not use markdown headings (#).
+
+Return your response in this EXACT JSON format, with each value being 2-4 full paragraphs of prose (use "\\n\\n" between paragraphs), except where noted:
+{
+  "executiveSummary": "A compelling 1-paragraph overview of the business, the opportunity, and why it will succeed — written last-in-spirit even though it appears first, summarizing the whole plan.",
+  "companyDescription": "Full paragraphs on what the business is, its mission/vision, legal structure (${planData.businessType || 'sole trader'}), and what problem it solves and for whom.",
+  "marketAnalysis": "Full paragraphs analyzing the target market, customer profile, market size/opportunity, competitive landscape, and the business's competitive advantage — specific to ${planData.province || 'Zambia'}.",
+  "productsAndServices": "Full paragraphs describing what is being sold, the value proposition, and pricing/margin logic in plain terms (figures already provided will be shown separately in a table — describe the offering itself here, not repeat raw numbers).",
+  "marketingAndSalesStrategy": "Full paragraphs on how customers will be reached and converted, referencing the channels and budget provided, expanded into an actual go-to-market narrative.",
+  "operationsPlan": "Full paragraphs on day-to-day operations, location, equipment, suppliers, and staffing (if any) — practical and specific, not generic.",
+  "managementAndOrganization": "1-2 paragraphs on who runs the business and the staffing/organizational structure. If the entrepreneur indicated no employees, describe a realistic solo-operator structure and what would trigger hiring the first employee.",
+  "fundingRequest": "1-2 paragraphs on how much capital is needed, what it will be used for, and why — grounded in the startup cost figures provided. If no external funding is indicated, frame this as a self-funding/bootstrapping rationale instead."
+}
+
+Return ONLY valid JSON, no markdown code fences.`;
+
+      const response = await callGemini(prompt, 'You are an expert Zambian business plan consultant. Write bankable, professional, sector-specific business plans. Return only valid JSON.');
+      const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const msg = getFriendlyError(err);
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function generatePredictiveRoadmap(career, currentSkills, province) {
     setLoading(true);
     setError(null);
@@ -832,5 +871,5 @@ Return ONLY valid JSON.`;
     return `Error: ${err.message}. Check internet and try again.`;
   }
 
-  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generatePitchDeck, matchFundingSources, generateBusinessNames, generateRegistrationRoadmap, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast, critiqueBusinessPlan, generatePredictiveRoadmap, analyzePricingTrend, generateCoverLetter, generateInterviewQuestions, evaluateInterviewAnswers, generateSkillGapPlan };
+  return { loading, error, retrySeconds, validateBusinessIdea, getBusinessAdvice, generatePitchDeck, matchFundingSources, generateBusinessNames, generateRegistrationRoadmap, extractSkillsFromDescription, analyzeMarketTrends, generateComplianceReport, semanticSearch, generateMarketForecast, critiqueBusinessPlan, generateFullBusinessPlan, generatePredictiveRoadmap, analyzePricingTrend, generateCoverLetter, generateInterviewQuestions, evaluateInterviewAnswers, generateSkillGapPlan };
 }

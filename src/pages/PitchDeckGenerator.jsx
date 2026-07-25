@@ -5,6 +5,7 @@ import { useAI } from '../hooks/useAI';
 import { jsPDF } from 'jspdf';
 import pptxgen from 'pptxgenjs';
 import { parseMarkdownLines } from '../lib/markdownRuns';
+import { renderMarkdownBlock } from '../lib/pdfMarkdown';
 import ErrorMessage from '../components/shared/ErrorMessage';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import AIResponse from '../components/shared/AIResponse';
@@ -50,61 +51,8 @@ export default function PitchDeckGenerator() {
     doc.setDrawColor(200);
     doc.line(20, 35, 190, 35);
 
-    const leftMargin = 20;
-    const rightEdge = 190;
-    const bulletIndent = 5;
-    const lineHeight = 5;
-    const pageBottom = 280;
-    let yPos = 45;
-
-    doc.setFontSize(10);
     doc.setTextColor(0);
-
-    const ensureRoom = () => {
-      if (yPos > pageBottom) {
-        doc.addPage();
-        yPos = 20;
-      }
-    };
-
-    // Render **bold**/*italic*/bullet markdown as real PDF formatting
-    // instead of printing the literal asterisk characters.
-    parseMarkdownLines(deckContent).forEach(({ bullet, heading, runs }) => {
-      const isBlank = runs.length === 1 && runs[0].text === '';
-      if (isBlank) {
-        yPos += lineHeight * 0.6;
-        return;
-      }
-
-      ensureRoom();
-      const indent = bullet ? leftMargin + bulletIndent : leftMargin;
-      let xPos = indent;
-
-      if (bullet) {
-        doc.setFont('helvetica', 'normal');
-        doc.text('•', leftMargin, yPos);
-      }
-      if (heading) doc.setFontSize(12);
-
-      runs.forEach(run => {
-        doc.setFont('helvetica', run.bold ? 'bold' : run.italic ? 'italic' : 'normal');
-        const tokens = run.text.split(/(\s+)/);
-        tokens.forEach(token => {
-          if (token === '') return;
-          const width = doc.getTextWidth(token);
-          if (token.trim() !== '' && xPos + width > rightEdge) {
-            yPos += lineHeight;
-            ensureRoom();
-            xPos = indent;
-          }
-          doc.text(token, xPos, yPos);
-          xPos += width;
-        });
-      });
-
-      if (heading) doc.setFontSize(10);
-      yPos += lineHeight;
-    });
+    renderMarkdownBlock(doc, deckContent, { startY: 45 });
 
     doc.save('Pitch_Deck.pdf');
   }
